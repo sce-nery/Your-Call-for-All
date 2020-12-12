@@ -1,6 +1,6 @@
 import * as THREE from '../vendor/three-js/build/three.module.js';
 import Stats from "../vendor/stats.module.js";
-import { createPerformanceMonitors } from 'util/debug.js';
+import { createPerformanceMonitors } from './util/debug.js';
 
 let camera, scene, renderer;
 let geometry, material, mesh;
