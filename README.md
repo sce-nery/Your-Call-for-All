@@ -14,7 +14,7 @@ When you are about to commit, your commit message needs to follow these conventi
 
 After your task is done, you need to create a pull request. Note that you need to merge `main` branch to your branch before the pull request to minimize the chances of merge conflicts. 
 
-And remember, Google is your friend, consult Google whenever you stuck, as well as your teammates.
+And remember, the internet is your friend, consult internet whenever you stuck, as well as your teammates.
 
 ## Authors
  
