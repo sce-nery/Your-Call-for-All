@@ -62,7 +62,7 @@ function init() {
     // scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
 
     const loader = new GLTFLoader();
-    loader.load('../assets/models/characters/mocapman/mocapman.glb', function (gltf) {
+    loader.load('../assets/models/characters/mocapman_dummy/mocapman.glb', function (gltf) {
         model = gltf.scene;
         model.scale.setScalar(100);
         scene.add(model);
