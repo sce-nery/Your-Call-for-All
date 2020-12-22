@@ -39,7 +39,7 @@ class Character {
     }
 
     activateAllActions() {
-
+        // TODO.
         for (const key in this.actionMap) {
             let action = this.actionMap[key];
             action.enabled = true;
@@ -78,6 +78,7 @@ class CharacterController {
     }
 
     update(deltaTime) {
+        // TODO.
         if (this.input.keys.moveLeft) {
             this.character.actionMap["Turn Left"].play();
         }
