@@ -13,7 +13,7 @@ class SkyController {
             rayleigh: 3,
             mieCoefficient: 0.005,
             mieDirectionalG: 0.7,
-            inclination: 0.49, // elevation / inclination
+            inclination: 0.5,  // 0.0: -Z, 0.25: midday, 0.5: +Z, 0.75: midnight, 1.0: -Z
             azimuth: 0.25,     // Facing front,
             exposure: 0.5,
         }
@@ -27,7 +27,7 @@ class SkyController {
         uniforms["mieCoefficient"].value = this.properties.mieCoefficient;
         uniforms["mieDirectionalG"].value = this.properties.mieDirectionalG;
 
-        const theta = Math.PI * (this.properties.inclination - 0.5);
+        const theta = (Math.PI * 2) * (1.0 - this.properties.inclination);
         const phi = 2 * Math.PI * (this.properties.azimuth - 0.5);
 
         this.sunPosition.x = Math.cos(phi);
