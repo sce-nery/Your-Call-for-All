@@ -42,7 +42,7 @@ class SkyController {
 
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
-        this.sunLight.color.set(lerpColor(0xffffff,  0xfedb13, amount));
+        this.sunLight.color.set(lerpColor(0xffffff,  0xfdb55e, amount));
     }
 }
 
