@@ -10,6 +10,10 @@ import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitContr
 import {Terrain, TerrainController} from "../src/core/terrain.js";
 import {HeightMap} from "../src/core/heightmap.js";
 import * as CANNON from "../vendor/cannon-es.js";
+import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
+import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
+import {BloomPass} from "../vendor/three-js/examples/jsm/postprocessing/BloomPass.js";
+import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 let clock;
 
@@ -25,6 +29,8 @@ let world;
 let prng = new MersenneTwisterPRNG(111);
 
 let simplex = new SimplexNoise(prng);
+
+let composer;
 
 function setupSky() {
 
@@ -76,7 +82,7 @@ function setupRenderer() {
 function setupScene() {
     scene = new THREE.Scene();
 
-    const helper = new THREE.GridHelper(100, 100    , 0xffffff, 0xffffff);
+    const helper = new THREE.GridHelper(100, 100, 0xffffff, 0xffffff);
     scene.add(helper);
 
     // Sky
@@ -85,16 +91,29 @@ function setupScene() {
     // Terrain
     setupTerrain();
 
+    // Physics
+    setupPhysics();
+}
+
+function setupPhysics() {
+
     world = new CANNON.World();
+    world.gravity.set(0, 0, -9.807); // m/s²
+    
+
+    //let ground = new CANNON.Body()
+
+    //let heightField = new CANNON.Heightfield();
+
 }
 
 
 function setupTerrain() {
-    const colorMap = new THREE.TextureLoader().load(        '../assets/textures/ground/Ground1_1K_Color.jpg')
-    const normalMap = new THREE.TextureLoader().load(       '../assets/textures/ground/Ground1_1K_Normal.jpg' )
-    const displacementMap = new THREE.TextureLoader().load( '../assets/textures/ground/Ground1_1K_Displacement.jpg'  )
-    const occlusionMap = new THREE.TextureLoader().load(    '../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg' )
-    const roughnessMap = new THREE.TextureLoader().load(    '../assets/textures/ground/Ground1_1K_Roughness.jpg' )
+    const colorMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Color.jpg')
+    const normalMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Normal.jpg')
+    const displacementMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Displacement.jpg')
+    const occlusionMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
+    const roughnessMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Roughness.jpg')
 
     colorMap.wrapS = THREE.RepeatWrapping;
     colorMap.wrapT = THREE.RepeatWrapping;
@@ -130,10 +149,10 @@ function setupTerrain() {
     });
     scene.add(terrain.mesh);
 
-    let heightMap = new HeightMap(terrain.mesh.geometry.vertices, simplex,{
+    let heightMap = new HeightMap(terrain.mesh.geometry.vertices, simplex, {
         xZoom: 20,
         yZoom: 20,
-        noiseStrength: 2.0
+        noiseStrength: 1.5
     });
     terrainController = new TerrainController(terrain, heightMap);
 }
@@ -158,6 +177,10 @@ function init() {
     setupScene();
 
     setupControls();
+
+    composer = new EffectComposer( renderer );
+    let renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
 
     stats = createPerformanceMonitor(document.body);
 
@@ -186,7 +209,7 @@ function render() {
 
     controls.update(clock.getDelta());
 
-    renderer.render(scene, camera);
+    composer.render();
 
     stats.update();
 

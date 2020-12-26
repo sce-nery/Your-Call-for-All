@@ -19,13 +19,13 @@ class Terrain {
 
     setupTerrainMesh() {
         let geometry = new THREE.PlaneGeometry(this.props.width, this.props.height, this.props.widthSegments, this.props.heightSegments);
-        let material = new THREE.MeshPhongMaterial({
+        let material = new THREE.MeshStandardMaterial({
             map: this.props.map,
             bumpMap: this.props.normalMap,
-            bumpScale: 0.03,
+            bumpScale: 0.15,
             //displacementMap: this.props.displacementMap,
             //aoMap: this.props.occlusionMap,
-            //roughnessMap: this.props.roughnessMap,
+            roughnessMap: this.props.roughnessMap,
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
