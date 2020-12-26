@@ -6,7 +6,8 @@ class SkyController {
         this.sky = sky;
         this.sky.scale.setScalar(450000);
 
-        this.sunPosition = new THREE.Vector3();
+        this.sunLight = new THREE.DirectionalLight(0xffffff);
+        this.sunLight.castShadow = true;
 
         this.properties = {
             turbidity: 10,
@@ -30,11 +31,13 @@ class SkyController {
         const theta = (Math.PI * 2) * (1.0 - this.properties.inclination);
         const phi = 2 * Math.PI * (this.properties.azimuth - 0.5);
 
-        this.sunPosition.x = Math.cos(phi);
-        this.sunPosition.y = Math.sin(phi) * Math.sin(theta);
-        this.sunPosition.z = Math.sin(phi) * Math.cos(theta);
+        this.sunLight.position.set(
+            Math.cos(phi),
+            Math.sin(phi) * Math.sin(theta),
+            Math.sin(phi) * Math.cos(theta)
+        );
 
-        uniforms["sunPosition"].value.copy(this.sunPosition);
+        uniforms["sunPosition"].value.copy(this.sunLight.position);
     }
 }
 

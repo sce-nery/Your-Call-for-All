@@ -17,6 +17,7 @@ function initSky() {
     skyController = new SkyController(new Sky());
 
     scene.add(skyController.sky);
+    scene.add(skyController.sunLight);
 
 
     /// GUI
