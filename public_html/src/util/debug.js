@@ -1,10 +1,14 @@
 import Stats from "../../vendor/stats.module.js";
 
-export function createPerformanceMonitor() {
+export function createPerformanceMonitor(container = null) {
     let stats = new Stats();
     stats.showPanel(0);
 
-    document.body.appendChild(stats.domElement);
+    if (container === null) {
+        document.body.appendChild(stats.domElement);
+    } else {
+        container.appendChild(stats.domElement);
+    }
 
     return stats;
 }
