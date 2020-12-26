@@ -18,26 +18,24 @@ function initSky() {
 
     scene.add(skyController.sky);
     scene.add(skyController.sunLight);
-
-
     /// GUI
 
     function guiChanged() {
 
         skyController.update();
 
-        renderer.toneMappingExposure = skyController.properties.exposure;
+        renderer.toneMappingExposure = skyController.props.exposure;
     }
 
     const gui = new GUI();
 
-    gui.add(skyController.properties, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
-    gui.add(skyController.properties, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "inclination", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.properties, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.properties, "exposure", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
+    gui.add(skyController.props, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "inclination", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "exposure", 0, 1, 0.0001).onChange(guiChanged);
 
     skyController.update();
 

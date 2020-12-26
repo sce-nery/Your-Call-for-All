@@ -7,14 +7,24 @@ import {MersenneTwisterPRNG} from "../src/math/random.js";
 import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+import {Terrain, TerrainController} from "../src/core/terrain.js";
+import {HeightMap} from "../src/core/heightmap.js";
+import * as CANNON from "../vendor/cannon-es.js";
 
 let clock;
 
 let camera, scene, renderer, controls;
 
+let terrainController;
 let skyController;
 
 let stats;
+
+let world;
+
+let prng = new MersenneTwisterPRNG(111);
+
+let simplex = new SimplexNoise(prng);
 
 function setupSky() {
 
@@ -31,18 +41,18 @@ function setupSky() {
 
         skyController.update();
 
-        renderer.toneMappingExposure = skyController.properties.exposure;
+        renderer.toneMappingExposure = skyController.props.exposure;
     }
 
     const gui = new GUI();
 
-    gui.add(skyController.properties, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
-    gui.add(skyController.properties, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-    gui.add(skyController.properties, "inclination", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.properties, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.properties, "exposure", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
+    gui.add(skyController.props, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
+    gui.add(skyController.props, "inclination", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
+    gui.add(skyController.props, "exposure", 0, 1, 0.0001).onChange(guiChanged);
 
     skyController.update();
 
@@ -50,7 +60,7 @@ function setupSky() {
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
-    camera.position.set(0, 50, 100);
+    camera.position.set(0, 2, 3);
 }
 
 function setupRenderer() {
@@ -69,50 +79,63 @@ function setupScene() {
     const helper = new THREE.GridHelper(100, 100    , 0xffffff, 0xffffff);
     scene.add(helper);
 
-
     // Sky
     setupSky();
 
     // Terrain
     setupTerrain();
+
+    world = new CANNON.World();
 }
 
-let simplex;
-let terrain;
-
-function adjustTerrainVertices(position) {
-    let xZoom = 10;
-    let yZoom = 10;
-    let noiseStrength = 2;
-
-    for (let i = 0; i < terrain.geometry.vertices.length; i++) {
-        let vertex = terrain.geometry.vertices[i];
-        let x = vertex.x / xZoom;
-        let y = vertex.y / yZoom;
-        let noise = simplex.noise(x + position.x, y + position.z) * noiseStrength;
-        vertex.z = noise;
-    }
-    terrain.geometry.verticesNeedUpdate = true;
-    terrain.geometry.computeVertexNormals();
-}
 
 function setupTerrain() {
-    let side = 120;
-    let geometry = new THREE.PlaneGeometry(100, 100, side, side);
-    let material = new THREE.MeshLambertMaterial({
-        color: new THREE.Color(0x555555),
+    const colorMap = new THREE.TextureLoader().load(        '../assets/textures/ground/Ground1_1K_Color.jpg')
+    const normalMap = new THREE.TextureLoader().load(       '../assets/textures/ground/Ground1_1K_Normal.jpg' )
+    const displacementMap = new THREE.TextureLoader().load( '../assets/textures/ground/Ground1_1K_Displacement.jpg'  )
+    const occlusionMap = new THREE.TextureLoader().load(    '../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg' )
+    const roughnessMap = new THREE.TextureLoader().load(    '../assets/textures/ground/Ground1_1K_Roughness.jpg' )
 
+    colorMap.wrapS = THREE.RepeatWrapping;
+    colorMap.wrapT = THREE.RepeatWrapping;
+
+    colorMap.repeat.set(100, 100);
+
+    normalMap.wrapS = THREE.RepeatWrapping;
+    normalMap.wrapT = THREE.RepeatWrapping;
+    normalMap.repeat.set(100, 100);
+
+    displacementMap.wrapS = THREE.RepeatWrapping;
+    displacementMap.wrapT = THREE.RepeatWrapping;
+    displacementMap.repeat.set(100, 100);
+
+    occlusionMap.wrapS = THREE.RepeatWrapping;
+    occlusionMap.wrapT = THREE.RepeatWrapping;
+    occlusionMap.repeat.set(100, 100);
+
+    roughnessMap.wrapS = THREE.RepeatWrapping;
+    roughnessMap.wrapT = THREE.RepeatWrapping;
+    roughnessMap.repeat.set(100, 100);
+
+    let terrain = new Terrain({
+        width: 100,
+        height: 100,
+        widthSegments: 100,
+        heightSegments: 100,
+        map: colorMap,
+        normalMap: normalMap,
+        displacementMap: null,
+        occlusionMap: null,
+        roughnessMap: null
     });
-    terrain = new THREE.Mesh(geometry, material);
-    terrain.castShadow = true;
-    terrain.receiveShadow = true;
-    terrain.rotation.x = -Math.PI / 2;
-    scene.add(terrain);
+    scene.add(terrain.mesh);
 
-    let prng = new MersenneTwisterPRNG(111);
-
-    simplex = new SimplexNoise(prng);
-
+    let heightMap = new HeightMap(terrain.mesh.geometry.vertices, simplex,{
+        xZoom: 20,
+        yZoom: 20,
+        noiseStrength: 2.0
+    });
+    terrainController = new TerrainController(terrain, heightMap);
 }
 
 
@@ -150,16 +173,18 @@ function onWindowResize() {
 }
 
 let position = new THREE.Vector3();
+let updateTerrain = true;
 
 function render() {
-    //position.x += 1 / 60;
-    //position.z += 1 / 60;
+    // position.x += 1 / 60 * 0.05;
+    // position.z += 1 / 60 * 0.05;
 
-    terrain.position.set(position.x * 10, 0, -position.z * 10);
+    if (updateTerrain) {
+        terrainController.adjustTerrainForPosition(position);
+        updateTerrain = false;
+    }
 
-    adjustTerrainVertices(position);
-
-    controls.update(clock.getDelta())
+    controls.update(clock.getDelta());
 
     renderer.render(scene, camera);
 

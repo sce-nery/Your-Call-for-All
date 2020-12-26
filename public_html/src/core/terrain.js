@@ -5,7 +5,12 @@ class Terrain {
         width: 100,
         height: 100,
         widthSegments: 150,
-        heightSegments: 150
+        heightSegments: 150,
+        map: null,
+        normalMap: null,
+        displacementMap: null,
+        occlusionMap: null,
+        roughnessMap: null
     }) {
         this.props = props;
 
@@ -14,8 +19,13 @@ class Terrain {
 
     setupTerrainMesh() {
         let geometry = new THREE.PlaneGeometry(this.props.width, this.props.height, this.props.widthSegments, this.props.heightSegments);
-        let material = new THREE.MeshLambertMaterial({
-            color: new THREE.Color(0x555555),
+        let material = new THREE.MeshPhongMaterial({
+            map: this.props.map,
+            bumpMap: this.props.normalMap,
+            bumpScale: 0.03,
+            //displacementMap: this.props.displacementMap,
+            //aoMap: this.props.occlusionMap,
+            //roughnessMap: this.props.roughnessMap,
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
@@ -47,6 +57,12 @@ class TerrainController {
         // Update
         this.terrain.mesh.geometry.verticesNeedUpdate = true;
         this.terrain.mesh.geometry.computeVertexNormals();
+
+        this.terrain.mesh.material.map.offset.set(this.terrain.mesh.position.x, -this.terrain.mesh.position.z);
+        this.terrain.mesh.material.map.needsUpdate = true;
+
+        this.terrain.mesh.material.bumpMap.offset.set(this.terrain.mesh.position.x, -this.terrain.mesh.position.z);
+        this.terrain.mesh.material.bumpMap.needsUpdate = true;
     }
 }
 
