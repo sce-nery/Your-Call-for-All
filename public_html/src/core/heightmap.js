@@ -1,13 +1,13 @@
 
 
-class HeightMapGenerator {
-    constructor(vertices, noiseFn, props={
+class HeightMap {
+    constructor(vertices, noiseProvider, props={
         xZoom: 10,
         yZoom: 10,
         noiseStrength: 2.0
     }) {
         this.vertices = vertices;
-        this.noiseFn = noiseFn;
+        this.noiseProvider = noiseProvider;
         this.props = props;
     }
 
@@ -17,12 +17,12 @@ class HeightMapGenerator {
      *          typically would be the position of the character.
      * @returns {*} Adjusted vertex array.
      */
-    map(offset) {
+    get(offset) {
         for (let i = 0; i < this.vertices.length; i++) {
             let vertex = this.vertices[i];
             let x = vertex.x / this.props.xZoom;
             let y = vertex.y / this.props.yZoom;
-            let noise = this.noiseFn(x + offset.x, y + offset.z) * this.props.noiseStrength;
+            let noise = this.noiseProvider.noise(x + offset.x, y + offset.z) * this.props.noiseStrength;
             vertex.z = noise;
         }
 
@@ -30,4 +30,4 @@ class HeightMapGenerator {
     }
 }
 
-export {HeightMapGenerator};
+export {HeightMap};
