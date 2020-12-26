@@ -2,6 +2,21 @@ import * as THREE from '../vendor/three-js/build/three.module.js';
 import Stats from "../vendor/stats.module.js";
 import {createPerformanceMonitor} from './util/debug.js';
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+import {GUI} from '../vendor/dat.gui/build/dat.gui.module.js';
+
+
+class ColorGUIHelper {
+    constructor(object, prop) {
+        this.object = object;
+        this.prop = prop;
+    }
+    get value() {
+        return `#${this.object[this.prop].getHexString()}`;
+    }
+    set value(hexString) {
+        this.object[this.prop].set(hexString);
+    }
+}
 
 let camera, scene, renderer;
 
@@ -9,9 +24,6 @@ let debugModeEnabled = true;
 
 let stats;
 
-function initWindowEvents() {
-    window.addEventListener('resize', onWindowResize, false);
-}
 
 function init() {
 
@@ -20,26 +32,23 @@ function init() {
 
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xa0a0a0);
-    scene.fog = new THREE.Fog(0xa0a0a0, 200, 1500);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-    hemiLight.position.set(0, 200, 0);
-    scene.add(hemiLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff);
+    const dirLight = new THREE.DirectionalLight(0xFFFFFF, 1);
     dirLight.position.set(0, 200, 100);
     dirLight.castShadow = true;
     dirLight.shadow.camera.top = 180;
     dirLight.shadow.camera.bottom = -100;
     dirLight.shadow.camera.left = -120;
     dirLight.shadow.camera.right = 120;
+    dirLight.target.position.set(0,100,0);
     scene.add(dirLight);
+    scene.add(dirLight.target);
 
     // ground
-    const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), new THREE.MeshPhongMaterial({
-        color: 0x999999,
-        depthWrite: false
-    }));
+    const mesh = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(2000, 2000),
+        new THREE.MeshPhongMaterial({color: 0x999999, depthWrite: false})
+    );
     mesh.rotation.x = -Math.PI / 2;
     mesh.receiveShadow = true;
     scene.add(mesh);
@@ -56,19 +65,46 @@ function init() {
     renderer.shadowMap.enabled = true;
     document.body.appendChild(renderer.domElement);
 
+    {
+        const cubeSize = 20;
+        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
+        const mesh = new THREE.Mesh(cubeGeo, cubeMat);
+        mesh.position.set(0, 100, 0);
+        scene.add(mesh);
+    }
+
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 100, 0);
     controls.update();
 
     initWindowEvents();
 
-    if (debugModeEnabled) {
-        stats = createPerformanceMonitor();
+    if (debugModeEnabled) { stats = createPerformanceMonitor();}
+
+    const gui = new GUI();
+    gui.addColor(new ColorGUIHelper(dirLight, 'color'), 'value').name('color');
+    gui.add(dirLight, 'intensity', 0, 2, 0.01);
+    gui.add(dirLight.target.position, 'x', -10, 10);
+    gui.add(dirLight.target.position, 'z', -10, 10);
+    gui.add(dirLight.target.position, 'y', 0, 10);
+
+    function render() {
+        renderer.render(scene, camera);
+
+        if (debugModeEnabled) {stats.update();}
+        requestAnimationFrame(render);
     }
+
 
     render();
 }
 
+
+
+function initWindowEvents() {
+    window.addEventListener('resize', onWindowResize, false);
+}
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -79,15 +115,6 @@ function onWindowResize() {
     render();
 }
 
-function render() {
-    renderer.render(scene, camera);
-
-    if (debugModeEnabled) {
-        stats.update();
-    }
-
-    requestAnimationFrame(render);
-}
 
 window.onload = function () {
     Logger.useDefaults();
