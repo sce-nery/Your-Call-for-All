@@ -3,20 +3,16 @@ import Stats from "../vendor/stats.module.js";
 import {createPerformanceMonitor} from './util/debug.js';
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {GUI} from '../vendor/dat.gui/build/dat.gui.module.js';
+import {GuiController} from "./util/gui_controller.js";
+import {ColorGUIHelper} from "./util/gui_controller.js";
 
 
-class ColorGUIHelper {
-    constructor(object, prop) {
-        this.object = object;
-        this.prop = prop;
-    }
-    get value() {
-        return `#${this.object[this.prop].getHexString()}`;
-    }
-    set value(hexString) {
-        this.object[this.prop].set(hexString);
-    }
-}
+const gui = new GUI();
+let controller = new GuiController(gui);
+controller.add_slider("a", -10, 10);
+controller.add_slider("b", -300, 300);
+controller.add_slider("c", -300, 300);
+
 
 let camera, scene, renderer;
 
@@ -81,6 +77,7 @@ function init() {
     initWindowEvents();
 
     if (debugModeEnabled) { stats = createPerformanceMonitor();}
+
 
     const gui = new GUI();
     gui.addColor(new ColorGUIHelper(dirLight, 'color'), 'value').name('color');
