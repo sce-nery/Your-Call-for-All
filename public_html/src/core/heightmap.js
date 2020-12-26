@@ -18,6 +18,7 @@ class HeightMap {
      * @returns {*} Adjusted vertex array.
      */
     get(offset) {
+
         for (let i = 0; i < this.vertices.length; i++) {
             let vertex = this.vertices[i];
             let x = vertex.x / this.props.xZoom;
