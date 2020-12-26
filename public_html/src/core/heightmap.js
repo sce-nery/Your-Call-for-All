@@ -11,6 +11,12 @@ class HeightMapGenerator {
         this.props = props;
     }
 
+    /**
+     * Adjusts its vertices with respect to the noise function.
+     * @param offset The offset to be added to the noise function,
+     *          typically would be the position of the character.
+     * @returns {*} Adjusted vertex array.
+     */
     map(offset) {
         for (let i = 0; i < this.vertices.length; i++) {
             let vertex = this.vertices[i];
