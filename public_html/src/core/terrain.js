@@ -5,80 +5,81 @@ import PhysicsUtils from "../util/physics-utils.js";
 import TextureUtils from "../util/texture-utils.js";
 
 class Terrain {
-    constructor(props = {
-        width: 100,
-        height: 100,
-        widthSegments: 150,
-        heightSegments: 150,
+    constructor(heightMap, props = {
         map: null,
         normalMap: null,
         displacementMap: null,
         occlusionMap: null,
         roughnessMap: null
     }) {
+        this.heightMap = heightMap;
         this.props = props;
+
+        this.physicsBody = null;
+        this.physicsHeightFieldShape = null;
 
         this.setupTextures();
         this.setupTerrainMesh();
-        // this.setupPhysicsBody();z
+        this.setupPhysicsBody();
     }
 
     setupTextures() {
         if (this.props.map !== null) {
-            TextureUtils.makeRepeating(this.props.map, this.props.width, this.props.height);
+            TextureUtils.makeRepeating(this.props.map, this.heightMap.props.width, this.heightMap.props.height);
         }
 
         if (this.props.normalMap !== null) {
-            TextureUtils.makeRepeating(this.props.normalMap, this.props.width, this.props.height);
+            TextureUtils.makeRepeating(this.props.normalMap, this.heightMap.props.width, this.heightMap.props.height);
         }
 
         if (this.props.displacementMap !== null) {
-            TextureUtils.makeRepeating(this.props.displacementMap, this.props.width, this.props.height);
+            TextureUtils.makeRepeating(this.props.displacementMap, this.heightMap.props.width, this.heightMap.props.height);
         }
 
         if (this.props.occlusionMap !== null) {
-            TextureUtils.makeRepeating(this.props.occlusionMap, this.props.width, this.props.height);
+            TextureUtils.makeRepeating(this.props.occlusionMap, this.heightMap.props.width, this.heightMap.props.height);
         }
 
         if (this.props.roughnessMap !== null) {
-            TextureUtils.makeRepeating(this.props.roughnessMap, this.props.width, this.props.height);
+            TextureUtils.makeRepeating(this.props.roughnessMap, this.heightMap.props.width, this.heightMap.props.height);
         }
     }
 
     setupTerrainMesh() {
-        let geometry = new THREE.PlaneGeometry(this.props.width, this.props.height, this.props.widthSegments, this.props.heightSegments);
         let material = new THREE.MeshStandardMaterial({
             map: this.props.map,
             bumpMap: this.props.normalMap,
-            bumpScale: 0.15,
+            bumpScale: 0.25,
             //displacementMap: this.props.displacementMap,
             //aoMap: this.props.occlusionMap,
-            roughnessMap: this.props.roughnessMap,
+            //roughnessMap: this.props.roughnessMap,
         });
 
-        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh = new THREE.Mesh(this.heightMap.geometry, material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
     }
 
     setupPhysicsBody() {
-        let terrainShape = PhysicsUtils.convertThreeGeometryToCannonConvexPolyhedron(this.mesh.geometry);
-
-        this.physicsBody = new CANNON.Body({
-            mass: 0, // kg, 0: static
-            position: new CANNON.Vec3(0, 0, 0), // m
-            shape: terrainShape
+        // Create the height field
+        let heightField = new CANNON.Heightfield(this.heightMap.matrix, {
+            elementSize: 1
         });
-        let axis = new CANNON.Vec3(1, 0, 0);
+
+        this.physicsBody = new CANNON.Body({ mass: 0});
+
+        this.physicsBody.addShape(heightField);
+        this.physicsHeightFieldShape = heightField;
+
+        this.physicsBody.position.set(
+            -this.heightMap.props.width * heightField.elementSize / 2,
+            0,
+            -this.heightMap.props.height * heightField.elementSize / 2,
+        );
+
         let angle = -Math.PI / 2;
-
-        this.physicsBody.quaternion.setFromAxisAngle(axis, angle);
-    }
-
-    setHeightMap(heightMap) {
-        this.heightMap = heightMap;
-        this.moveTo(new THREE.Vector3(0, 0, 0));
+        this.physicsBody.quaternion.setFromEuler(angle,0, angle);
     }
 
     /**
@@ -90,10 +91,11 @@ class Terrain {
      *
      * Also note that this is computationally expensive, so avoid this as much as possible.
      *
+     * @TODO Instead of moving the whole terrain, generate chunks, load & unload them.
      * @param position The position we want to move to, usually the character's position.
      */
     moveTo(position) {
-        this.mesh.geometry.vertices = this.heightMap.get(position);
+        this.heightMap.adjust(position);
 
         // Move terrain in world-space, centered around position.
         this.mesh.position.set(
@@ -101,6 +103,13 @@ class Terrain {
             0.0,
             -position.z * this.heightMap.props.yZoom
         );
+
+        this.physicsBody.position.set(
+            position.x * this.heightMap.props.xZoom - this.heightMap.props.width * this.physicsHeightFieldShape.elementSize / 2,
+            0,
+            -position.z * this.heightMap.props.yZoom - this.heightMap.props.height * this.physicsHeightFieldShape.elementSize / 2,
+        );
+
 
         // Update vertices and textures.
         // Note that below are computationally expensive tasks.

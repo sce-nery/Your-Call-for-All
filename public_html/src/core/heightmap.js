@@ -1,14 +1,29 @@
-
+import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 class HeightMap {
-    constructor(vertices, noiseProvider, props={
+    constructor(noiseProvider, props = {
+        width: 100,
+        height: 100,
+        widthSegments: 100,
+        heightSegments: 100,
         xZoom: 10,
         yZoom: 10,
         noiseStrength: 2.0
     }) {
-        this.vertices = vertices;
         this.noiseProvider = noiseProvider;
         this.props = props;
+        this.matrix = [];
+
+        // Setup geometry
+        this.geometry = new THREE.PlaneGeometry(
+            this.props.width,
+            this.props.height,
+            this.props.widthSegments,
+            this.props.heightSegments
+        );
+
+        // Setup heights, initial position of the terrain: (0,0,0)
+        this.adjust(new THREE.Vector3(0, 0, 0));
     }
 
     /**
@@ -17,18 +32,30 @@ class HeightMap {
      *          typically would be the position of the character.
      * @returns {*} Adjusted vertex array.
      */
-    get(offset) {
+    adjust(offset) {
+        let matrix = [];
 
-        for (let i = 0; i < this.vertices.length; i++) {
-            let vertex = this.vertices[i];
-            let x = vertex.x / this.props.xZoom;
-            let y = vertex.y / this.props.yZoom;
-            let noise = this.noiseProvider.noise(x + offset.x, y + offset.z) * this.props.noiseStrength;
-            vertex.z = noise;
+        let width = this.props.width;
+        for (let i = 0; i <= width; i++) {
+            matrix.push([]);
         }
 
-        return this.vertices;
+        for (let i = 0; i < this.geometry.vertices.length; i++) {
+
+            let vertex = this.geometry.vertices[i];
+            let x = vertex.x / this.props.xZoom;
+            let y = vertex.y / this.props.yZoom;
+
+            vertex.z = this.noiseProvider.noise(x + offset.x, y + offset.z) * this.props.noiseStrength;
+
+            matrix[Math.floor(i / (width + 1))].push(vertex.z);
+
+
+        }
+
+        this.matrix = matrix;
     }
+
 }
 
 export {HeightMap};
