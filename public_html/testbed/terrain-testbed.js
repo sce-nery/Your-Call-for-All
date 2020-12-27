@@ -98,12 +98,12 @@ function setupScene() {
     // Terrain
     setupTerrain();
 
-    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1.8, 32);
+    const geometry = new THREE.BoxGeometry(0.5, 1.75, 0.5, 1, 1, 1);
     const material = new THREE.MeshStandardMaterial({color: 0xffff00});
-    cylinder = new THREE.Mesh(geometry, material);
-    cylinder.receiveShadow = true;
-    cylinder.castShadow = true;
-    scene.add(cylinder);
+    physicsDemoMesh = new THREE.Mesh(geometry, material);
+    physicsDemoMesh.receiveShadow = true;
+    physicsDemoMesh.castShadow = true;
+    scene.add(physicsDemoMesh);
 
     // Physics
     setupPhysics();
@@ -111,24 +111,28 @@ function setupScene() {
     cannonDebugRenderer = new CannonDebugRenderer(scene, world);
 }
 
-let cylinder;
-let cylinderBody;
+let physicsDemoMesh;
+let physicsDemoBody;
 
 function setupPhysics() {
     world = new CANNON.World();
     world.gravity.set(0, -9.807, 0); // m/s²
     world.broadphase = new CANNON.NaiveBroadphase();
+    world.defaultContactMaterial.contactEquationStiffness = 1e6;
+    world.defaultContactMaterial.contactEquationRegularizationTime = 3;
+    world.allowSleep = true;
     world.solver.iterations = 10;
 
-    let shape = PhysicsUtils.convertThreeGeometryToCannonConvexPolyhedron(cylinder.geometry);
-    cylinderBody = new CANNON.Body({
+    let physicsDemoBodyShape = PhysicsUtils.convertThreeGeometryToCannonConvexPolyhedron(physicsDemoMesh.geometry);
+    physicsDemoBody = new CANNON.Body({
         mass: 5, // kg
         position: new CANNON.Vec3(0, 5, 0), // m
-        shape: shape
+        shape: physicsDemoBodyShape
     });
+    physicsDemoBody.fixedRotation = true;
 
-    // This body practically freezes the browser
-    world.addBody(cylinderBody);
+    // Something wrong with this body, it practically freezes the browser
+    world.addBody(physicsDemoBody);
 
     world.addBody(terrain.physicsBody);
 
@@ -219,8 +223,8 @@ function render() {
     var maxSubSteps = 3;
     world.step(fixedTimeStep, clock.getDelta(), maxSubSteps);
 
-    cylinder.position.copy(cylinderBody.position);
-    cylinder.quaternion.copy(cylinderBody.quaternion);
+    physicsDemoMesh.position.copy(physicsDemoBody.position);
+    physicsDemoMesh.quaternion.copy(physicsDemoBody.quaternion);
 
     cannonDebugRenderer.update();
 
