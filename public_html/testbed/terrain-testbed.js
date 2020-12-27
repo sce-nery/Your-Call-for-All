@@ -14,6 +14,8 @@ import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/Eff
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {BloomPass} from "../vendor/three-js/examples/jsm/postprocessing/BloomPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
+import {threeToCannon} from "../vendor/three-to-cannon.module.js";
+import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 
 let clock;
 
@@ -26,11 +28,14 @@ let stats;
 
 let world;
 
-let prng = new MersenneTwisterPRNG(111);
+let prng = new MersenneTwisterPRNG(111211);
 
 let simplex = new SimplexNoise(prng);
 
 let composer;
+
+let cannonDebugRenderer;
+
 
 function setupSky() {
 
@@ -90,20 +95,56 @@ function setupScene() {
 
     // Terrain
     setupTerrain();
+    terrainController.adjustTerrainForPosition({x:0,y:0,z:0})
+
+    const geometry = new THREE.SphereGeometry(0.75, 10, 10);
+    const material = new THREE.MeshPhongMaterial({color: 0xffff00});
+    sphere = new THREE.Mesh(geometry, material);
+    sphere.receiveShadow= true;
+    sphere.castShadow = true;
+    scene.add(sphere);
 
     // Physics
     setupPhysics();
+    cannonDebugRenderer = new CannonDebugRenderer( scene, world );
 }
+
+let sphere;
+let sphereBody;
 
 function setupPhysics() {
 
     world = new CANNON.World();
-    world.gravity.set(0, 0, -9.807); // m/s²
-    
+    world.gravity.set(0, -9.807, 0); // m/s²
+    world.broadphase = new CANNON.NaiveBroadphase();
+    world.solver.iterations = 10;
 
-    //let ground = new CANNON.Body()
 
-    //let heightField = new CANNON.Heightfield();
+    // Mesh (not recommended).
+    const terrainCannonShape = threeToCannon(terrainController.terrain.mesh, {type: threeToCannon.Type.MESH});
+
+
+    const terrainBody = new CANNON.Body({
+        mass: 0, // kg, 0: static
+        position: new CANNON.Vec3(0, 0, 0), // m
+        shape: terrainCannonShape
+    });
+    var axis = new CANNON.Vec3(1,0,0);
+    var angle = -Math.PI / 2;
+    terrainBody.quaternion.setFromAxisAngle(axis, angle);
+
+    world.addBody(terrainBody);
+
+
+    // Sphere
+
+    var radius = 0.75; // m
+    sphereBody = new CANNON.Body({
+        mass: 50, // kg
+        position: new CANNON.Vec3(0, 4, 0), // m
+        shape: new CANNON.Sphere(radius)
+    });
+    world.addBody(sphereBody);
 
 }
 
@@ -178,7 +219,7 @@ function init() {
 
     setupControls();
 
-    composer = new EffectComposer( renderer );
+    composer = new EffectComposer(renderer);
     let renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
 
@@ -199,17 +240,25 @@ let position = new THREE.Vector3();
 let updateTerrain = true;
 
 function render() {
-    // position.x += 1 / 60 * 0.05;
-    // position.z += 1 / 60 * 0.05;
 
     if (updateTerrain) {
         terrainController.adjustTerrainForPosition(position);
         updateTerrain = false;
     }
 
-    controls.update(clock.getDelta());
+    var fixedTimeStep = 1.0 / 60.0; // seconds
+    var maxSubSteps = 3;
+    world.step(fixedTimeStep, clock.getDelta(), maxSubSteps);
 
+    sphere.position.copy(sphereBody.position);
+    sphere.quaternion.copy(sphereBody.quaternion);
+
+
+    controls.update(clock.getDelta());
     composer.render();
+
+    cannonDebugRenderer.update();
+
 
     stats.update();
 
