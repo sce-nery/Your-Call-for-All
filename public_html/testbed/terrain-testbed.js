@@ -31,7 +31,7 @@ let world;
 
 let prng = new MersenneTwisterPRNG(111);
 
-let simplex = new SimplexNoise(prng);
+let noiseProvider = new SimplexNoise(prng);
 
 let composer;
 
@@ -42,6 +42,7 @@ function setupSky() {
 
     // Add Sky
     skyController = new SkyController(new Sky());
+    skyController.props.inclination = 0.35;
 
     scene.add(skyController.sky);
     scene.add(skyController.sunLight);
@@ -72,7 +73,7 @@ function setupSky() {
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
-    camera.position.set(0, 3, -10);
+    camera.position.set(0, 3, 10);
 }
 
 function setupRenderer() {
@@ -89,8 +90,8 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    //const helper = new THREE.GridHelper(100, 100, 0xffffff, 0xffffff);
-    //scene.add(helper);
+    const helper = new THREE.GridHelper(100, 100, 0xffffff, 0xffffff);
+    scene.add(helper);
 
     // Sky
     setupSky();
@@ -98,7 +99,7 @@ function setupScene() {
     // Terrain
     setupTerrain();
 
-    const geometry = new THREE.BoxGeometry(0.5, 1.75, 0.5, 1, 1, 1);
+    const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
     const material = new THREE.MeshStandardMaterial({color: 0xffff00});
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
@@ -118,7 +119,7 @@ function setupPhysics() {
     world = new CANNON.World();
     world.gravity.set(0, -9.807, 0); // m/s²
     world.broadphase = new CANNON.NaiveBroadphase();
-    world.defaultContactMaterial.contactEquationStiffness = 1e6;
+    world.defaultContactMaterial.contactEquationStiffness = 1e5;
     world.defaultContactMaterial.contactEquationRegularizationTime = 3;
     world.allowSleep = true;
     world.solver.iterations = 10;
@@ -129,7 +130,7 @@ function setupPhysics() {
         position: new CANNON.Vec3(0, 5, 0), // m
         shape: physicsDemoBodyShape
     });
-    physicsDemoBody.fixedRotation = true;
+    physicsDemoBody.allowSleep = true;
 
     // Something wrong with this body, it practically freezes the browser
     world.addBody(physicsDemoBody);
@@ -146,26 +147,23 @@ function setupTerrain() {
     const occlusionMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
     const roughnessMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Roughness.jpg')
 
-    terrain = new Terrain({
+    let heightMap = new HeightMap(noiseProvider, {
         width: 100,
         height: 100,
         widthSegments: 100,
         heightSegments: 100,
+        xZoom: 20,
+        yZoom: 20,
+        noiseStrength: 3.5
+    });
+
+    terrain = new Terrain(heightMap, {
         map: colorMap,
         normalMap: normalMap,
         displacementMap: null,
         occlusionMap: null,
-        roughnessMap: null
+        roughnessMap: roughnessMap
     });
-
-    let heightMap = new HeightMap(terrain.mesh.geometry.vertices, simplex, {
-        xZoom: 20,
-        yZoom: 20,
-        noiseStrength: 1.5
-    });
-
-    terrain.setHeightMap(heightMap);
-    terrain.setupPhysicsBody();
 
     scene.add(terrain.mesh);
 
@@ -210,11 +208,15 @@ function onWindowResize() {
 }
 
 let position = new THREE.Vector3();
-let updateTerrain = true;
+let updateTerrain = false;
 
 function render() {
+    // position.x += 1 / 60 * 0.15;
+    // position.z += 1 / 60 * 0.15;
+    // updateTerrain = true;
 
     if (updateTerrain) {
+        // TODO: Instead of moving the whole terrain, generate chunks, load & unload them.
         terrain.moveTo(position);
         updateTerrain = false;
     }
