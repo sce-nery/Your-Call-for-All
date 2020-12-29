@@ -90,7 +90,7 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    const helper = new THREE.GridHelper(100, 100, 0xffffff, 0xffffff);
+    const helper = new THREE.GridHelper(400, 400, 0xffffff, 0xffffff);
     scene.add(helper);
 
     // Sky
@@ -104,7 +104,7 @@ function setupScene() {
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
-    scene.add(physicsDemoMesh);
+    // scene.add(physicsDemoMesh);
 
     // Physics
     setupPhysics();
@@ -133,40 +133,21 @@ function setupPhysics() {
     physicsDemoBody.allowSleep = true;
 
     // Something wrong with this body, it practically freezes the browser
-    world.addBody(physicsDemoBody);
+    // world.addBody(physicsDemoBody);
 
-    world.addBody(terrain.physicsBody);
+    // world.addBody(terrain.physicsBody);
 
 }
 
 
 function setupTerrain() {
-    const colorMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Color.jpg')
-    const normalMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Normal.jpg')
-    const displacementMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Displacement.jpg')
-    const occlusionMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
-    const roughnessMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Roughness.jpg')
-
     let heightMap = new HeightMap(noiseProvider, {
-        width: 100,
-        height: 100,
-        widthSegments: 100,
-        heightSegments: 100,
-        xZoom: 20,
-        yZoom: 20,
-        noiseStrength: 3.5
+        xZoom: 50,
+        yZoom: 50,
+        noiseStrength: 2.0
     });
 
-    terrain = new Terrain(heightMap, {
-        map: colorMap,
-        normalMap: normalMap,
-        displacementMap: null,
-        occlusionMap: null,
-        roughnessMap: roughnessMap
-    });
-
-    scene.add(terrain.mesh);
-
+    terrain = new Terrain(scene, heightMap, {chunkSize: 100})
 }
 
 
@@ -215,20 +196,20 @@ function render() {
     // position.z += 1 / 60 * 0.15;
     // updateTerrain = true;
 
-    if (updateTerrain) {
-        // TODO: Instead of moving the whole terrain, generate chunks, load & unload them.
-        terrain.moveTo(position);
-        updateTerrain = false;
-    }
+    // if (updateTerrain) {
+    //     // TODO: Instead of moving the whole terrain, generate chunks, load & unload them.
+    //     terrain.moveTo(position);
+    //     updateTerrain = false;
+    // }
 
-    var fixedTimeStep = 1.0 / 60.0; // seconds
-    var maxSubSteps = 3;
-    world.step(fixedTimeStep, clock.getDelta(), maxSubSteps);
+    // var fixedTimeStep = 1.0 / 60.0; // seconds
+    // var maxSubSteps = 3;
+    // world.step(fixedTimeStep, clock.getDelta(), maxSubSteps);
 
-    physicsDemoMesh.position.copy(physicsDemoBody.position);
-    physicsDemoMesh.quaternion.copy(physicsDemoBody.quaternion);
+    // physicsDemoMesh.position.copy(physicsDemoBody.position);
+    // physicsDemoMesh.quaternion.copy(physicsDemoBody.quaternion);
 
-    cannonDebugRenderer.update();
+    // cannonDebugRenderer.update();
 
     controls.update(clock.getDelta());
     composer.render();

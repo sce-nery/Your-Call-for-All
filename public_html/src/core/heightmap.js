@@ -2,60 +2,41 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 class HeightMap {
     constructor(noiseProvider, props = {
-        width: 100,
-        height: 100,
-        widthSegments: 100,
-        heightSegments: 100,
         xZoom: 10,
         yZoom: 10,
         noiseStrength: 2.0
     }) {
         this.noiseProvider = noiseProvider;
         this.props = props;
-        this.matrix = [];
-
-        // Setup geometry
-        this.geometry = new THREE.PlaneGeometry(
-            this.props.width,
-            this.props.height,
-            this.props.widthSegments,
-            this.props.heightSegments
-        );
-
-        // Setup heights, initial position of the terrain: (0,0,0)
-        this.adjust(new THREE.Vector3(0, 0, 0));
     }
 
-    /**
-     * Adjusts its vertices with respect to the noise function.
-     * @param offset The offset to be added to the noise function,
-     *          typically would be the position of the character.
-     * @returns {*} Adjusted vertex array.
-     */
-    adjust(offset) {
-        let matrix = [];
+    sample(width, height, xOffset, yOffset) {
+        if (width  % 2 !== 0 || height % 2 !== 0) {
+            Logger.warn("Width and height values must be divisible by 2");
+            width += width % 2;
+            height += height % 2;
+        }
 
-        let width = this.props.width;
+        let heightMatrix = [];
+
         for (let i = 0; i <= width; i++) {
-            matrix.push([]);
+            heightMatrix.push([]);
+            for (let j = 0; j <= height; j++) {
+                let x = (i - (width  / 2)) + xOffset;
+                let y = (j - (height / 2)) + yOffset;
+                let z = this.probe(x, y);
+                heightMatrix[i].push(z);
+            }
         }
 
-        for (let i = 0; i < this.geometry.vertices.length; i++) {
-
-            let vertex = this.geometry.vertices[i];
-            let x = vertex.x / this.props.xZoom;
-            let y = vertex.y / this.props.yZoom;
-
-            vertex.z = this.noiseProvider.noise(x + offset.x, y + offset.z) * this.props.noiseStrength;
-
-            matrix[Math.floor(i / (width + 1))].push(vertex.z);
-
-
-        }
-
-        this.matrix = matrix;
+        return heightMatrix;
     }
 
+    probe(x, y) {
+        let sampleX = x / this.props.xZoom;
+        let sampleY = y / this.props.yZoom;
+        return this.noiseProvider.noise(sampleX, sampleY) * this.props.noiseStrength;
+    }
 }
 
 export {HeightMap};
