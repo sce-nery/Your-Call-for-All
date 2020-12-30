@@ -6,13 +6,14 @@ import TextureUtils from "../util/texture-utils.js";
 import {randomUUID} from "../util/uuid.js";
 
 class Terrain {
-    constructor(scene, heightMap, props={
+    constructor(scene, heightMap, props = {
         chunkSize: 256
     }) {
         this.scene = scene;
         this.props = props;
         this.heightMap = heightMap;
         this.chunks = {};
+        this.centerMesh = null;
 
         this.loadChunks(new THREE.Vector3());
     }
@@ -20,9 +21,8 @@ class Terrain {
     loadChunks(position) {
 
         const chunkSize = this.props.chunkSize;
-        const chunkSizeHalf = chunkSize / 2;
 
-        let k = (position.x )/ chunkSize;
+        let k = (position.x) / chunkSize;
         let l = ((-position.z)) / chunkSize;
 
         k = Math.round(k);
@@ -49,8 +49,9 @@ class Terrain {
         this.removeChunks();
 
         for (let i = 0; i < chunkOffsets.length; i++) {
+            let chunk = this.addChunk(chunkOffsets[i]);
 
-            this.addChunk(chunkOffsets[i]);
+            if (i === 0) this.centerMesh = chunk.mesh;
         }
 
     }
@@ -81,6 +82,8 @@ class Terrain {
         }
 
         this.scene.add(chunk.mesh);
+
+        return chunk;
     }
 }
 
@@ -110,7 +113,7 @@ class TerrainChunk {
 
         this.material = new THREE.MeshStandardMaterial({
             map: colorMap,
-            bumpMap:  normalMap,
+            bumpMap: normalMap,
             bumpScale: 0.25,
             //displacementMap: this.props.displacementMap,
             //aoMap: this.props.occlusionMap,

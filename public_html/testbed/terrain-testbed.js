@@ -8,7 +8,7 @@ import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {Terrain} from "../src/core/terrain.js";
-import {HeightMap} from "../src/core/heightmap.js";
+import {FractalHeightMap, HeightMap} from "../src/core/heightmap.js";
 import * as CANNON from "../vendor/cannon-es.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
@@ -90,13 +90,8 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    const helper = new THREE.GridHelper(400, 400, 0xffffff, 0xffffff);
-    const helper2 = new THREE.GridHelper(400, 400 / 20, 0xff0000, 0xff0000);
-    helper2.position.y = 5;
-    helper2.position.x = 10;
-    helper2.position.z = 10;
-    scene.add(helper);
-    scene.add(helper2)
+    const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+   // scene.add(helper);
 
     // Sky
     setupSky();
@@ -147,13 +142,15 @@ function setupPhysics() {
 
 
 function setupTerrain() {
-    let heightMap = new HeightMap(noiseProvider, {
-        xZoom: 20,
-        yZoom: 20,
-        noiseStrength: 2.0
-    });
+    // let heightMap = new HeightMap(noiseProvider, {
+    //     xZoom: 20,
+    //     yZoom: 20,
+    //     noiseStrength: 2.0
+    // });
 
-    terrain = new Terrain(scene, heightMap, {chunkSize: 20})
+    let heightMap = new FractalHeightMap(noiseProvider);
+
+    terrain = new Terrain(scene, heightMap, {chunkSize: 128})
 }
 
 let basicControls = {
@@ -215,6 +212,7 @@ function init() {
     composer = new EffectComposer(renderer);
     let renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5,1.0,0.2))
 
     stats = createPerformanceMonitor(document.body);
 
@@ -229,28 +227,9 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let position = new THREE.Vector3();
-let updateTerrain = false;
+let velocity = new THREE.Vector3();
 
 function render() {
-    // position.x += 1 / 60 * 0.15;
-    // position.z += 1 / 60 * 0.15;
-    // updateTerrain = true;
-
-    // if (updateTerrain) {
-    //     // TODO: Instead of moving the whole terrain, generate chunks, load & unload them.
-    //     terrain.moveTo(position);
-    //     updateTerrain = false;
-    // }
-
-    // var fixedTimeStep = 1.0 / 60.0; // seconds
-    // var maxSubSteps = 3;
-    // world.step(fixedTimeStep, clock.getDelta(), maxSubSteps);
-
-    // physicsDemoMesh.position.copy(physicsDemoBody.position);
-    // physicsDemoMesh.quaternion.copy(physicsDemoBody.quaternion);
-
-    // cannonDebugRenderer.update();
 
     let lastPos = physicsDemoMesh.position.clone();
 
@@ -261,6 +240,22 @@ function render() {
         terrain.loadChunks(physicsDemoMesh.position);
     }
 
+    //let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
+    //let intersects = raycaster.intersectObject(terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+    //let distance = 1.75 ;
+    ////new position is higher so you need to move you object upwards
+    //if (distance > intersects[0].distance) {
+    //    physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+    //}
+
+    ////gravity and prevent falling through floor
+    //if (distance >= intersects[0].distance && velocity.y <= 0) {
+    //    velocity.y = 0;
+    //} else if (distance <= intersects[0].distance && velocity.y === 0) {
+    //    velocity.y -= 0.1;
+    //}
+
+    //physicsDemoMesh.translateY(velocity.y);
 
     controls.update(clock.getDelta());
     composer.render();
