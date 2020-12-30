@@ -19,65 +19,37 @@ class Terrain {
 
     loadChunks(position) {
         let offset = new THREE.Vector2(position.x, position.z);
+        this.addChunk(offset);
 
+        offset =  new THREE.Vector2(0, -1 * this.props.chunkSize);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(0, +1 * this.props.chunkSize);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(-1 * this.props.chunkSize, 0);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(1 * this.props.chunkSize, 0);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(-1 * this.props.chunkSize, -1 * this.props.chunkSize);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(1 * this.props.chunkSize, 1 * this.props.chunkSize);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(-1 * this.props.chunkSize, 1 * this.props.chunkSize);
+        this.addChunk(offset);
+
+        offset =  new THREE.Vector2(1 * this.props.chunkSize, -1 * this.props.chunkSize);
+        this.addChunk(offset);
+    }
+
+    addChunk(offset) {
         let heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        let heightData2 = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        let chunk = new TerrainChunk(this.props.chunkSize,  new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
+        let chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
         this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(0, -100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(0, +100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(-100, 0)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(100, 0)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(-100, -100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(100, 100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(-100, 100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        offset =  new THREE.Vector2(100, -100)
-        heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
-
-        this.scene.add(chunk.mesh);
-
-        // offset =  new THREE.Vector2(0, 0)
-        // heightData = this.heightMap.sample(300, 300, offset.x, offset.y);
-        // chunk = new TerrainChunk(300, new THREE.Vector3(offset.x, 10, offset.y), heightData);
-        // this.scene.add(chunk.mesh);
     }
 }
 
@@ -126,8 +98,11 @@ class TerrainChunk {
         let heightMatrix = this.heightData;
         for (let i = 0; i <= this.chunkSize; i++) {
             for (let j = 0; j <= this.chunkSize; j++) {
-                let height = heightMatrix[i][j];
-                this.geometry.vertices[i * (this.chunkSize + 1) + j].z = height;
+                let data = heightMatrix[i][j];
+                const vertex = this.geometry.vertices[i * (this.chunkSize + 1) + j];
+                vertex.x = data.x;
+                vertex.y = data.y;
+                vertex.z = data.z;
             }
         }
 
@@ -140,7 +115,6 @@ class TerrainChunk {
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
-        this.mesh.position.set(this.chunkPosition.x, this.chunkPosition.y,this.chunkPosition.z);
     }
 }
 

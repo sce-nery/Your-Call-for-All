@@ -11,7 +11,7 @@ class HeightMap {
     }
 
     sample(width, height, xOffset, yOffset) {
-        if (width  % 2 !== 0 || height % 2 !== 0) {
+        if (width % 2 !== 0 || height % 2 !== 0) {
             Logger.warn("Width and height values must be divisible by 2");
             width += width % 2;
             height += height % 2;
@@ -22,10 +22,12 @@ class HeightMap {
         for (let i = 0; i <= width; i++) {
             heightMatrix.push([]);
             for (let j = 0; j <= height; j++) {
-                let x = (i - (width  / 2)) + xOffset;
-                let y = (j - (height / 2)) + yOffset;
+                let gX = (i - (width / 2));
+                let gY = (j - (height / 2));
+                let x = gX + xOffset;
+                let y = gY + yOffset;
                 let z = this.probe(x, y);
-                heightMatrix[i].push(z);
+                heightMatrix[i].push({x: x, y: y, z: z});
             }
         }
 
@@ -35,7 +37,9 @@ class HeightMap {
     probe(x, y) {
         let sampleX = x / this.props.xZoom;
         let sampleY = y / this.props.yZoom;
-        return this.noiseProvider.noise(sampleX, sampleY) * this.props.noiseStrength;
+        let height = this.noiseProvider.noise(sampleX, sampleY) * this.props.noiseStrength;
+        console.debug(`(${sampleX}, ${sampleY}) -> ${height}`);
+        return height;
     }
 }
 

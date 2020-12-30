@@ -29,7 +29,7 @@ let stats;
 
 let world;
 
-let prng = new MersenneTwisterPRNG(111);
+let prng = new MersenneTwisterPRNG(11881);
 
 let noiseProvider = new SimplexNoise(prng);
 
@@ -142,12 +142,12 @@ function setupPhysics() {
 
 function setupTerrain() {
     let heightMap = new HeightMap(noiseProvider, {
-        xZoom: 50,
-        yZoom: 50,
+        xZoom: 20,
+        yZoom: 20,
         noiseStrength: 2.0
     });
 
-    terrain = new Terrain(scene, heightMap, {chunkSize: 100})
+    terrain = new Terrain(scene, heightMap, {chunkSize: 50})
 }
 
 
