@@ -18,37 +18,68 @@ class Terrain {
     }
 
     loadChunks(position) {
-        let offset = new THREE.Vector2(position.x, position.z);
-        this.addChunk(offset);
 
-        offset =  new THREE.Vector2(0, -1 * this.props.chunkSize);
-        this.addChunk(offset);
+        const chunkSize = this.props.chunkSize;
+        const chunkSizeHalf = chunkSize / 2;
 
-        offset =  new THREE.Vector2(0, +1 * this.props.chunkSize);
-        this.addChunk(offset);
+        let k = (position.x )/ chunkSize;
+        let l = ((-position.z)) / chunkSize;
 
-        offset =  new THREE.Vector2(-1 * this.props.chunkSize, 0);
-        this.addChunk(offset);
+        k = Math.round(k);
+        l = Math.round(l);
 
-        offset =  new THREE.Vector2(1 * this.props.chunkSize, 0);
-        this.addChunk(offset);
+        let chunkPosition = new THREE.Vector3(
+            chunkSize * k,
+            0,
+            chunkSize * l
+        );
 
-        offset =  new THREE.Vector2(-1 * this.props.chunkSize, -1 * this.props.chunkSize);
-        this.addChunk(offset);
+        let chunkOffsets = [
+            new THREE.Vector2(chunkPosition.x, chunkPosition.z),
+            new THREE.Vector2(chunkPosition.x, chunkPosition.z - chunkSize),
+            new THREE.Vector2(chunkPosition.x, chunkPosition.z + chunkSize),
+            new THREE.Vector2(chunkPosition.x - chunkSize, chunkPosition.z),
+            new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z),
+            new THREE.Vector2(chunkPosition.x - chunkSize, chunkPosition.z - chunkSize),
+            new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z + chunkSize),
+            new THREE.Vector2(chunkPosition.x - chunkSize, chunkPosition.z + chunkSize),
+            new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z - chunkSize),
+        ];
 
-        offset =  new THREE.Vector2(1 * this.props.chunkSize, 1 * this.props.chunkSize);
-        this.addChunk(offset);
+        this.removeChunks();
 
-        offset =  new THREE.Vector2(-1 * this.props.chunkSize, 1 * this.props.chunkSize);
-        this.addChunk(offset);
+        for (let i = 0; i < chunkOffsets.length; i++) {
 
-        offset =  new THREE.Vector2(1 * this.props.chunkSize, -1 * this.props.chunkSize);
-        this.addChunk(offset);
+            this.addChunk(chunkOffsets[i]);
+        }
+
+    }
+
+    removeChunks() {
+        for (let key in this.chunks) {
+            let chunk = this.chunks[key];
+            if (chunk.isActive) {
+                this.scene.remove(chunk.mesh);
+                chunk.isActive = false;
+            }
+        }
     }
 
     addChunk(offset) {
-        let heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-        let chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
+        let chunk;
+        let key = `(${offset.x},${offset.y})`;
+        if (key in this.chunks) {
+            chunk = this.chunks[key];
+            chunk.isActive = true;
+            console.debug(`Found chunk in cache: ${key}`);
+        } else {
+            let heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
+            chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
+            chunk.isActive = true;
+            console.debug(`Creating new chunk: ${key}`);
+            this.chunks[key] = chunk;
+        }
+
         this.scene.add(chunk.mesh);
     }
 }
@@ -100,9 +131,13 @@ class TerrainChunk {
             for (let j = 0; j <= this.chunkSize; j++) {
                 let data = heightMatrix[i][j];
                 const vertex = this.geometry.vertices[i * (this.chunkSize + 1) + j];
+                // Because we are directly setting vertices, transformations will be based
+                // on the global origin instead of the mesh itself, so be careful.
                 vertex.x = data.x;
                 vertex.y = data.y;
-                vertex.z = data.z;
+
+                // Set height
+                vertex.z = data.height;
             }
         }
 

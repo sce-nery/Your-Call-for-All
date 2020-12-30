@@ -17,28 +17,27 @@ class HeightMap {
             height += height % 2;
         }
 
-        let heightMatrix = [];
+        let heightData = [];
 
         for (let i = 0; i <= width; i++) {
-            heightMatrix.push([]);
+            heightData.push([]);
             for (let j = 0; j <= height; j++) {
                 let gX = (i - (width / 2));
                 let gY = (j - (height / 2));
                 let x = gX + xOffset;
                 let y = gY + yOffset;
                 let z = this.probe(x, y);
-                heightMatrix[i].push({x: x, y: y, z: z});
+                heightData[i].push({x: x, y: y, height: z});
             }
         }
 
-        return heightMatrix;
+        return heightData;
     }
 
     probe(x, y) {
         let sampleX = x / this.props.xZoom;
         let sampleY = y / this.props.yZoom;
         let height = this.noiseProvider.noise(sampleX, sampleY) * this.props.noiseStrength;
-        console.debug(`(${sampleX}, ${sampleY}) -> ${height}`);
         return height;
     }
 }

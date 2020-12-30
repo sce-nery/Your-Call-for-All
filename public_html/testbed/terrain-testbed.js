@@ -91,7 +91,12 @@ function setupScene() {
     scene = new THREE.Scene();
 
     const helper = new THREE.GridHelper(400, 400, 0xffffff, 0xffffff);
+    const helper2 = new THREE.GridHelper(400, 400 / 20, 0xff0000, 0xff0000);
+    helper2.position.y = 5;
+    helper2.position.x = 10;
+    helper2.position.z = 10;
     scene.add(helper);
+    scene.add(helper2)
 
     // Sky
     setupSky();
@@ -104,7 +109,8 @@ function setupScene() {
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
-    // scene.add(physicsDemoMesh);
+    physicsDemoMesh.position.set(0, 5, 0);
+    scene.add(physicsDemoMesh);
 
     // Physics
     setupPhysics();
@@ -147,15 +153,50 @@ function setupTerrain() {
         noiseStrength: 2.0
     });
 
-    terrain = new Terrain(scene, heightMap, {chunkSize: 50})
+    terrain = new Terrain(scene, heightMap, {chunkSize: 20})
 }
 
+let basicControls = {
+    horizontalMove: 0,
+    verticalMove: 0
+
+}
 
 function setupControls() {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.movementSpeed = 50;
     controls.lookSpeed = 0.25;
     controls.freeze = true;
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "w") {
+            basicControls.verticalMove = -1.0;
+        }
+        if (event.key === "a") {
+            basicControls.horizontalMove = -1.0;
+        }
+        if (event.key === "s") {
+            basicControls.verticalMove = 1.0;
+        }
+        if (event.key === "d") {
+            basicControls.horizontalMove = 1.0;
+        }
+    });
+
+    document.addEventListener("keyup", function (event) {
+        if (event.key === "w") {
+            basicControls.verticalMove = 0.0;
+        }
+        if (event.key === "a") {
+            basicControls.horizontalMove = 0.0;
+        }
+        if (event.key === "s") {
+            basicControls.verticalMove = 0.0;
+        }
+        if (event.key === "d") {
+            basicControls.horizontalMove = 0.0;
+        }
+    });
 }
 
 function init() {
@@ -210,6 +251,16 @@ function render() {
     // physicsDemoMesh.quaternion.copy(physicsDemoBody.quaternion);
 
     // cannonDebugRenderer.update();
+
+    let lastPos = physicsDemoMesh.position.clone();
+
+    physicsDemoMesh.position.x += basicControls.horizontalMove;
+    physicsDemoMesh.position.z += basicControls.verticalMove;
+
+    if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
+        terrain.loadChunks(physicsDemoMesh.position);
+    }
+
 
     controls.update(clock.getDelta());
     composer.render();
