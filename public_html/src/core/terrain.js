@@ -1,9 +1,5 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import * as CANNON from "../../vendor/cannon-es.js";
-import {BufferGeometry} from "../../vendor/three-js/build/three.module.js";
-import PhysicsUtils from "../util/physics-utils.js";
 import TextureUtils from "../util/texture-utils.js";
-import {randomUUID} from "../util/uuid.js";
 
 class Terrain {
     constructor(scene, heightMap, props = {
@@ -99,19 +95,19 @@ class TerrainChunk {
     }
 
     setupChunkMaterial() {
-        const colorMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Color.jpg')
-        const normalMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Normal.jpg')
-        const displacementMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Displacement.jpg')
-        const occlusionMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
-        const roughnessMap = new THREE.TextureLoader().load('../assets/textures/ground/Ground1_1K_Roughness.jpg')
+        const colorMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Color.jpg')
+        const normalMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Normal.jpg')
+        //const displacementMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Displacement.jpg')
+        //const occlusionMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
+        //const roughnessMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Roughness.jpg')
 
         TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
         TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);
-        TextureUtils.makeRepeating(displacementMap, this.chunkSize, this.chunkSize);
-        TextureUtils.makeRepeating(occlusionMap, this.chunkSize, this.chunkSize);
-        TextureUtils.makeRepeating(roughnessMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(displacementMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(occlusionMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(roughnessMap, this.chunkSize, this.chunkSize);
 
-        this.material = new THREE.MeshStandardMaterial({
+        this.material = new THREE.MeshPhongMaterial({
             map: colorMap,
             bumpMap: normalMap,
             bumpScale: 0.25,
