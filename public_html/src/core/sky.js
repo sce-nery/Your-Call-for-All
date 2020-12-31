@@ -3,20 +3,21 @@ import {lerpColor} from "../util/color.js";
 import {Sky as ThreeSky} from "../../vendor/three-js/examples/jsm/objects/Sky.js";
 
 class Sky {
-    constructor() {
+    constructor(props = {
+        turbidity: 10,
+        rayleigh: 3,
+        mieCoefficient: 0.005,
+        mieDirectionalG: 0.7,
+        inclination: 0.49,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+        azimuth: 0.25,     // Facing front,
+        exposure: 0.5,
+    }) {
         this.skyDome = new ThreeSky();
         this.sunLight = new THREE.DirectionalLight(0xffffff);
         this.sunLight.castShadow = true;
 
-        this.props = {
-            turbidity: 10,
-            rayleigh: 3,
-            mieCoefficient: 0.005,
-            mieDirectionalG: 0.7,
-            inclination: 0.15,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
-            azimuth: 0.25,     // Facing front,
-            exposure: 0.5,
-        }
+        this.props = props;
+        this.skyDome.scale.setScalar(450000);
     }
 
     update() {

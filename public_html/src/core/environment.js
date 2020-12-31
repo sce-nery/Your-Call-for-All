@@ -18,11 +18,24 @@ class Environment {
     }
 
     createSky() {
-        let sky = new Sky();
+        let skyProps = {
+            turbidity: 10,
+            rayleigh: 3,
+            mieCoefficient: 0.005,
+            mieDirectionalG: 0.7,
+            inclination: 0.49,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+            azimuth: 0.25,     // Facing front,
+            exposure: 0.5,
+        }
+        let sky = new Sky(skyProps);
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
         sky.update();
         return sky;
+
+    }
+
+    update(){
 
     }
 
