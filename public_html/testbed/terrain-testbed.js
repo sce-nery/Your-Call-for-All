@@ -17,6 +17,7 @@ import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/Un
 import {threeToCannon} from "../vendor/three-to-cannon.module.js";
 import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 import PhysicsUtils from "../src/util/physics-utils.js";
+import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPass.js";
 
 let clock;
 
@@ -29,7 +30,7 @@ let stats;
 
 let world;
 
-let prng = new MersenneTwisterPRNG(11881);
+let prng = new MersenneTwisterPRNG(111);
 
 let noiseProvider = new SimplexNoise(prng);
 
@@ -142,12 +143,6 @@ function setupPhysics() {
 
 
 function setupTerrain() {
-    // let heightMap = new HeightMap(noiseProvider, {
-    //     xZoom: 20,
-    //     yZoom: 20,
-    //     noiseStrength: 2.0
-    // });
-
     let heightMap = new FractalHeightMap(noiseProvider);
 
     terrain = new Terrain(scene, heightMap, {chunkSize: 128})
@@ -212,7 +207,7 @@ function init() {
     composer = new EffectComposer(renderer);
     let renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5,1.0,0.2))
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2));
 
     stats = createPerformanceMonitor(document.body);
 
@@ -240,22 +235,25 @@ function render() {
         terrain.loadChunks(physicsDemoMesh.position);
     }
 
-    //let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    //let intersects = raycaster.intersectObject(terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
-    //let distance = 1.75 ;
-    ////new position is higher so you need to move you object upwards
-    //if (distance > intersects[0].distance) {
-    //    physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
-    //}
+     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
+     let intersects = raycaster.intersectObject(terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
 
-    ////gravity and prevent falling through floor
-    //if (distance >= intersects[0].distance && velocity.y <= 0) {
-    //    velocity.y = 0;
-    //} else if (distance <= intersects[0].distance && velocity.y === 0) {
-    //    velocity.y -= 0.1;
-    //}
+    if (intersects[0] !== undefined) {
+        let distance = 1.75 ;
+        //new position is higher so you need to move you object upwards
+        if (distance > intersects[0].distance) {
+            physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+        }
 
-    //physicsDemoMesh.translateY(velocity.y);
+        //gravity and prevent falling through floor
+        if (distance >= intersects[0].distance && velocity.y <= 0) {
+            velocity.y = 0;
+        } else if (distance <= intersects[0].distance && velocity.y === 0) {
+            velocity.y -= 0.1;
+        }
+
+        physicsDemoMesh.translateY(velocity.y);
+    }
 
     controls.update(clock.getDelta());
     composer.render();
