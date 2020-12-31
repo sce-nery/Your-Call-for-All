@@ -84,6 +84,8 @@ function setupRenderer() {
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.5;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // default THREE.PCFShadowMap
     document.body.appendChild(renderer.domElement);
 }
 
