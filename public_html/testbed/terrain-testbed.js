@@ -84,6 +84,8 @@ function setupRenderer() {
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.5;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap; // default THREE.PCFShadowMap
     document.body.appendChild(renderer.domElement);
 }
 
@@ -143,7 +145,11 @@ function setupPhysics() {
 
 
 function setupTerrain() {
-    let heightMap = new FractalHeightMap(noiseProvider);
+    let heightMap = new FractalHeightMap(noiseProvider, {
+        octaves: 8,
+        lacunarity: 200,
+        persistence: 9.5
+    });
 
     terrain = new Terrain(scene, heightMap, {chunkSize: 128})
 }
