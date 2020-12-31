@@ -1,4 +1,85 @@
-import * as THREE from '../vendor/three-js/build/three.module.js';
+import {YourCallForAll} from "./core/your-call-for-all.js";
+import * as THREE from "../vendor/three-js/build/three.module.js";
+import {Environment} from "./core/environment.js";
+import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+
+
+window.onload = function () {
+    init();
+    render();
+}
+let controls;
+
+let yourCallForAll;
+let clock;
+let camera, scene, renderer;
+
+
+function init() {
+    clock = new THREE.Clock();
+
+    initCamera();
+    initListeners();
+    initScene();
+    initRenderer();
+
+    yourCallForAll = new YourCallForAll(scene);
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.update();
+    clock.start();
+}
+
+
+function render() {
+    let deltaTime = clock.getDelta();
+    controls.update();
+    yourCallForAll.update(deltaTime);
+
+    renderer.render(scene, camera);
+
+    requestAnimationFrame(render);
+}
+
+
+
+function initCamera() {
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 2000);
+    camera.position.set(10,10, 100);
+
+}
+
+function initListeners() {
+    window.addEventListener('resize', onWindowResize, false);
+}
+
+
+function initRenderer() {
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio(1.0);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    //renderer.outputEncoding = THREE.sRGBEncoding;
+    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    //renderer.toneMappingExposure = 0.5;
+    document.body.appendChild(renderer.domElement);
+}
+
+function initScene() {
+    scene = new THREE.Scene();
+}
+
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+
+
+/*
+* import * as THREE from '../vendor/three-js/build/three.module.js';
 import Stats from "../vendor/stats.module.js";
 import {createPerformanceMonitor} from './util/debug.js';
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
@@ -118,3 +199,4 @@ window.onload = function () {
     Logger.setLevel(debugModeEnabled ? Logger.DEBUG : Logger.WARN);
     init();
 }
+*/
