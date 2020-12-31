@@ -145,7 +145,11 @@ function setupPhysics() {
 
 
 function setupTerrain() {
-    let heightMap = new FractalHeightMap(noiseProvider);
+    let heightMap = new FractalHeightMap(noiseProvider, {
+        octaves: 8,
+        lacunarity: 200,
+        persistence: 9.5
+    });
 
     terrain = new Terrain(scene, heightMap, {chunkSize: 128})
 }
