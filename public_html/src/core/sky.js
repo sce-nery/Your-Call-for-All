@@ -1,12 +1,10 @@
 import * as THREE from '../../vendor/three-js/build/three.module.js';
 import {lerpColor} from "../util/color.js";
+import {Sky as ThreeSky} from "../../vendor/three-js/examples/jsm/objects/Sky.js";
 
-
-class SkyController {
-    constructor(sky) {
-        this.sky = sky;
-        this.sky.scale.setScalar(450000);
-
+class Sky {
+    constructor() {
+        this.skyDome = new ThreeSky();
         this.sunLight = new THREE.DirectionalLight(0xffffff);
         this.sunLight.castShadow = true;
 
@@ -22,7 +20,7 @@ class SkyController {
     }
 
     update() {
-        const uniforms = this.sky.material.uniforms;
+        const uniforms = this.skyDome.material.uniforms;
 
         uniforms["turbidity"].value = this.props.turbidity;
         uniforms["rayleigh"].value = this.props.rayleigh;
@@ -46,4 +44,4 @@ class SkyController {
     }
 }
 
-export {SkyController};
+export { Sky};
