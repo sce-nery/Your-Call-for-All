@@ -1,6 +1,9 @@
 import {YourCallForAll} from "./core/your-call-for-all.js";
 import * as THREE from "../vendor/three-js/build/three.module.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
+import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
+import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 
 window.onload = function () {
@@ -11,16 +14,24 @@ let controls;
 
 let yourCallForAll;
 let clock;
-let camera, scene, renderer;
+let camera, scene, renderer, composer;
 
 
 function init() {
     clock = new THREE.Clock();
 
+
+
+
     initCamera();
     initListeners();
     initScene();
     initRenderer();
+
+    composer = new EffectComposer(renderer);
+    let renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+    //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.3, 0.2));
 
     //let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
     //scene.add(helper);
@@ -37,7 +48,8 @@ function render() {
     controls.update();
     yourCallForAll.update(deltaTime);
 
-    renderer.render(scene, camera);
+    composer.render();
+
 
     requestAnimationFrame(render);
 }
@@ -45,7 +57,7 @@ function render() {
 
 
 function initCamera() {
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 2000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 200000);
     camera.position.set(10,10, 100);
 
 }

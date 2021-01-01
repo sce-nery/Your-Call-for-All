@@ -93,7 +93,7 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+    //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
    // scene.add(helper);
 
     // Sky

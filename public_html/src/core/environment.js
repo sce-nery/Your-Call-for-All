@@ -12,11 +12,12 @@ class Environment {
         this.terrain = this.createTerrain();
         this.sky = this.createSky();
         this.water = this.createWater();
+        //this.scene.fog = new THREE.Fog(0xa0afa0, 200, 400);
     }
 
     createTerrain() {
         let noise = new SimplexNoise(this.prng);
-        let heightMap = new FractalHeightMap(noise, {octaves: 8, lacunarity: 200, persistence: 9.5});
+        let heightMap = new FractalHeightMap(noise, {octaves: 5, lacunarity: 200, persistence: 12.5});
         return new Terrain(this.scene, heightMap, {chunkSize: 200});
     }
 
