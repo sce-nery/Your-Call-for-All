@@ -1,6 +1,5 @@
 import {YourCallForAll} from "./core/your-call-for-all.js";
 import * as THREE from "../vendor/three-js/build/three.module.js";
-import {Environment} from "./core/environment.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
 
@@ -22,6 +21,9 @@ function init() {
     initListeners();
     initScene();
     initRenderer();
+
+    //let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
+    //scene.add(helper);
 
     yourCallForAll = new YourCallForAll(scene);
     controls = new OrbitControls(camera, renderer.domElement);
