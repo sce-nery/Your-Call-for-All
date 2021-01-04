@@ -1,23 +1,30 @@
 import * as THREE from '../vendor/three-js/build/three.module.js';
 
-import {createPerformanceMonitors} from '../src/util/debug.js';
+import {
+    CharacterLoader,
+    Character,
+    CharacterController,
+    CharacterControllerKeyboardInput
+} from '../src/core/character.js';
 import {GUI} from '../vendor/three-js/examples/jsm/libs/dat.gui.module.js';
 
-import {GLTFLoader} from '../vendor/three-js/examples/jsm/loaders/GLTFLoader.js';
-import {FBXLoader} from "../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+import Stats from "../vendor/stats.module.js";
 
 let scene, renderer, camera, stats;
-let model, skeleton, mixer, clock;
+let model, skeleton, clock;
 
 const crossFadeControls = [];
 
-let idleAction, walkAction, runAction;
-let idleWeight, walkWeight, runWeight;
-let actions, settings;
+let settings;
 
-let singleStepMode = false;
-let sizeOfNextStep = 0;
+// Change this to test your model:
+let gltfFilepath = '../assets/models/characters/mocapman_dummy/mocapman.glb';
+
+let character;
+let characterController;
+
+// TODO: Cleanup this file
 
 function init() {
 
@@ -60,43 +67,27 @@ function init() {
     scene.add(grid);
 
     // scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
+    new CharacterLoader(gltfFilepath)
+        .load(function (loadedCharacter) {
+            character = loadedCharacter;
 
-    const loader = new GLTFLoader();
-    loader.load('../assets/models/characters/mocapman_dummy/mocapman.glb', function (gltf) {
-        model = gltf.scene;
-        model.scale.setScalar(100);
-        scene.add(model);
+            characterController = new CharacterController(character, new CharacterControllerKeyboardInput());
 
-        model.traverse(function (object) {
+            model = character.model;
 
-            if (object.isMesh) {
-                object.castShadow = true;
-                object.receiveShadow = true;
-            }
+            model.scale.setScalar(100);
+            scene.add(model);
 
+            skeleton = new THREE.SkeletonHelper(model);
+            skeleton.visible = false;
+            scene.add(skeleton);
+
+            createPanel();
+
+            character.activateAllActions();
+
+            animate();
         });
-
-        skeleton = new THREE.SkeletonHelper(model);
-        skeleton.visible = false;
-        scene.add(skeleton);
-
-        createPanel();
-
-        const animations = gltf.animations;
-
-        mixer = new THREE.AnimationMixer(model);
-
-        idleAction = mixer.clipAction(animations[0]);
-        walkAction = mixer.clipAction(animations[5]);
-        runAction = mixer.clipAction(animations[1]);
-
-        actions = [idleAction, walkAction, runAction];
-
-        activateAllActions();
-
-        animate();
-
-    });
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -109,10 +100,10 @@ function init() {
     controls.target.set(0, 100, 0);
     controls.update();
 
-    stats = createPerformanceMonitors();
+    stats = new Stats();
+    container.appendChild(stats.domElement);
 
     window.addEventListener('resize', onWindowResize, false);
-
 }
 
 function createPanel() {
@@ -120,105 +111,14 @@ function createPanel() {
     const panel = new GUI({width: 310});
 
     const folder1 = panel.addFolder('Visibility');
-    const folder2 = panel.addFolder('Activation/Deactivation');
-    const folder3 = panel.addFolder('Pausing/Stepping');
-    const folder4 = panel.addFolder('Crossfading');
-    const folder5 = panel.addFolder('Blend Weights');
-    const folder6 = panel.addFolder('General Speed');
 
     settings = {
         'show model': true,
-        'show skeleton': false,
-        'deactivate all': deactivateAllActions,
-        'activate all': activateAllActions,
-        'pause/continue': pauseContinue,
-        'make single step': toSingleStepMode,
-        'modify step size': 0.05,
-        'from walk to idle': function () {
-
-            prepareCrossFade(walkAction, idleAction, 1.0);
-
-        },
-        'from idle to walk': function () {
-
-            prepareCrossFade(idleAction, walkAction, 0.5);
-
-        },
-        'from walk to run': function () {
-
-            prepareCrossFade(walkAction, runAction, 2.5);
-
-        },
-        'from run to walk': function () {
-
-            prepareCrossFade(runAction, walkAction, 5.0);
-
-        },
-        'use default duration': true,
-        'set custom duration': 3.5,
-        'modify idle weight': 0.0,
-        'modify walk weight': 1.0,
-        'modify run weight': 0.0,
-        'modify time scale': 1.0
+        'show skeleton': false
     };
 
     folder1.add(settings, 'show model').onChange(showModel);
     folder1.add(settings, 'show skeleton').onChange(showSkeleton);
-    folder2.add(settings, 'deactivate all');
-    folder2.add(settings, 'activate all');
-    folder3.add(settings, 'pause/continue');
-    folder3.add(settings, 'make single step');
-    folder3.add(settings, 'modify step size', 0.01, 0.1, 0.001);
-    crossFadeControls.push(folder4.add(settings, 'from walk to idle'));
-    crossFadeControls.push(folder4.add(settings, 'from idle to walk'));
-    crossFadeControls.push(folder4.add(settings, 'from walk to run'));
-    crossFadeControls.push(folder4.add(settings, 'from run to walk'));
-    folder4.add(settings, 'use default duration');
-    folder4.add(settings, 'set custom duration', 0, 10, 0.01);
-    folder5.add(settings, 'modify idle weight', 0.0, 1.0, 0.01).listen().onChange(function (weight) {
-
-        setWeight(idleAction, weight);
-
-    });
-    folder5.add(settings, 'modify walk weight', 0.0, 1.0, 0.01).listen().onChange(function (weight) {
-
-        setWeight(walkAction, weight);
-
-    });
-    folder5.add(settings, 'modify run weight', 0.0, 1.0, 0.01).listen().onChange(function (weight) {
-
-        setWeight(runAction, weight);
-
-    });
-    folder6.add(settings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
-
-    folder1.open();
-    folder2.open();
-    folder3.open();
-    folder4.open();
-    folder5.open();
-    folder6.open();
-
-    crossFadeControls.forEach(function (control) {
-
-        control.classList1 = control.domElement.parentElement.parentElement.classList;
-        control.classList2 = control.domElement.previousElementSibling.classList;
-
-        control.setDisabled = function () {
-
-            control.classList1.add('no-pointer-events');
-            control.classList2.add('control-disabled');
-
-        };
-
-        control.setEnabled = function () {
-
-            control.classList1.remove('no-pointer-events');
-            control.classList2.remove('control-disabled');
-
-        };
-
-    });
 
 }
 
@@ -270,13 +170,6 @@ function activateAllActions() {
 
 function pauseContinue() {
 
-    if (singleStepMode) {
-
-        singleStepMode = false;
-        unPauseAllActions();
-
-    } else {
-
         if (idleAction.paused) {
 
             unPauseAllActions();
@@ -286,8 +179,6 @@ function pauseContinue() {
             pauseAllActions();
 
         }
-
-    }
 
 }
 
@@ -311,15 +202,6 @@ function unPauseAllActions() {
 
 }
 
-function toSingleStepMode() {
-
-    unPauseAllActions();
-
-    singleStepMode = true;
-    sizeOfNextStep = settings['modify step size'];
-
-}
-
 function prepareCrossFade(startAction, endAction, defaultDuration) {
 
     // Switch default / custom crossfade duration (according to the user's choice)
@@ -328,7 +210,6 @@ function prepareCrossFade(startAction, endAction, defaultDuration) {
 
     // Make sure that we don't go on in singleStepMode, and that all actions are unpaused
 
-    singleStepMode = false;
     unPauseAllActions();
 
     // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
@@ -396,53 +277,11 @@ function executeCrossFade(startAction, endAction, duration) {
 
 // This function is needed, since animationAction.crossFadeTo() disables its start action and sets
 // the start action's timeScale to ((start animation's duration) / (end animation's duration))
-
 function setWeight(action, weight) {
 
     action.enabled = true;
     action.setEffectiveTimeScale(1);
     action.setEffectiveWeight(weight);
-
-}
-
-// Called by the render loop
-
-function updateWeightSliders() {
-
-    settings['modify idle weight'] = idleWeight;
-    settings['modify walk weight'] = walkWeight;
-    settings['modify run weight'] = runWeight;
-
-}
-
-// Called by the render loop
-
-function updateCrossFadeControls() {
-
-    crossFadeControls.forEach(function (control) {
-
-        control.setDisabled();
-
-    });
-
-    if (idleWeight === 1 && walkWeight === 0 && runWeight === 0) {
-
-        crossFadeControls[1].setEnabled();
-
-    }
-
-    if (idleWeight === 0 && walkWeight === 1 && runWeight === 0) {
-
-        crossFadeControls[0].setEnabled();
-        crossFadeControls[2].setEnabled();
-
-    }
-
-    if (idleWeight === 0 && walkWeight === 0 && runWeight === 1) {
-
-        crossFadeControls[3].setEnabled();
-
-    }
 
 }
 
@@ -461,34 +300,10 @@ function animate() {
 
     stats.begin();
 
-    idleWeight = idleAction.getEffectiveWeight();
-    walkWeight = walkAction.getEffectiveWeight();
-    runWeight = runAction.getEffectiveWeight();
-
-    // Update the panel values if weights are modified from "outside" (by crossfadings)
-
-    updateWeightSliders();
-
-    // Enable/disable crossfade controls according to current weight values
-
-    updateCrossFadeControls();
-
     // Get the time elapsed since the last frame, used for mixer update (if not in single step mode)
-
     let mixerUpdateDelta = clock.getDelta();
 
-    // If in single step mode, make one step and then do nothing (until the user clicks again)
-
-    if (singleStepMode) {
-
-        mixerUpdateDelta = sizeOfNextStep;
-        sizeOfNextStep = 0;
-
-    }
-
-    // Update the animation mixer, the stats panel, and render this frame
-
-    mixer.update(mixerUpdateDelta);
+    characterController.update(mixerUpdateDelta);
 
     renderer.render(scene, camera);
 
@@ -499,5 +314,7 @@ function animate() {
 }
 
 window.onload = function () {
+    Logger.useDefaults();
+    Logger.debug("Initializing");
     init();
 }
