@@ -1,8 +1,6 @@
 import * as THREE from '../vendor/three-js/build/three.module.js';
 import {GUI} from '../vendor/three-js/examples/jsm/libs/dat.gui.module.js';
-import {Sky} from '../vendor/three-js/examples/jsm/objects/Sky.js';
 import {createPerformanceMonitor} from "../src/util/debug.js";
-import {SkyController} from "../src/core/sky.js";
 import {MersenneTwisterPRNG} from "../src/math/random.js";
 import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
@@ -18,13 +16,13 @@ import {threeToCannon} from "../vendor/three-to-cannon.module.js";
 import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 import PhysicsUtils from "../src/util/physics-utils.js";
 import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPass.js";
+import {YourCallForAll} from "../src/core/your-call-for-all.js";
 
 let clock;
 
 let camera, scene, renderer, controls;
 
-let terrain;
-let skyController;
+let yourCallForAll;
 
 let stats;
 
@@ -37,40 +35,6 @@ let noiseProvider = new SimplexNoise(prng);
 let composer;
 
 let cannonDebugRenderer;
-
-
-function setupSky() {
-
-    // Add Sky
-    skyController = new SkyController(new Sky());
-    skyController.props.inclination = 0.35;
-
-    scene.add(skyController.sky);
-    scene.add(skyController.sunLight);
-
-
-    /// GUI
-
-    function guiChanged() {
-
-        skyController.update();
-
-        renderer.toneMappingExposure = skyController.props.exposure;
-    }
-
-    const gui = new GUI();
-
-    gui.add(skyController.props, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
-    gui.add(skyController.props, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "inclination", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.props, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.props, "exposure", 0, 1, 0.0001).onChange(guiChanged);
-
-    skyController.update();
-
-}
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
@@ -96,11 +60,8 @@ function setupScene() {
     //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
    // scene.add(helper);
 
-    // Sky
-    setupSky();
+    yourCallForAll = new YourCallForAll(scene);
 
-    // Terrain
-    setupTerrain();
 
     const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
     const material = new THREE.MeshStandardMaterial({color: 0xffff00});
@@ -141,17 +102,6 @@ function setupPhysics() {
 
     // world.addBody(terrain.physicsBody);
 
-}
-
-
-function setupTerrain() {
-    let heightMap = new FractalHeightMap(noiseProvider, {
-        octaves: 8,
-        lacunarity: 200,
-        persistence: 9.5
-    });
-
-    terrain = new Terrain(scene, heightMap, {chunkSize: 128})
 }
 
 let basicControls = {
@@ -231,6 +181,9 @@ function onWindowResize() {
 let velocity = new THREE.Vector3();
 
 function render() {
+    let deltaTime = clock.getDelta();
+
+    yourCallForAll.update(deltaTime);
 
     let lastPos = physicsDemoMesh.position.clone();
 
@@ -238,11 +191,11 @@ function render() {
     physicsDemoMesh.position.z += basicControls.verticalMove;
 
     if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
-        terrain.loadChunks(physicsDemoMesh.position);
+        yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position);
     }
 
      let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-     let intersects = raycaster.intersectObject(terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+     let intersects = raycaster.intersectObject(yourCallForAll.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
 
     if (intersects[0] !== undefined) {
         let distance = 1.75 ;
@@ -261,7 +214,7 @@ function render() {
         physicsDemoMesh.translateY(velocity.y);
     }
 
-    controls.update(clock.getDelta());
+    controls.update(deltaTime);
     composer.render();
 
 
