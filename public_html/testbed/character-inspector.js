@@ -10,6 +10,7 @@ import {GUI} from '../vendor/three-js/examples/jsm/libs/dat.gui.module.js';
 
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import Stats from "../vendor/stats.module.js";
+import * as ASSETS from "../src/core/assets.js";
 
 let scene, renderer, camera, stats;
 let model, skeleton, clock;
@@ -18,13 +19,8 @@ const crossFadeControls = [];
 
 let settings;
 
-// Change this to test your model:
-let gltfFilepath = '../assets/models/characters/mocapman_dummy/mocapman.glb';
-
 let character;
 let characterController;
-
-// TODO: Cleanup this file
 
 function init() {
 
@@ -67,27 +63,6 @@ function init() {
     scene.add(grid);
 
     // scene.add( new THREE.CameraHelper( dirLight.shadow.camera ) );
-    new CharacterLoader(gltfFilepath)
-        .load(function (loadedCharacter) {
-            character = loadedCharacter;
-
-            characterController = new CharacterController(character, new CharacterControllerKeyboardInput());
-
-            model = character.model;
-
-            model.scale.setScalar(100);
-            scene.add(model);
-
-            skeleton = new THREE.SkeletonHelper(model);
-            skeleton.visible = false;
-            scene.add(skeleton);
-
-            createPanel();
-
-            character.activateAllActions();
-
-            animate();
-        });
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -104,6 +79,27 @@ function init() {
     container.appendChild(stats.domElement);
 
     window.addEventListener('resize', onWindowResize, false);
+
+    ASSETS.load().then(function () {
+        character = new Character(ASSETS.AssetMap["MoCapManGLTFModel"]);
+        characterController = new CharacterController(character, new CharacterControllerKeyboardInput());
+
+        model = character.model;
+
+        model.scale.setScalar(100);
+        scene.add(model);
+
+        skeleton = new THREE.SkeletonHelper(model);
+        skeleton.visible = false;
+        scene.add(skeleton);
+
+        createPanel();
+
+        character.activateAllActions();
+
+        animate();
+    });
+
 }
 
 function createPanel() {
@@ -170,15 +166,15 @@ function activateAllActions() {
 
 function pauseContinue() {
 
-        if (idleAction.paused) {
+    if (idleAction.paused) {
 
-            unPauseAllActions();
+        unPauseAllActions();
 
-        } else {
+    } else {
 
-            pauseAllActions();
+        pauseAllActions();
 
-        }
+    }
 
 }
 
