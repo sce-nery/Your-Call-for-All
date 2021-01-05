@@ -4,7 +4,8 @@ import {SimplexNoise} from "../../vendor/three-js/examples/jsm/math/SimplexNoise
 import {Sky} from "./sky.js";
 import {Water} from "../../vendor/three-js/examples/jsm/objects/Water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {Assets} from "./assets.js";
+import {AssetMap} from "./assets.js";
+import {Color} from "../../vendor/three-js/build/three.module.js";
 
 class Environment {
     constructor(scene, prng) {
@@ -48,8 +49,8 @@ class Environment {
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: Assets["WaterNormals"],
-                alpha: 1.0,
+                waterNormals: AssetMap["WaterNormals"],
+                alpha: 0.8,
                 sunDirection: new THREE.Vector3(),
                 sunColor: 0xffffff,
                 waterColor: 0x001e0f,
@@ -64,8 +65,15 @@ class Environment {
 
     }
 
+    updateWater(deltaTime) {
+        this.water.material.uniforms['time'].value += deltaTime;
+        this.water.material.uniforms['sunDirection'].value = this.sky.sunLight.position.clone().negate().toArray();
+        this.water.material.uniforms['sunColor'].value = this.sky.sunLight.color;
+        this.water.material.uniforms['waterColor'].value = new Color(0xad7f00);
+    }
+
     update(deltaTime){
-        this.water.material.uniforms[ 'time' ].value += deltaTime;
+        this.updateWater(deltaTime);
     }
 
 }

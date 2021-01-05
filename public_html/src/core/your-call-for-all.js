@@ -8,9 +8,6 @@ import * as ASSETS from "./assets.js";
 class YourCallForAll {
 
     constructor(scene) {
-        // Loading assets
-        ASSETS.load();
-
         this.scene = scene;
 
         this.prng = new MersenneTwisterPRNG(111); // prng: pseudo-random number generator

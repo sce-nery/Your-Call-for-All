@@ -1,6 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
-import {Assets} from "./assets.js";
+import {AssetMap} from "./assets.js";
 
 class Terrain {
     constructor(scene, heightMap, props = {
@@ -96,8 +96,8 @@ class TerrainChunk {
     }
 
     setupChunkMaterial() {
-        let colorMap = Assets["Ground1_Color"];
-        let normalMap = Assets["Ground1_Normal"];
+        let colorMap = AssetMap["Ground1_Color"];
+        let normalMap = AssetMap["Ground1_Normal"];
 
         TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
         TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);

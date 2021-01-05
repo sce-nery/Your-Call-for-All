@@ -4,11 +4,11 @@ import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitContr
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
+import * as ASSETS from "./core/assets.js";
 
 
 window.onload = function () {
     init();
-    render();
 }
 let controls;
 
@@ -36,10 +36,14 @@ function init() {
     //let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
     //scene.add(helper);
 
-    yourCallForAll = new YourCallForAll(scene);
+    ASSETS.load().then(function () {
+        yourCallForAll = new YourCallForAll(scene);
+        clock.start();
+        render();
+    })
+
     controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
-    clock.start();
 }
 
 
