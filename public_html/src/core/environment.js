@@ -64,8 +64,8 @@ class Environment {
 
     }
 
-    update(){
-        this.water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+    update(deltaTime){
+        this.water.material.uniforms[ 'time' ].value += deltaTime;
     }
 
 }
