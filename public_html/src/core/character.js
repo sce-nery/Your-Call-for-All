@@ -52,25 +52,6 @@ class Character {
 
 }
 
-
-class CharacterLoader {
-    constructor(gltfFilepath) {
-        this.gltfFilepath = gltfFilepath;
-    }
-
-    load(completionCallback) {
-        const loader = new GLTFLoader();
-        let filepath = this.gltfFilepath;
-        loader.load(filepath, function (gltf) {
-            Logger.debug("GLTF file loaded from " + filepath);
-
-            let character = new Character(gltf);
-
-            completionCallback(character);
-        });
-    }
-}
-
 class CharacterController {
     constructor(character, input) {
         this.character = character;
