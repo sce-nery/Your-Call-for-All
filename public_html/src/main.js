@@ -33,8 +33,9 @@ function init() {
     composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
-    //let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
-    //scene.add(helper);
+    // let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
+    // helper.position.y = 1.0;
+    // scene.add(helper);
 
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
@@ -51,6 +52,7 @@ function render() {
     let deltaTime = clock.getDelta();
     controls.update();
     yourCallForAll.update(deltaTime);
+    //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
     composer.render();
 
@@ -75,6 +77,7 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    // For some reason, these break the water color
     //renderer.outputEncoding = THREE.sRGBEncoding;
     //renderer.toneMapping = THREE.ACESFilmicToneMapping;
     //renderer.toneMappingExposure = 0.5;

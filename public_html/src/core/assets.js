@@ -1,4 +1,3 @@
-import {Character, CharacterLoader} from "./character.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 

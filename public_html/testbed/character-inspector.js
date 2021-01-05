@@ -1,7 +1,6 @@
 import * as THREE from '../vendor/three-js/build/three.module.js';
 
 import {
-    CharacterLoader,
     Character,
     CharacterController,
     CharacterControllerKeyboardInput
