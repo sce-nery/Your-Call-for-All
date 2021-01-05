@@ -4,6 +4,7 @@ import {SimplexNoise} from "../../vendor/three-js/examples/jsm/math/SimplexNoise
 import {Sky} from "./sky.js";
 import {Water} from "../../vendor/three-js/examples/jsm/objects/Water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {Assets} from "./assets.js";
 
 class Environment {
     constructor(scene, prng) {
@@ -24,10 +25,10 @@ class Environment {
     createSky() {
         let skyProps = {
             turbidity: 10,
-            rayleigh: 3,
+            rayleigh: 1,
             mieCoefficient: 0.005,
             mieDirectionalG: 0.7,
-            inclination: 0.49,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+            inclination: 0.39,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
             azimuth: 0.25,     // Facing front,
             exposure: 0.5,
         }
@@ -47,11 +48,7 @@ class Environment {
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: new THREE.TextureLoader().load( './assets/textures/water/waternormals.jpg', function ( texture ) {
-
-                    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-                } ),
+                waterNormals: Assets["WaterNormals"],
                 alpha: 1.0,
                 sunDirection: new THREE.Vector3(),
                 sunColor: 0xffffff,

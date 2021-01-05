@@ -1,5 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
+import {Assets} from "./assets.js";
 
 class Terrain {
     constructor(scene, heightMap, props = {
@@ -95,11 +96,8 @@ class TerrainChunk {
     }
 
     setupChunkMaterial() {
-        const colorMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Color.jpg')
-        const normalMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Normal.jpg')
-        //const displacementMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Displacement.jpg')
-        //const occlusionMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_AmbientOcclusion.jpg')
-        //const roughnessMap = new THREE.TextureLoader().load('./assets/textures/ground/Ground1_1K_Roughness.jpg')
+        let colorMap = Assets["Ground1_Color"];
+        let normalMap = Assets["Ground1_Normal"];
 
         TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
         TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);
