@@ -1,5 +1,3 @@
-import * as THREE from "../../vendor/three-js/build/three.module.js";
-
 class HeightMap {
     constructor(noiseProvider, props = {
         xZoom: 10,

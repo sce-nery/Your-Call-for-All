@@ -1,4 +1,3 @@
-import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 class Character {
@@ -52,25 +51,6 @@ class Character {
 
 }
 
-
-class CharacterLoader {
-    constructor(gltfFilepath) {
-        this.gltfFilepath = gltfFilepath;
-    }
-
-    load(completionCallback) {
-        const loader = new GLTFLoader();
-        let filepath = this.gltfFilepath;
-        loader.load(filepath, function (gltf) {
-            Logger.debug("GLTF file loaded from " + filepath);
-
-            let character = new Character(gltf);
-
-            completionCallback(character);
-        });
-    }
-}
-
 class CharacterController {
     constructor(character, input) {
         this.character = character;
@@ -86,7 +66,7 @@ class CharacterController {
             this.character.actionMap["Turn Right"].play();
         }
         if (this.input.keys.moveForward) {
-           this.character.actionMap["Walking"].play();
+            this.character.actionMap["Walking"].play();
         }
         if (this.input.keys.moveBackward) {
             //this.character.actionMap["Walking"].play();
@@ -111,26 +91,21 @@ class CharacterControllerKeyboardInput {
 
     onInputReceived(event, state) {
         Logger.debug("Character controller keyboard input: " + event.key);
-        if (event.key === "w" || event.key === "ArrowUp")
-        {
+        if (event.key === "w" || event.key === "ArrowUp") {
             this.keys.moveForward = state;
         }
-        if (event.key === "a" || event.key === "ArrowLeft")
-        {
+        if (event.key === "a" || event.key === "ArrowLeft") {
             this.keys.moveLeft = state;
         }
-        if (event.key === "s" || event.key === "ArrowDown")
-        {
+        if (event.key === "s" || event.key === "ArrowDown") {
             this.keys.moveBackward = state;
         }
-        if (event.key === "d" || event.key === "ArrowRight")
-        {
+        if (event.key === "d" || event.key === "ArrowRight") {
             this.keys.moveRight = state;
         }
     }
 }
 
 export {Character};
-export {CharacterLoader};
 export {CharacterController};
 export {CharacterControllerKeyboardInput};

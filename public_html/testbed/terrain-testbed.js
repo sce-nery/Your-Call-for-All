@@ -1,8 +1,6 @@
 import * as THREE from '../vendor/three-js/build/three.module.js';
 import {GUI} from '../vendor/three-js/examples/jsm/libs/dat.gui.module.js';
-import {Sky} from '../vendor/three-js/examples/jsm/objects/Sky.js';
 import {createPerformanceMonitor} from "../src/util/debug.js";
-import {SkyController} from "../src/core/sky.js";
 import {MersenneTwisterPRNG} from "../src/math/random.js";
 import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
@@ -18,13 +16,15 @@ import {threeToCannon} from "../vendor/three-to-cannon.module.js";
 import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 import PhysicsUtils from "../src/util/physics-utils.js";
 import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPass.js";
+import {YourCallForAll} from "../src/core/your-call-for-all.js";
+import * as ASSETS from "../src/core/assets.js";
+import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
 
 let clock;
 
 let camera, scene, renderer, controls;
 
-let terrain;
-let skyController;
+let yourCallForAll;
 
 let stats;
 
@@ -38,40 +38,6 @@ let composer;
 
 let cannonDebugRenderer;
 
-
-function setupSky() {
-
-    // Add Sky
-    skyController = new SkyController(new Sky());
-    skyController.props.inclination = 0.35;
-
-    scene.add(skyController.sky);
-    scene.add(skyController.sunLight);
-
-
-    /// GUI
-
-    function guiChanged() {
-
-        skyController.update();
-
-        renderer.toneMappingExposure = skyController.props.exposure;
-    }
-
-    const gui = new GUI();
-
-    gui.add(skyController.props, "turbidity", 0.0, 100.0, 0.1).onChange(guiChanged);
-    gui.add(skyController.props, "rayleigh", 0.0, 100.0, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "mieCoefficient", 0.0, 0.1, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "mieDirectionalG", 0.0, 1, 0.001).onChange(guiChanged);
-    gui.add(skyController.props, "inclination", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.props, "azimuth", 0, 1, 0.0001).onChange(guiChanged);
-    gui.add(skyController.props, "exposure", 0, 1, 0.0001).onChange(guiChanged);
-
-    skyController.update();
-
-}
-
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
     camera.position.set(0, 3, 10);
@@ -81,9 +47,10 @@ function setupRenderer() {
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+    // These somehow break the water colour
+    //renderer.outputEncoding = THREE.sRGBEncoding;
+    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    //renderer.toneMappingExposure = 0.5;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap; // default THREE.PCFShadowMap
     document.body.appendChild(renderer.domElement);
@@ -93,14 +60,9 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
-   // scene.add(helper);
+    // const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+    // scene.add(helper);
 
-    // Sky
-    setupSky();
-
-    // Terrain
-    setupTerrain();
 
     const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
     const material = new THREE.MeshStandardMaterial({color: 0xffff00});
@@ -143,17 +105,6 @@ function setupPhysics() {
 
 }
 
-
-function setupTerrain() {
-    let heightMap = new FractalHeightMap(noiseProvider, {
-        octaves: 8,
-        lacunarity: 200,
-        persistence: 9.5
-    });
-
-    terrain = new Terrain(scene, heightMap, {chunkSize: 128})
-}
-
 let basicControls = {
     horizontalMove: 0,
     verticalMove: 0
@@ -161,10 +112,20 @@ let basicControls = {
 }
 
 function setupControls() {
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.movementSpeed = 50;
-    controls.lookSpeed = 0.25;
-    controls.freeze = true;
+
+    controls = new PointerLockControls(camera, document.body);
+
+    scene.add(controls.getObject());
+    document.addEventListener( 'click', function () {
+
+        controls.lock();
+
+    }, false );
+
+    //controls = new OrbitControls(camera, renderer.domElement);
+    // controls.movementSpeed = 50;
+    //controls.lookSpeed = 0.25;
+    // controls.freeze = true;
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "w") {
@@ -200,7 +161,6 @@ function setupControls() {
 function init() {
 
     clock = new THREE.Clock();
-    clock.start();
 
     setupCamera();
 
@@ -213,11 +173,17 @@ function init() {
     composer = new EffectComposer(renderer);
     let renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2));
+    // composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2));
 
     stats = createPerformanceMonitor(document.body);
 
     window.addEventListener('resize', onWindowResize, false);
+
+    ASSETS.load().then(function () {
+        yourCallForAll = new YourCallForAll(scene);
+        clock.start();
+        render();
+    })
 }
 
 function onWindowResize() {
@@ -231,21 +197,32 @@ function onWindowResize() {
 let velocity = new THREE.Vector3();
 
 function render() {
+    let deltaTime = clock.getDelta();
+
+    yourCallForAll.update(deltaTime);
 
     let lastPos = physicsDemoMesh.position.clone();
 
-    physicsDemoMesh.position.x += basicControls.horizontalMove;
-    physicsDemoMesh.position.z += basicControls.verticalMove;
+    let physicsDemoMeshVelocity = new THREE.Vector3();
+    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.1;
+    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.1;
+
+    physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
+    physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
+
+    controls.moveRight(physicsDemoMeshVelocity.x);
+    controls.moveForward(-physicsDemoMeshVelocity.z);
+    controls.getObject().position.y = physicsDemoMesh.position.y + 2;
 
     if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
-        terrain.loadChunks(physicsDemoMesh.position);
+        yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position);
     }
 
-     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-     let intersects = raycaster.intersectObject(terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+    let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
+    let intersects = raycaster.intersectObject(yourCallForAll.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
 
     if (intersects[0] !== undefined) {
-        let distance = 1.75 ;
+        let distance = 1.75;
         //new position is higher so you need to move you object upwards
         if (distance > intersects[0].distance) {
             physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
@@ -258,10 +235,9 @@ function render() {
             velocity.y -= 0.1;
         }
 
-        physicsDemoMesh.translateY(velocity.y);
+        physicsDemoMesh.translateY(physicsDemoMeshVelocity.y);
     }
 
-    controls.update(clock.getDelta());
     composer.render();
 
 
@@ -274,6 +250,4 @@ window.onload = function () {
     init();
 
     document.getElementById("loading-label").remove();
-
-    render();
 }
