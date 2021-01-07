@@ -6,7 +6,7 @@ import {Water} from "../../vendor/three-js/examples/jsm/objects/Water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {Color} from "../../vendor/three-js/build/three.module.js";
 import {AssetMap} from "./assets.js";
-import {lerpColor} from "../util/color.js";
+import {LinearInterpolator} from "../math/math.js";
 
 class Environment {
     constructor(scene, prng) {
@@ -73,7 +73,7 @@ class Environment {
         this.water.material.uniforms['time'].value += deltaTime / 2.0;
         this.water.material.uniforms['sunDirection'].value = this.sky.sunLight.position.clone().negate();
         this.water.material.uniforms['sunColor'].value = this.sky.sunLight.color;
-        this.water.material.uniforms['waterColor'].value = new Color(lerpColor(0xad7f00, 0x001e0f, this.healthFactor));
+        this.water.material.uniforms['waterColor'].value = new Color(LinearInterpolator.color(0xad7f00, 0x001e0f, this.healthFactor));
     }
 
     update(deltaTime) {

@@ -1,6 +1,6 @@
 import * as THREE from '../../vendor/three-js/build/three.module.js';
-import {lerpColor} from "../util/color.js";
 import {Sky as ThreeSky} from "../../vendor/three-js/examples/jsm/objects/Sky.js";
+import {LinearInterpolator} from "../math/math.js";
 
 class Sky {
     constructor(props = {
@@ -41,7 +41,7 @@ class Sky {
 
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
-        this.sunLight.color.set(lerpColor(0xffffff,  0xfdb55e, amount));
+        this.sunLight.color.set(LinearInterpolator.color(0xffffff,  0xfdb55e, amount));
     }
 }
 
