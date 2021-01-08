@@ -96,7 +96,7 @@ function render() {
 
 
 function initCamera() {
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 200000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
     camera.position.set(10,10, 100);
 
 }
