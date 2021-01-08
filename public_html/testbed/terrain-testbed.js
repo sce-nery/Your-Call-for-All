@@ -19,6 +19,7 @@ import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPas
 import {YourCallForAll} from "../src/core/your-call-for-all.js";
 import * as ASSETS from "../src/core/assets.js";
 import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
+import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
 let clock;
 
@@ -113,19 +114,7 @@ let basicControls = {
 
 function setupControls() {
 
-    controls = new PointerLockControls(camera, document.body);
-
-    scene.add(controls.getObject());
-    document.addEventListener( 'click', function () {
-
-        controls.lock();
-
-    }, false );
-
-    //controls = new OrbitControls(camera, renderer.domElement);
-    // controls.movementSpeed = 50;
-    //controls.lookSpeed = 0.25;
-    // controls.freeze = true;
+     controls = new MapControls(camera, renderer.domElement);
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "w") {
@@ -204,15 +193,11 @@ function render() {
     let lastPos = physicsDemoMesh.position.clone();
 
     let physicsDemoMeshVelocity = new THREE.Vector3();
-    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.1;
-    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.1;
+    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
+    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
 
     physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
     physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
-
-    controls.moveRight(physicsDemoMeshVelocity.x);
-    controls.moveForward(-physicsDemoMeshVelocity.z);
-    controls.getObject().position.y = physicsDemoMesh.position.y + 2;
 
     if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
         yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position);
