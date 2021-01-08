@@ -1,11 +1,13 @@
-import {YourCallForAll} from "./core/your-call-for-all.js";
+import {YourCallForAll} from "../src/core/your-call-for-all.js";
 import * as THREE from "../vendor/three-js/build/three.module.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
-import * as ASSETS from "./core/assets.js";
-
+import * as ASSETS from "../src/core/assets.js";
+import {Tree} from "../src/core/tree.js";
+import {AssetMap} from "../src/core/assets.js";
+import {SkeletonUtils} from "../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 window.onload = function () {
     init();
@@ -39,6 +41,37 @@ function init() {
 
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
+        let tree1 = new Tree(AssetMap["TreeGLTFModel"]);
+        scene.add(tree1.model);
+
+
+        const clonedScene = SkeletonUtils.clone(AssetMap["TreeGLTFModel"].scene);
+        const root = new THREE.Object3D();
+        root.add(clonedScene);
+
+        root.position.z = 10;
+        root.position.x = 50;
+        scene.add(root);
+
+        let tree3 = new Tree(AssetMap["TreeGLTFModel3"]);
+        tree3.model.position.x=-10;
+        tree3.model.position.y=2;
+        tree3.model.scale.set(0.02,0.02,0.02);
+        scene.add(tree3.model);
+
+        let tree4 = new Tree(AssetMap["TreeGLTFModel4"]);
+        tree4.model.position.x=-10;
+        tree4.model.position.y=4;
+        tree4.model.position.z=35;
+        tree4.model.scale.set(0.01,0.01,0.01);
+        scene.add(tree4.model);
+
+        let tree5 = new Tree(AssetMap["TreeGLTFModel5"]);
+        tree5.model.position.x=-10;
+        tree5.model.position.y=4;
+        tree5.model.position.z=45;
+        tree5.model.scale.set(0.01,0.01,0.01);
+        scene.add(tree5.model);
         clock.start();
         render();
     })
@@ -86,6 +119,7 @@ function initRenderer() {
 
 function initScene() {
     scene = new THREE.Scene();
+
 }
 
 
