@@ -15,7 +15,11 @@ class Terrain {
         this.loadChunks(new THREE.Vector3());
     }
 
-    loadChunks(position) {
+    loadChunks(position, purgeCache=false) {
+        if (purgeCache) {
+            this.removeChunks();
+            this.chunks = {};
+        }
 
         const chunkSize = this.props.chunkSize;
 
@@ -108,7 +112,7 @@ class TerrainChunk {
         this.material = new THREE.MeshPhongMaterial({
             map: colorMap,
             bumpMap: normalMap,
-            bumpScale: 0.25,
+            bumpScale: 0.85,
             //displacementMap: this.props.displacementMap,
             //aoMap: this.props.occlusionMap,
             //roughnessMap: this.props.roughnessMap,
