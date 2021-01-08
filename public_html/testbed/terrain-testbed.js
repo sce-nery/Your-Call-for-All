@@ -39,7 +39,7 @@ let composer;
 let cannonDebugRenderer;
 
 function setupCamera() {
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 2000000);
     camera.position.set(0, 3, 10);
 }
 
