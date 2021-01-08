@@ -1,1 +1,0 @@
-buraya tree modelleri gelicek.

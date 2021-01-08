@@ -1,5 +1,5 @@
-import * as THREE from "../../../vendor/three-js/build/three.module.js";
-import {GLTFLoader} from "../../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 
 
 class Tree {
@@ -53,24 +53,4 @@ class Tree {
 
 }
 
-
-
-
-class TreeLoader {
-    constructor(gltfFilepath) {
-        this.gltfFilepath = gltfFilepath;
-    }
-
-    load(completionCallback) {
-        const loader = new GLTFLoader();
-        let filepath = this.gltfFilepath;
-        loader.load(filepath, function (gltf) {
-            Logger.debug("GLTF file loaded from " + filepath);
-
-            let tree = new Tree(gltf);
-
-            completionCallback(tree);
-        });
-    }
-}
 export{Tree};
