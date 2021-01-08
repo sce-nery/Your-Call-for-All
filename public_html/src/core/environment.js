@@ -1,5 +1,5 @@
 import {Terrain} from "./terrain.js";
-import {FractalHeightMap} from "./heightmap.js";
+import {FractalBrownianMotionHeightMap, HybridMultifractalHeightMap} from "./heightmap.js";
 import {SimplexNoise} from "../../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {Sky} from "./sky.js";
 import {Water} from "../../vendor/three-js/examples/jsm/objects/Water.js";
@@ -7,27 +7,44 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {Color} from "../../vendor/three-js/build/three.module.js";
 import {AssetMap} from "./assets.js";
 import {LinearInterpolator} from "../math/math.js";
+import {MersenneTwisterPRNG} from "../math/random.js";
 
 class Environment {
-    constructor(scene, prng) {
-        this.prng = prng;
+    constructor(scene, seed) {
+
+        this.seed = seed;
+        this.setupPRNG();
+
         this.scene = scene;
 
-        this.terrain = this.createTerrain();
-        this.sky = this.createSky();
-        this.water = this.createWater();
+        this.setupTerrain();
+        this.setupSky();
+        this.setupWater();
 
-        this.healthFactor = 0.0;
+        this.healthFactor = 1.0;
         //this.scene.fog = new THREE.Fog(0xa0afa0, 200, 400);
     }
 
-    createTerrain() {
-        let noise = new SimplexNoise(this.prng);
-        let heightMap = new FractalHeightMap(noise, {octaves: 8, lacunarity: 300, persistence: 10.0});
-        return new Terrain(this.scene, heightMap, {chunkSize: 200});
+    setupPRNG() {
+        this.prng = new MersenneTwisterPRNG(this.seed);
     }
 
-    createSky() {
+    setupTerrain() {
+        let noise = new SimplexNoise(this.prng);
+        // let heightMap = new FractalBrownianMotionHeightMap(noise, {octaves: 8, lacunarity: 300, persistence: 10.0});
+        let heightMap = new HybridMultifractalHeightMap(noise, {
+            octaves: 8,
+            lacunarity: 2,  // Normally, higher the lacunarity smoother the terrain, but in this implementation, its the opposite.
+            // See also: https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
+            noiseStrength: 10.0,
+            heightOffset: -5.0,
+            exaggeration: 1.0,
+            hurstExponent: 0.25
+        });
+        this.terrain = new Terrain(this.scene, heightMap, {chunkSize: 200});
+    }
+
+    setupSky() {
         let skyProps = {
             turbidity: 10,
             rayleigh: 1,
@@ -41,11 +58,10 @@ class Environment {
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
         sky.update();
-        return sky;
-
+        this.sky = sky;
     }
 
-    createWater() {
+    setupWater() {
         const waterGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
         let water = new Water(
@@ -54,7 +70,7 @@ class Environment {
                 textureWidth: 512,
                 textureHeight: 512,
                 waterNormals: AssetMap["WaterNormals"],
-                alpha: 1.0,
+                alpha: 0.2,
                 sunDirection: new THREE.Vector3(),
                 sunColor: 0xffffff,
                 waterColor: 0x001e0f,
@@ -64,8 +80,10 @@ class Environment {
         );
 
         water.rotation.x = -Math.PI / 2;
+        
         this.scene.add(water);
-        return water;
+
+        this.water = water;
 
     }
 
