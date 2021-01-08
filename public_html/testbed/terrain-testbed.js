@@ -6,7 +6,7 @@ import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {Terrain} from "../src/core/terrain.js";
-import {FractalHeightMap, HeightMap} from "../src/core/heightmap.js";
+import {FractalBrownianMotionHeightMap, HeightMap, HybridMultifractalHeightMap} from "../src/core/heightmap.js";
 import * as CANNON from "../vendor/cannon-es.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
@@ -19,12 +19,13 @@ import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPas
 import {YourCallForAll} from "../src/core/your-call-for-all.js";
 import * as ASSETS from "../src/core/assets.js";
 import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
+import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
 let clock;
 
 let camera, scene, renderer, controls;
 
-let yourCallForAll;
+let ycfa;
 
 let stats;
 
@@ -35,11 +36,13 @@ let prng = new MersenneTwisterPRNG(111);
 let noiseProvider = new SimplexNoise(prng);
 
 let composer;
+let bloomPass;
+let bokehPass;
 
 let cannonDebugRenderer;
 
 function setupCamera() {
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 2000000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 2000000);
     camera.position.set(0, 3, 10);
 }
 
@@ -113,19 +116,7 @@ let basicControls = {
 
 function setupControls() {
 
-    controls = new PointerLockControls(camera, document.body);
-
-    scene.add(controls.getObject());
-    document.addEventListener( 'click', function () {
-
-        controls.lock();
-
-    }, false );
-
-    //controls = new OrbitControls(camera, renderer.domElement);
-    // controls.movementSpeed = 50;
-    //controls.lookSpeed = 0.25;
-    // controls.freeze = true;
+    controls = new MapControls(camera, renderer.domElement);
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "w") {
@@ -173,17 +164,78 @@ function init() {
     composer = new EffectComposer(renderer);
     let renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
-    // composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2));
+
+    bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2);
+    bloomPass.enabled = false;
+    composer.addPass(bloomPass);
 
     stats = createPerformanceMonitor(document.body);
 
     window.addEventListener('resize', onWindowResize, false);
 
     ASSETS.load().then(function () {
-        yourCallForAll = new YourCallForAll(scene);
+        ycfa = new YourCallForAll(scene);
+        ycfa.environment.props.healthFactor = 1.0;
+        initGUI();
         clock.start();
         render();
     })
+}
+
+function initGUI() {
+
+    const gui = new GUI({width: 310});
+
+    let seedChanged = function () {
+        ycfa.environment.terrain.removeChunks();
+        ycfa.environment.setupPRNG();
+        ycfa.environment.terrain.heightMap.noiseProvider = new SimplexNoise(ycfa.environment.prng);
+        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position,true);
+    }
+    gui.add(ycfa.environment, "seed", 1, 10000, 1).onFinishChange(seedChanged);
+
+    const terrainFolder = gui.addFolder("terrain")
+
+    terrainFolder.add(ycfa.environment.terrain.props, "chunkSize", 10, 400, 1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "zoom", 1, 1000, 1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "octaves", 2, 256, 1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "lacunarity", 0, 100, 0.1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "noiseStrength", 1.0, 100.0, 0.1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "heightOffset", -20.0, 20.0, 0.1);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "exaggeration", 1.0, 3.0, 0.001);
+    terrainFolder.add(ycfa.environment.terrain.heightMap.props, "hurstExponent", 0.01, 1.0, 0.001);
+    let button = {
+        regenerate: function () {
+            console.log("Regenerating...")
+            ycfa.environment.terrain.removeChunks();
+            ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
+        }
+    };
+    terrainFolder.add(button, 'regenerate');
+
+
+    const skyFolder = gui.addFolder("sky")
+
+    let skyUpdate = function () {
+        ycfa.environment.sky.update();
+    }
+
+    skyFolder.add(ycfa.environment.sky.props, "inclination", 0.0, 1.0, 0.01).onChange(skyUpdate);
+    skyFolder.add(ycfa.environment.sky.props, "turbidity", 0.0, 100.0, 0.01).onChange(skyUpdate);
+    skyFolder.add(ycfa.environment.sky.props, "mieCoefficient", -0.01, 0.01, 0.00001).onChange(skyUpdate);
+    skyFolder.add(ycfa.environment.sky.props, "mieDirectionalG", -1.4, 1.4, 0.00001).onChange(skyUpdate);
+    skyFolder.add(ycfa.environment.sky.props, "azimuth", 0, 1, 0.001).onChange(skyUpdate);
+
+    const envFolder = gui.addFolder("environment")
+
+    envFolder.add(ycfa.environment.props, "healthFactor", 0, 1, 0.001);
+
+
+    const bloomFolder = gui.addFolder("bloom");
+    bloomFolder.add(bloomPass, "strength", 0.0, 3, 0.001);
+    bloomFolder.add(bloomPass, "radius", 0.1, 1, 0.001);
+    bloomFolder.add(bloomPass, "threshold", 0, 1, 0.0001);
+    bloomFolder.add(bloomPass,  "enabled", false, true);
 }
 
 function onWindowResize() {
@@ -199,27 +251,23 @@ let velocity = new THREE.Vector3();
 function render() {
     let deltaTime = clock.getDelta();
 
-    yourCallForAll.update(deltaTime);
+    ycfa.update(deltaTime);
 
     let lastPos = physicsDemoMesh.position.clone();
 
     let physicsDemoMeshVelocity = new THREE.Vector3();
-    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.1;
-    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.1;
+    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
+    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
 
     physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
     physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
 
-    controls.moveRight(physicsDemoMeshVelocity.x);
-    controls.moveForward(-physicsDemoMeshVelocity.z);
-    controls.getObject().position.y = physicsDemoMesh.position.y + 2;
-
     if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
-        yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position);
+        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position);
     }
 
     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    let intersects = raycaster.intersectObject(yourCallForAll.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
 
     if (intersects[0] !== undefined) {
         let distance = 1.75;
