@@ -6,7 +6,7 @@ import {SimplexNoise} from "../vendor/three-js/examples/jsm/math/SimplexNoise.js
 import {FirstPersonControls} from "../vendor/three-js/examples/jsm/controls/FirstPersonControls.js";
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {Terrain} from "../src/core/terrain.js";
-import {FractalHeightMap, HeightMap} from "../src/core/heightmap.js";
+import {FractalBrownianMotionHeightMap, HeightMap} from "../src/core/heightmap.js";
 import * as CANNON from "../vendor/cannon-es.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
@@ -114,7 +114,7 @@ let basicControls = {
 
 function setupControls() {
 
-     controls = new MapControls(camera, renderer.domElement);
+    controls = new MapControls(camera, renderer.domElement);
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "w") {
@@ -170,9 +170,36 @@ function init() {
 
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
+        initGUI();
         clock.start();
         render();
     })
+}
+
+function initGUI() {
+
+    const gui = new GUI({width: 310});
+
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "octaves", 2, 256, 1);
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "lacunarity", 0, 100, 0.1);
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "noiseStrength", 1.0, 100.0, 0.1);
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "heightOffset", -20.0, 20.0, 0.1);
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "exaggeration", 1.0, 3.0, 0.001);
+    gui.add(yourCallForAll.environment.terrain.heightMap.props, "hurstExponent", 0.01, 1.0, 0.001);
+    gui.add(yourCallForAll.environment, "seed", 1, 10000, 1);
+
+    let button = {
+        regenerate: function () {
+            console.log("Regenerating...")
+            yourCallForAll.environment.setupPRNG();
+            yourCallForAll.environment.terrain.removeChunks();
+            yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position, true);
+        }
+    };
+
+    gui.add(button, 'regenerate');
+
+
 }
 
 function onWindowResize() {
