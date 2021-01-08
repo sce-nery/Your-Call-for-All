@@ -13,6 +13,12 @@ export async function load() {
     AssetMap["WaterNormals"].wrapS = AssetMap["WaterNormals"].wrapT = THREE.RepeatWrapping;
 
     AssetMap["MoCapManGLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb");
+
+
+    AssetMap["TreeGLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/gltf_files/pink-tree/scene.gltf");
+    AssetMap["TreeGLTFModel3"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/gltf_files/willow-tree/scene.gltf");
+    AssetMap["TreeGLTFModel4"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/gltf_files/palm-tree/scene.gltf");
+    AssetMap["TreeGLTFModel5"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/gltf_files/real-tree/scene.gltf");
 }
 
 function asyncLoadGLTF(url) {

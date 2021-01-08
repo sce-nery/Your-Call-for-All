@@ -17,7 +17,7 @@ class Environment {
         this.sky = this.createSky();
         this.water = this.createWater();
 
-        this.healthFactor = 0.0;
+        this.healthFactor = 1.0;
         //this.scene.fog = new THREE.Fog(0xa0afa0, 200, 400);
     }
 
