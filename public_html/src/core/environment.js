@@ -10,6 +10,15 @@ import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 
 class Environment {
+    /**
+     * Game object dealing with the environment objects like terrains, waters, sky,
+     * trees, bushes, rocks and decision point objects
+     *
+     * @param scene The models will be added to this THREE.Scene object
+     * @param seed The integer number that will be used to create random number generator.
+     * This seed number ensures that the same random numbers are generated. You can supply a different
+     * scene to create different random number that will be used for terrain generation and object scattering.
+     */
     constructor(scene, seed) {
 
         this.seed = seed;
@@ -27,23 +36,31 @@ class Environment {
         //this.scene.fog = new THREE.Fog(0xa0afa0, 200, 400);
     }
 
+    /**
+     * Initializes the random number generator with the supplied seed number.
+     */
     setupPRNG() {
         this.prng = new MersenneTwisterPRNG(this.seed);
     }
 
     setupTerrain() {
+        // Creates a noise provider with the random number generator we created earlier.
         let noise = new SimplexNoise(this.prng);
-        // let heightMap = new FractalBrownianMotionHeightMap(noise, {octaves: 8, lacunarity: 300, persistence: 10.0});
+
+        // Creates a heightmap that will be used to create terrain.
+        // heightMap.probe(x, z) will give the height (y) of the point (x, y, z).
         let heightMap = new HybridMultifractalHeightMap(noise, {
             zoom: 400,
             octaves: 8,
-            lacunarity: 2,  // Normally, higher the lacunarity smoother the terrain, but in this implementation, its the opposite.
-            // See also: https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
+            lacunarity: 2,  // Normally, higher the lacunarity, smoother the terrain, but in this implementation, its the opposite.
+                            // See also: https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
             noiseStrength: 10.0,
             heightOffset: -5.0,
             exaggeration: 1.0,
             hurstExponent: 0.25
         });
+        // Creates a terrain object that will control terrain chunks.
+        // terrain.loadChunks(position) will load 9 chunks around that position.
         this.terrain = new Terrain(this.scene, heightMap, {chunkSize: 200});
     }
 

@@ -3,18 +3,42 @@ import TextureUtils from "../util/texture-utils.js";
 import {AssetMap} from "./assets.js";
 
 class Terrain {
+
+    /**
+     * A Terrain object that will control terrain chunks.
+     * Terrain chunks are generated according to the supplied heightmap object.
+     *
+     * @param scene THREE.Scene object that we will add terrain chunks to.
+     * @param heightMap Heightmap supplier of this terrain.
+     * @param props Properties such as chunk size.
+     */
     constructor(scene, heightMap, props = {
         chunkSize: 256
     }) {
         this.scene = scene;
         this.props = props;
         this.heightMap = heightMap;
+
+        // The cache that will contain generated terrain chunks. So after removing a chunk from the scene,
+        // we can load it faster.
+        // TODO: Note that, currently, these chunks won't get deleted, so after playing a while, the memory usage can reach
+        //  gigabytes. Intelligently remove far away chunks so that the memory won't suffer.
         this.chunks = {};
+
+        // The THREE.Mesh object that currently at the center of the whole terrain.
+        // Typically, this mesh would be the mesh that character is on top. So, any raycasting or
+        // physics operations regarding the character should be made on this mesh object.
         this.centerMesh = null;
 
         this.loadChunks(new THREE.Vector3());
     }
 
+    /**
+     * Loads 9 chunks centered around the given position.
+     *
+     * @param position Generally, the character's position.
+     * @param purgeCache Whether to remove cache before loading.
+     */
     loadChunks(position, purgeCache=false) {
         if (purgeCache) {
             this.removeChunks();
@@ -57,6 +81,9 @@ class Terrain {
 
     }
 
+    /**
+     * Removes active chunks from the scene in order to improve FPS.
+     */
     removeChunks() {
         for (let key in this.chunks) {
             let chunk = this.chunks[key];
@@ -67,21 +94,36 @@ class Terrain {
         }
     }
 
+    /**
+     * Adds chunk to the scene at given position.
+     *
+     * @param offset The position of the chunk (Vector2).
+     * For a point (x,y,z) in world space, this offset is (x,z), because y is the height component,
+     * and we are using Y-up coordinate system.
+     *
+     * @returns {TerrainChunk} The chunk object.
+     */
     addChunk(offset) {
         let chunk;
         let key = `(${offset.x},${offset.y})`;
+
         if (key in this.chunks) {
+            // If the chunk is already found on the cache
             chunk = this.chunks[key];
             chunk.isActive = true;
             console.debug(`Found chunk in cache: ${key}`);
         } else {
+            // If the chunk is not found on the cache, create a new one.
+            // Sample height data from the heightmap. This is a matrix of vertex positions in 3D.
             let heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
             chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
             chunk.isActive = true;
             console.debug(`Creating new chunk: ${key}`);
+            // Store this chunk in the cache.
             this.chunks[key] = chunk;
         }
 
+        // Add the THREE.Mesh object to the THREE.Scene
         this.scene.add(chunk.mesh);
 
         return chunk;
@@ -100,22 +142,18 @@ class TerrainChunk {
     }
 
     setupChunkMaterial() {
+        // Retrieve textures.
+        // TODO: This material should change based on the health of the environment.
         let colorMap = AssetMap["Ground1_Color"];
         let normalMap = AssetMap["Ground1_Normal"];
 
         TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
         TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);
-        //TextureUtils.makeRepeating(displacementMap, this.chunkSize, this.chunkSize);
-        //TextureUtils.makeRepeating(occlusionMap, this.chunkSize, this.chunkSize);
-        //TextureUtils.makeRepeating(roughnessMap, this.chunkSize, this.chunkSize);
 
         this.material = new THREE.MeshPhongMaterial({
             map: colorMap,
             bumpMap: normalMap,
-            bumpScale: 0.85,
-            //displacementMap: this.props.displacementMap,
-            //aoMap: this.props.occlusionMap,
-            //roughnessMap: this.props.roughnessMap,
+            bumpScale: 0.85
         });
     }
 
@@ -127,6 +165,7 @@ class TerrainChunk {
             this.chunkSize,
         );
 
+        // Fills vertex data of this mesh based on the received height data.
         let heightMatrix = this.heightData;
         for (let i = 0; i <= this.chunkSize; i++) {
             for (let j = 0; j <= this.chunkSize; j++) {

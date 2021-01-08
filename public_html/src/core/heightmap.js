@@ -131,6 +131,15 @@ class HybridMultifractalHeightMap {
         this.props = props;
     }
 
+    /**
+     * Computes a matrix that contains vertices of the heightmap bounded by the given parameters.
+     *
+     * @param width Width of the sample
+     * @param height Height of the sample
+     * @param xOffset X component of the position of the sample. The position is the middle point of the sample in xz plane.
+     * @param yOffset Z component of the position of the sample. The position is the middle point of the sample in xz plane.
+     * @returns {[]}
+     */
     sample(width, height, xOffset, yOffset) {
         if (width % 2 !== 0 || height % 2 !== 0) {
             Logger.warn("Width and height values must be divisible by 2");
@@ -159,14 +168,16 @@ class HybridMultifractalHeightMap {
         return heightData;
     }
 
+    /**
+     * Returns the height on the given coordinates.
+     *
+     * @param x X component of the position vector.
+     * @param y Z component of the position vector. Why Z? Because we are using Y-up coordinate system
+     * in THREE.js side of things.
+     * @returns {number}
+     */
     probe(x, y) {
 
-      // let normalizedX = (x / width);
-      // let normalizedY = (y / height);
-
-      // let zoom = 0.5;
-
-        // let noise = this.fbm(normalizedX * zoom, normalizedY * zoom) * this.props.noiseStrength;
         let noise = this.fbm(x / this.props.zoom, y / this.props.zoom) * this.props.noiseStrength;
 
         if (noise < 0) noise = -Math.pow(-noise, this.props.exaggeration);
@@ -236,24 +247,6 @@ class HybridMultifractalHeightMap {
             // “i” and spatial freq. are preset in loop above
             result += remainder * this.noise(x, y) * exponents[i];
         return result;
-    }
-
-    distortedFBM(x, y, distortion) {
-        let tmpX, tmpY;
-        let distortX, distortY, distortZ;
-
-        tmpX = x;
-        tmpY = y;
-        tmpX += 10.5;
-        distortX = this.fbm(tmpX, tmpY);
-        tmpY += 10.5;
-        distortY = this.fbm(tmpX, tmpY);
-
-        // Add distortion to sample point
-        let sampleX = x + distortion * distortX;
-        let sampleY = y + distortion * distortY;
-
-        return this.fbm(sampleX, sampleY);
     }
 
     noise(x, y) {
