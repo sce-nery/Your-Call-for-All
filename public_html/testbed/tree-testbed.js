@@ -41,11 +41,11 @@ function init() {
 
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
-        let tree1 = new Tree(AssetMap["TreeGLTFModel"]);
+        let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
         scene.add(tree1.model);
 
 
-        const clonedScene = SkeletonUtils.clone(AssetMap["TreeGLTFModel"].scene);
+        const clonedScene = SkeletonUtils.clone(AssetMap["Tree_Pink_GLTFModel"].scene);
         const root = new THREE.Object3D();
         root.add(clonedScene);
 
@@ -53,20 +53,20 @@ function init() {
         root.position.x = 50;
         scene.add(root);
 
-        let tree3 = new Tree(AssetMap["TreeGLTFModel3"]);
+        let tree3 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
         tree3.model.position.x=-10;
         tree3.model.position.y=2;
         tree3.model.scale.set(0.02,0.02,0.02);
         scene.add(tree3.model);
 
-        let tree4 = new Tree(AssetMap["TreeGLTFModel4"]);
+        let tree4 = new Tree(AssetMap["Tree_Palm_GLTFModel"]);
         tree4.model.position.x=-10;
         tree4.model.position.y=4;
         tree4.model.position.z=35;
         tree4.model.scale.set(0.01,0.01,0.01);
         scene.add(tree4.model);
 
-        let tree5 = new Tree(AssetMap["TreeGLTFModel5"]);
+        let tree5 = new Tree(AssetMap["Tree_Real_GLTFModel"]);
         tree5.model.position.x=-10;
         tree5.model.position.y=4;
         tree5.model.position.z=45;
