@@ -33,6 +33,7 @@ class Environment {
         let noise = new SimplexNoise(this.prng);
         // let heightMap = new FractalBrownianMotionHeightMap(noise, {octaves: 8, lacunarity: 300, persistence: 10.0});
         let heightMap = new HybridMultifractalHeightMap(noise, {
+            zoom: 400,
             octaves: 8,
             lacunarity: 2,  // Normally, higher the lacunarity smoother the terrain, but in this implementation, its the opposite.
             // See also: https://www.classes.cs.uchicago.edu/archive/2015/fall/23700-1/final-project/MusgraveTerrain00.pdf
@@ -80,7 +81,7 @@ class Environment {
         );
 
         water.rotation.x = -Math.PI / 2;
-        
+
         this.scene.add(water);
 
         this.water = water;

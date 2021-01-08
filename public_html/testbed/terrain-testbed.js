@@ -180,14 +180,18 @@ function initGUI() {
 
     const gui = new GUI({width: 310});
 
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "octaves", 2, 256, 1);
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "lacunarity", 0, 100, 0.1);
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "noiseStrength", 1.0, 100.0, 0.1);
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "heightOffset", -20.0, 20.0, 0.1);
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "exaggeration", 1.0, 3.0, 0.001);
-    gui.add(yourCallForAll.environment.terrain.heightMap.props, "hurstExponent", 0.01, 1.0, 0.001);
     gui.add(yourCallForAll.environment, "seed", 1, 10000, 1);
 
+    const terrainFolder = gui.addFolder("terrain")
+
+    terrainFolder.add(yourCallForAll.environment.terrain.props, "chunkSize", 10, 400, 1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "zoom", 1, 1000, 1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "octaves", 2, 256, 1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "lacunarity", 0, 100, 0.1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "noiseStrength", 1.0, 100.0, 0.1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "heightOffset", -20.0, 20.0, 0.1);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "exaggeration", 1.0, 3.0, 0.001);
+    terrainFolder.add(yourCallForAll.environment.terrain.heightMap.props, "hurstExponent", 0.01, 1.0, 0.001);
     let button = {
         regenerate: function () {
             console.log("Regenerating...")
@@ -196,8 +200,19 @@ function initGUI() {
             yourCallForAll.environment.terrain.loadChunks(physicsDemoMesh.position, true);
         }
     };
+    terrainFolder.add(button, 'regenerate');
 
-    gui.add(button, 'regenerate');
+    const skyFolder = gui.addFolder("sky")
+
+    let skyUpdate = function () {
+        yourCallForAll.environment.sky.update();
+    }
+
+    skyFolder.add(yourCallForAll.environment.sky.props, "inclination", 0.0, 1.0, 0.01).onChange(skyUpdate);
+    skyFolder.add(yourCallForAll.environment.sky.props, "turbidity", 0.0, 100.0, 0.01).onChange(skyUpdate);
+    skyFolder.add(yourCallForAll.environment.sky.props, "mieCoefficient", -0.01, 0.01, 0.00001).onChange(skyUpdate);
+    skyFolder.add(yourCallForAll.environment.sky.props, "mieDirectionalG", -1.4, 1.4, 0.00001).onChange(skyUpdate);
+    skyFolder.add(yourCallForAll.environment.sky.props, "azimuth", 0, 1, 0.001).onChange(skyUpdate);
 
 
 }

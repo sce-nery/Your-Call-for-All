@@ -33,6 +33,10 @@ class HeightMap {
     }
 
     probe(x, y) {
+        return this.noise(x, y);
+    }
+
+    noise(x, y) {
         let sampleX = x / this.props.xZoom;
         let sampleY = y / this.props.yZoom;
         let height = this.noiseProvider.noise(sampleX, sampleY) * this.props.noiseStrength;
@@ -69,9 +73,9 @@ class FractalBrownianMotionHeightMap {
                 let x = gX + xOffset;
                 let y = gY + yOffset;
 
-                let noise = this.fbm(x, y);
+                let z = this.probe(x, y);
 
-                heightData[i].push({x: x, y: y, height: noise});
+                heightData[i].push({x: x, y: y, height: z});
             }
         }
 
@@ -79,8 +83,7 @@ class FractalBrownianMotionHeightMap {
     }
 
     probe(x, y) {
-        let height = this.noiseProvider.noise(x, y);
-        return height;
+        return this.fbm(x, y);
     }
 
     /**
@@ -101,17 +104,23 @@ class FractalBrownianMotionHeightMap {
             let sampleX = x * (gain / freq);
             let sampleY = y * (gain / freq);
 
-            noise += this.probe(sampleX, sampleY) * (amp / gain);
+            noise += this.noise(sampleX, sampleY) * (amp / gain);
             gain *= 2.0;
         }
 
         return noise;
     }
+
+    noise(x, y) {
+        let height = this.noiseProvider.noise(x, y);
+        return height;
+    }
 }
 
 class HybridMultifractalHeightMap {
     constructor(noiseProvider, props = {
-        octaves: 8,
+        zoom: 400,
+        octaves: 16,
         lacunarity: 2,
         noiseStrength: 5.0,
         heightOffset: 0.0,
@@ -141,19 +150,9 @@ class HybridMultifractalHeightMap {
                 let x = gX + xOffset;
                 let y = gY + yOffset;
 
-                let normalizedX = (x / width );
-                let normalizedY = (y / height);
+                let z = this.probe(x, y);
 
-                let zoom = 0.5;
-
-                let noise = this.fbm(normalizedX * zoom, normalizedY * zoom) * this.props.noiseStrength;
-
-                if (noise < 0) noise = -Math.pow(-noise, this.props.exaggeration);
-                else noise = Math.pow(noise, this.props.exaggeration);
-
-                noise += this.props.heightOffset;
-
-                heightData[i].push({x: x, y: y, height: noise});
+                heightData[i].push({x: x, y: y, height: z});
             }
         }
 
@@ -161,8 +160,21 @@ class HybridMultifractalHeightMap {
     }
 
     probe(x, y) {
-        let height = this.noiseProvider.noise(x, y);
-        return height;
+
+      // let normalizedX = (x / width);
+      // let normalizedY = (y / height);
+
+      // let zoom = 0.5;
+
+        // let noise = this.fbm(normalizedX * zoom, normalizedY * zoom) * this.props.noiseStrength;
+        let noise = this.fbm(x / this.props.zoom, y / this.props.zoom) * this.props.noiseStrength;
+
+        if (noise < 0) noise = -Math.pow(-noise, this.props.exaggeration);
+        else noise = Math.pow(noise, this.props.exaggeration);
+
+        noise += this.props.heightOffset;
+
+        return noise;
     }
 
     /**
@@ -176,11 +188,8 @@ class HybridMultifractalHeightMap {
      */
     fbm(x, y) {
         // TODO: There seems to be discrepancy between the meaning of the parameter "lacunarity" versus
-        //  what it does.
-        //  Wikipedia  definition: Lacunarity, from the Latin lacuna, meaning "gap" or "lake",
-        //  is a specialized term in geometry referring to a measure of how patterns, especially fractals, fill space,
-        //  where patterns having more or larger gaps generally have higher lacunarity.
-        //  But here, if we increase the lacunarity, the opposite appears to bee happening. Investigate.
+        //  what it does. Normally, higher the lacunarity smoother the terrain, but in this implementation,
+        //  it seems that the opposite is happening.
         const lacunarity = this.props.lacunarity;
         const octaves = this.props.octaves;
         const offset = 0.7;
@@ -200,7 +209,7 @@ class HybridMultifractalHeightMap {
         }
 
         // Get the first octave of function
-        result = (this.probe(x, y) + offset) * exponents[0];
+        result = (this.noise(x, y) + offset) * exponents[0];
         weight = result;
         x *= lacunarity;
         y *= lacunarity;
@@ -210,7 +219,7 @@ class HybridMultifractalHeightMap {
             // prevent divergence
             if (weight > 1.0) weight = 1.0;
             // get next higher frequency
-            signal = (this.probe(x, y) + offset) * exponents[i];
+            signal = (this.noise(x, y) + offset) * exponents[i];
             // add it in, weighted by previous freq's local value
             result += weight * signal;
             // update the (monotonically decreasing) weighting value
@@ -225,7 +234,7 @@ class HybridMultifractalHeightMap {
         remainder = octaves - Math.floor(octaves);
         if (remainder)
             // “i” and spatial freq. are preset in loop above
-            result += remainder * this.probe(x, y) * exponents[i];
+            result += remainder * this.noise(x, y) * exponents[i];
         return result;
     }
 
@@ -236,7 +245,7 @@ class HybridMultifractalHeightMap {
         tmpX = x;
         tmpY = y;
         tmpX += 10.5;
-        distortX =  this.fbm(tmpX, tmpY);
+        distortX = this.fbm(tmpX, tmpY);
         tmpY += 10.5;
         distortY = this.fbm(tmpX, tmpY);
 
@@ -246,6 +255,12 @@ class HybridMultifractalHeightMap {
 
         return this.fbm(sampleX, sampleY);
     }
+
+    noise(x, y) {
+        let height = this.noiseProvider.noise(x, y);
+        return height;
+    }
+
 }
 
 
