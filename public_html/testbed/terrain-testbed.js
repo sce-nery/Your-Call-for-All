@@ -214,6 +214,9 @@ function initGUI() {
     skyFolder.add(yourCallForAll.environment.sky.props, "mieDirectionalG", -1.4, 1.4, 0.00001).onChange(skyUpdate);
     skyFolder.add(yourCallForAll.environment.sky.props, "azimuth", 0, 1, 0.001).onChange(skyUpdate);
 
+    const envFolder = gui.addFolder("environment")
+
+    envFolder.add(yourCallForAll.environment.props, "healthFactor", 0, 1, 0.001);
 
 }
 

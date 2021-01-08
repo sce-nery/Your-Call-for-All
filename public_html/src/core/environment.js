@@ -21,7 +21,9 @@ class Environment {
         this.setupSky();
         this.setupWater();
 
-        this.healthFactor = 1.0;
+        this.props = {
+            healthFactor: 0.0,
+        }
         //this.scene.fog = new THREE.Fog(0xa0afa0, 200, 400);
     }
 
@@ -92,7 +94,7 @@ class Environment {
         this.water.material.uniforms['time'].value += deltaTime / 2.0;
         this.water.material.uniforms['sunDirection'].value = this.sky.sunLight.position.clone().negate();
         this.water.material.uniforms['sunColor'].value = this.sky.sunLight.color;
-        this.water.material.uniforms['waterColor'].value = new Color(LinearInterpolator.color(0xad7f00, 0x001e0f, this.healthFactor));
+        this.water.material.uniforms['waterColor'].value = new Color(LinearInterpolator.color(0xad7f00, 0x001e0f, this.props.healthFactor));
     }
 
     update(deltaTime) {
