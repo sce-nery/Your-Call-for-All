@@ -8,6 +8,7 @@ import * as ASSETS from "../src/core/assets.js";
 import {Tree} from "../src/core/tree.js";
 import {AssetMap} from "../src/core/assets.js";
 import {SkeletonUtils} from "../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
+var mixer;
 
 window.onload = function () {
     init();
@@ -41,29 +42,49 @@ function init() {
 
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
+        /*let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
+        scene.add(tree1.root);
+
+
+        let tree3 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
+        tree3.root.position.x=-10;
+        tree3.root.position.y=2;
+        tree3.root.scale.set(0.02,0.02,0.02);
+        scene.add(tree3.root);
+
+        let tree10 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
+        tree10.root.position.x=10;
+        tree10.root.position.y=2;
+        tree10.root.scale.set(0.02,0.02,0.02);
+        scene.add(tree10.root);*/
+
         let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
-        scene.add(tree1.model);
 
 
-        const clonedScene = SkeletonUtils.clone(AssetMap["Tree_Pink_GLTFModel"].scene);
-        const root = new THREE.Object3D();
-        root.add(clonedScene);
+        mixer= new THREE.AnimationMixer(tree1.root);
+        tree1.animations.forEach((clip) => {mixer.clipAction(clip).play(); });
 
-        root.position.z = 10;
-        root.position.x = 50;
-        scene.add(root);
+
+        scene.add(tree1.root);
+
+
 
         let tree3 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
         tree3.model.position.x=-10;
         tree3.model.position.y=2;
         tree3.model.scale.set(0.02,0.02,0.02);
+        tree3.setupActions();
+        tree3.activateAllActions();
         scene.add(tree3.model);
+
 
         let tree4 = new Tree(AssetMap["Tree_Palm_GLTFModel"]);
         tree4.model.position.x=-10;
         tree4.model.position.y=4;
         tree4.model.position.z=35;
         tree4.model.scale.set(0.01,0.01,0.01);
+        tree4.setupActions();
+        tree4.activateAllActions();
         scene.add(tree4.model);
 
         let tree5 = new Tree(AssetMap["Tree_Real_GLTFModel"]);
@@ -83,6 +104,7 @@ function init() {
 
 function render() {
     let deltaTime = clock.getDelta();
+    if ( mixer ) mixer.update( deltaTime );
     controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;

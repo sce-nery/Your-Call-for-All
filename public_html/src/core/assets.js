@@ -1,5 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 export const AssetMap = {};
 
@@ -26,3 +27,5 @@ function asyncLoadGLTF(url) {
         gltfLoader.load(url, data => resolve(data), null, reject);
     });
 }
+
+

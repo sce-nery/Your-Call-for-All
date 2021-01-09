@@ -1,9 +1,14 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 
 class Tree {
     constructor(gltf) {
+        const clonedScene = SkeletonUtils.clone(gltf.scene);
+        const root = new THREE.Object3D();
+        root.add(clonedScene);
+        this.root = root;
         this.model = gltf.scene;
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);
@@ -50,6 +55,7 @@ class Tree {
         }
 
     }
+
 
 }
 
