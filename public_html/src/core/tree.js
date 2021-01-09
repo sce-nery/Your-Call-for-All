@@ -11,7 +11,7 @@ class Tree {
         this.root = root;
         this.model = gltf.scene;
         this.animations = gltf.animations;
-        this.mixer = new THREE.AnimationMixer(this.model);
+        this.mixer = new THREE.AnimationMixer(this.root);
         this.actionMap = {};
 
         this.setupShadows();

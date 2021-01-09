@@ -9,6 +9,7 @@ import {Tree} from "../src/core/tree.js";
 import {AssetMap} from "../src/core/assets.js";
 import {SkeletonUtils} from "../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 var mixer;
+let mixerList=[];
 
 window.onload = function () {
     init();
@@ -57,6 +58,21 @@ function init() {
         tree10.root.position.y=2;
         tree10.root.scale.set(0.02,0.02,0.02);
         scene.add(tree10.root);*/
+        /*let chunkDictionary = yourCallForAll.environment.terrain.chunks;
+        for (let key in chunkDictionary) {
+            console.log(chunkDictionary[key].heightData.x);
+        }
+        */
+/*
+        for (let i=0;i<5;i++){
+            let tree = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
+            tree.root.position.x=i*10;
+            let treeMixer = new THREE.AnimationMixer(tree.root);
+            tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
+            scene.add(tree.root);
+            mixerList.push(treeMixer);
+
+        }
 
         let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
 
@@ -93,6 +109,8 @@ function init() {
         tree5.model.position.z=45;
         tree5.model.scale.set(0.01,0.01,0.01);
         scene.add(tree5.model);
+
+        */
         clock.start();
         render();
     })
@@ -104,7 +122,13 @@ function init() {
 
 function render() {
     let deltaTime = clock.getDelta();
-    if ( mixer ) mixer.update( deltaTime );
+    /*if ( mixer ) mixer.update( deltaTime );
+    for (let i=0;i<5;i++){
+        let thisMixer = mixerList[i];
+        if(thisMixer) thisMixer.update(deltaTime);
+        mixerList[i] = thisMixer;
+
+    }*/
     controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;

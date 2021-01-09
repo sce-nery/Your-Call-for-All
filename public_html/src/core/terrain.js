@@ -1,6 +1,10 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {AssetMap} from "./assets.js";
+import {Tree} from "./tree.js";
+
+
+
 
 class Terrain {
 
@@ -126,6 +130,12 @@ class Terrain {
         // Add the THREE.Mesh object to the THREE.Scene
         this.scene.add(chunk.mesh);
 
+        for (let tree in chunk.trees){
+            console.log("ağaç");
+            this.scene.add(tree.root);
+
+        }
+
         return chunk;
     }
 }
@@ -135,6 +145,9 @@ class TerrainChunk {
         this.chunkSize = chunkSize;
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
+
+        this.trees = [];
+       // this.mixerList = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -178,6 +191,26 @@ class TerrainChunk {
 
                 // Set height
                 vertex.z = data.height;
+
+                let random = Math.random();
+                if( random <0.01){
+
+                if(data.height>0 && data.height<5){
+                    let tree = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
+                    tree.root.position.x=data.x;
+                    tree.root.position.y=data.z;
+                    tree.root.position.z=data.height;
+
+
+                   // let treeMixer = new THREE.AnimationMixer(tree.root);
+                    //tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
+                    //scene.add(tree.root);
+                    //this.mixerList.push(treeMixer);
+                    this.trees.push(tree);
+                }
+                }
+
+
             }
         }
 
