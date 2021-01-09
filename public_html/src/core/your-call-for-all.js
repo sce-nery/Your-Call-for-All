@@ -1,6 +1,6 @@
 import {Environment} from "./environment.js";
-import {MersenneTwisterPRNG} from "../math/random.js";
-
+import {Character} from "./character.js";
+import {AssetMap} from "./assets.js";
 
 class YourCallForAll {
 
@@ -9,7 +9,7 @@ class YourCallForAll {
 
         this.environment = new Environment(this.scene, 2527); // environment includes: terrain, sky, and other game objects
 
-        //this.character = new Character();
+        this.character = new Character(this.scene, AssetMap["Soldier"]);
     }
 
     update(deltaTime){

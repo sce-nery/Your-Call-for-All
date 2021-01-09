@@ -13,7 +13,7 @@ export async function load() {
     AssetMap["WaterNormals"].wrapS = AssetMap["WaterNormals"].wrapT = THREE.RepeatWrapping;
 
     AssetMap["MoCapManGLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb");
-
+    AssetMap["Soldier"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/characters/Soldier.glb");
 
     AssetMap["Tree_Pink_GLTFModel"] = await asyncLoadGLTF( "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf");
     AssetMap["Tree_Willow_GLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf");

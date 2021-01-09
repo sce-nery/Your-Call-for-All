@@ -1,14 +1,24 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 
 class Character {
-    constructor(gltf) {
+    constructor(scene, gltf) {
+        this.scene = scene;
         this.model = gltf.scene;
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);
-        this.actionMap = {};
+        this.actions = this.setupActions();
 
         this.setupShadows();
-        this.setupActions();
+        this.scene.add(this.model);
+    }
+
+    setupActions() {
+        Logger.debug("Setting up actions for this character model.")
+        let idleAction = this.mixer.clipAction(this.animations[0]);
+        let walkAction = this.mixer.clipAction(this.animations[3]);
+        let runAction = this.mixer.clipAction(this.animations[1]);
+        return [idleAction, walkAction, runAction];
     }
 
     setupShadows() {
@@ -19,34 +29,6 @@ class Character {
                 object.receiveShadow = true;
             }
         });
-    }
-
-    setupActions() {
-        Logger.debug("Setting up actions for this character model.")
-        const animations = this.animations;
-        let actions = [];
-
-        for (let i = 0; i < animations.length; i++) {
-            actions.push(this.mixer.clipAction(animations[i]));
-        }
-
-        this.actionMap = actions.reduce(function (map, obj) {
-            obj.paused = false;
-            map[obj._clip.name] = obj;
-            return map;
-        }, {});
-    }
-
-    activateAllActions() {
-        // TODO.
-        for (const key in this.actionMap) {
-            let action = this.actionMap[key];
-            action.enabled = true;
-            action.setEffectiveTimeScale(1);
-            action.setEffectiveWeight(0.0);
-            //action.play();
-        }
-
     }
 
 }

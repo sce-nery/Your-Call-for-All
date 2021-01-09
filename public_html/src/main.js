@@ -5,6 +5,8 @@ import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/Eff
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as ASSETS from "./core/assets.js";
+import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {Character} from "./core/character.js";
 
 
 window.onload = function () {
@@ -20,9 +22,6 @@ let camera, scene, renderer, composer;
 function init() {
     clock = new THREE.Clock();
 
-
-
-
     initCamera();
     initListeners();
     initScene();
@@ -33,15 +32,13 @@ function init() {
     composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
-    // let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
-    // helper.position.y = 1.0;
-    // scene.add(helper);
-
     ASSETS.load().then(function () {
         yourCallForAll = new YourCallForAll(scene);
         clock.start();
         render();
     })
+
+
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
