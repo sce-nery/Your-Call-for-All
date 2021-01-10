@@ -12,6 +12,7 @@ export const Assets = {
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
+            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
         },
         OBJ: {
 
@@ -29,6 +30,7 @@ export const Assets = {
         WillowTree: null,
         PalmTree: null,
         RealTree: null,
+        BrokenBottle: null,
     },
 
     OBJ: {
