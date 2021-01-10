@@ -9,7 +9,7 @@ import {GUI} from '../vendor/three-js/examples/jsm/libs/dat.gui.module.js';
 
 import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import Stats from "../vendor/stats.module.js";
-import * as ASSETS from "../src/core/assets.js";
+import {Assets} from "../src/core/assets.js";
 
 let scene, renderer, camera, stats;
 let model, skeleton, clock;
@@ -79,8 +79,8 @@ function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    ASSETS.load().then(function () {
-        character = new Character(ASSETS.AssetMap["MoCapManGLTFModel"]);
+    Assets.load(function () {
+        character = new Character(Assets.glTF.MoCapMan);
         characterController = new CharacterController(character, new CharacterControllerKeyboardInput());
 
         model = character.model;
@@ -98,7 +98,6 @@ function init() {
 
         animate();
     });
-
 }
 
 function createPanel() {

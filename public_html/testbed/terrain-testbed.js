@@ -17,7 +17,7 @@ import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 import PhysicsUtils from "../src/util/physics-utils.js";
 import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPass.js";
 import {YourCallForAll} from "../src/core/your-call-for-all.js";
-import * as ASSETS from "../src/core/assets.js";
+import {Assets} from "../src/core/assets.js";
 import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
 import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
@@ -48,7 +48,7 @@ function setupCamera() {
 
 function setupRenderer() {
     renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(1.0);
+    renderer.setPixelRatio(1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // These somehow break the water colour
     //renderer.outputEncoding = THREE.sRGBEncoding;
@@ -63,8 +63,9 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    // const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
-    // scene.add(helper);
+    const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+    helper.position.y = 1;
+    scene.add(helper);
 
 
     const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
@@ -173,13 +174,14 @@ function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    ASSETS.load().then(function () {
+    Assets.load(function () {
+        document.getElementById("loading-label").remove();
         ycfa = new YourCallForAll(scene);
         ycfa.environment.props.healthFactor = 1.0;
         initGUI();
         clock.start();
         render();
-    })
+    });
 }
 
 function initGUI() {
@@ -190,7 +192,7 @@ function initGUI() {
         ycfa.environment.terrain.removeChunks();
         ycfa.environment.setupPRNG();
         ycfa.environment.terrain.heightMap.noiseProvider = new SimplexNoise(ycfa.environment.prng);
-        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position,true);
+        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
     }
     gui.add(ycfa.environment, "seed", 1, 10000, 1).onFinishChange(seedChanged);
 
@@ -235,7 +237,7 @@ function initGUI() {
     bloomFolder.add(bloomPass, "strength", 0.0, 3, 0.001);
     bloomFolder.add(bloomPass, "radius", 0.1, 1, 0.001);
     bloomFolder.add(bloomPass, "threshold", 0, 1, 0.0001);
-    bloomFolder.add(bloomPass,  "enabled", false, true);
+    bloomFolder.add(bloomPass, "enabled", false, true);
 }
 
 function onWindowResize() {
@@ -296,6 +298,4 @@ function render() {
 
 window.onload = function () {
     init();
-
-    document.getElementById("loading-label").remove();
 }
