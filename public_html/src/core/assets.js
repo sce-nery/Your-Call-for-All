@@ -1,5 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 const loadingManager = new THREE.LoadingManager();
 
