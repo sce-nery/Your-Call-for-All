@@ -1,6 +1,7 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {OBJLoader} from "../../vendor/three-js/examples/jsm/loaders/OBJLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 const loadingManager = new THREE.LoadingManager();
 
@@ -13,9 +14,7 @@ export const Assets = {
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
         },
-        OBJ: {
-
-        },
+        OBJ: {},
         Texture: {
             Ground1_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png',
             Ground1_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png',
@@ -31,9 +30,7 @@ export const Assets = {
         RealTree: null,
     },
 
-    OBJ: {
-
-    },
+    OBJ: {},
 
     Texture: {
         Ground1_Color: null,
@@ -77,6 +74,13 @@ export const Assets = {
                 location.reload();
             }, 1000);
         };
+    },
+
+    cloneGLTF: function (gltf) {
+        const clonedScene = SkeletonUtils.clone(gltf.scene);
+        const root = new THREE.Object3D();
+        root.add(clonedScene);
+        return root;
     }
 };
 
