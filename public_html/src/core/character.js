@@ -6,34 +6,83 @@ class Character {
         this.scene = scene;
         this.model = gltf.scene;
         this.animations = gltf.animations;
+
         this.mixer = new THREE.AnimationMixer(this.model);
-
         this.mixer.timeScale = 0.5;
-
-
         this.actions = this.setupActions();
 
-        this.characterController = new CharacterController(this, new CharacterControllerKeyboardInput());
+        this.characterControllerInput  = new CharacterControllerKeyboardInput();
+        this.characterController = new CharacterController(this, this.characterControllerInput);
 
         this.addCharacterToTheScene();
         this.setupShadows();
 
 
+        this.actions.forEach( function ( action ) {
+
+            action.play();
+
+        } );
+
     }
 
     update(deltaTime) {
         this.mixer.update(deltaTime);
-
-
-
         this.characterController.update(deltaTime);
     }
 
     pauseAllActions() {
-        this.actions.forEach((action) => {
-            action.paused = true;
+        this.actions.forEach((action) => { action.paused = true; });
+    }
+
+    unPauseAllActions() {
+        this.actions.forEach(( action )  => { action.paused = false; });
+    }
+
+    prepareCrossFade(startAction, endAction, crossFadeDuration) {
+        // Switch default / custom crossfade duration (according to the user's choice)
+        const duration = crossFadeDuration;
+
+        // Make sure that we don't go on in singleStepMode, and that all actions are unpaused
+        this.unPauseAllActions();
+
+        // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
+        // else wait until the current action has finished its current loop
+        if ( startAction === this.actions[0] ) {
+            this.executeCrossFade( startAction, endAction, duration );
+        } else {
+            this.synchronizeCrossFade( startAction, endAction, duration );
+        }
+
+    }
+
+    synchronizeCrossFade(startAction, endAction, crossFadeDuration) {
+        this.mixer.addEventListener( 'loop', (event) => {
+            if (event.action === startAction ) {
+                this.mixer.removeEventListener( 'loop', this );
+                this.executeCrossFade(startAction, endAction, crossFadeDuration );
+            }
         } );
     }
+
+    setWeight(action, weight ) {
+        action.enabled = true;
+        action.setEffectiveTimeScale( 1 );
+        action.setEffectiveWeight( weight );
+
+    }
+
+    executeCrossFade( startAction, endAction, duration ) {
+        // Not only the start action, but also the end action must get a weight of 1 before fading
+        // (concerning the start action this is already guaranteed in this place)
+        this.setWeight( endAction, 1 );
+        endAction.time = 0;
+
+        // Crossfade with warping - you can also try without warping by setting the third parameter to false
+        startAction.crossFadeTo( endAction, duration, true );
+    }
+
+
 
     addCharacterToTheScene(){
         this.scene.add(this.model);
@@ -76,40 +125,18 @@ class CharacterController {
 
     update(deltaTime) {
 
+        if (this.input.keys.moveForward) {
+            this.character.prepareCrossFade( this.character.actions[1], this.character.actions[2], 0.5 );
+        }
         if (this.input.keys.moveLeft) {
-
+            this.character.prepareCrossFade( this.character.actions[0], this.character.actions[2], 1.0 );
         }
         if (this.input.keys.moveRight) {
-
-
-            this.character.actions[0].paused = true;
-            this.character.actions[1].paused = true;
-            this.character.model.position.z -= deltaTime * 5;
-            this.character.mixer.timeScale = 1.0;
-            this.character.actions[2].play();
-            this.character.actions[2].paused = false;
-        }
-        if (this.input.keys.moveForward) {
-
-
-            this.character.actions[0].paused = true;
-            this.character.actions[2].paused = true;
-
-
-            this.character.model.position.z -= deltaTime;
-            this.character.actions[1].paused = false;
-            this.character.actions[1].play();
+            this.character.prepareCrossFade( this.character.actions[2], this.character.actions[0], 2.5 );
         }
         if (this.input.keys.moveBackward) {
-            this.character.actions[2].paused = true;
-            this.character.actions[1].paused = true;
-
-            this.character.model.position.z += deltaTime;
-
-            this.character.actions[0].paused = false;
-            this.character.actions[0].play();
+            this.character.prepareCrossFade( this.character.actions[0], this.character.actions[1], 5.0 );
         }
-
         this.character.mixer.update(deltaTime);
     }
 }
