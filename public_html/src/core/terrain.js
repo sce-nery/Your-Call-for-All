@@ -29,7 +29,7 @@ class Terrain {
         // TerrainChunk object that currently at the center of the whole terrain.
         // Typically, this mesh would be the one that character is on top. So, any raycasting or
         // physics operations regarding the character should be made on this chunk's mesh object.
-        this.centerChunk = null;
+        this.centerChunk = undefined;
 
         this.loadChunks(new THREE.Vector3());
     }
@@ -42,7 +42,8 @@ class Terrain {
      */
     loadChunks(position, purgeCache = false) {
         if (purgeCache) {
-            this.removeChunks();
+            this.makeAllChunksInactive();
+            this.removeInactiveChunksFromScene();
             this.chunks = {};
         }
 
@@ -72,31 +73,53 @@ class Terrain {
             new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z - chunkSize),
         ];
 
-        this.removeChunks();
-
-        for (let i = 0; i < chunkOffsets.length; i++) {
-            let chunk = this.addChunk(chunkOffsets[i]);
-
-            if (i === 0) this.centerChunk = chunk;
+        if (this.centerChunk) {
+            this.centerChunk.removeObjectsFrom(this.scene);
         }
 
+        this.makeAllChunksInactive();
+
+        this.centerChunk = this.createChunk(chunkOffsets[0]);
+        for (let i = 1; i < chunkOffsets.length; i++) {
+            this.createChunk(chunkOffsets[i]);
+        }
+
+        this.removeInactiveChunksFromScene();
+        this.addActiveChunksToScene();
+    }
+
+    makeAllChunksInactive() {
+        for (let key in this.chunks) {
+            this.chunks[key].isActive = false;
+        }
     }
 
     /**
      * Removes active chunks from the scene in order to improve FPS.
      */
-    removeChunks() {
+    removeInactiveChunksFromScene() {
         for (let key in this.chunks) {
             let chunk = this.chunks[key];
-            if (chunk.isActive) {
+            if (!chunk.isActive && chunk.isInScene) {
                 this.scene.remove(chunk.mesh);
-                chunk.isActive = false;
+                chunk.isInScene = false;
             }
         }
     }
 
+    addActiveChunksToScene() {
+        for (let key in this.chunks) {
+            let chunk = this.chunks[key];
+            if (chunk.isActive && !chunk.isInScene) {
+                this.scene.add(chunk.mesh);
+                chunk.isInScene = true;
+            }
+        }
+        this.centerChunk.addObjectsTo(this.scene);
+    }
+
     /**
-     * Adds chunk to the scene at given position.
+     * Creates a chunk if not exists, or makes it active, at the given position.
      *
      * @param offset The position of the chunk (Vector2).
      * For a point (x,y,z) in world space, this offset is (x,z), because y is the height component,
@@ -104,7 +127,7 @@ class Terrain {
      *
      * @returns {TerrainChunk} The chunk object.
      */
-    addChunk(offset) {
+    createChunk(offset) {
         let chunk;
         let key = `(${offset.x},${offset.y})`;
 
@@ -124,10 +147,10 @@ class Terrain {
             this.chunks[key] = chunk;
         }
 
-        // Add the THREE.Mesh object to the THREE.Scene
-        this.scene.add(chunk.mesh);
-
         return chunk;
+    }
+
+    update(deltaTime) {
     }
 }
 
@@ -138,6 +161,8 @@ class TerrainChunk {
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
 
+        this.isActive = false;
+        this.isInScene = false;
         this.setupChunkGeometry();
         this.setupChunkMaterial();
         this.setupChunkMesh();
@@ -192,6 +217,12 @@ class TerrainChunk {
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
+    }
+    addObjectsTo(scene) {
+        console.debug("Adding chunk objects to scene...");
+    }
+
+    removeObjectsFrom(scene) {
     }
 }
 
