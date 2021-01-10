@@ -6,10 +6,9 @@ import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderP
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as ASSETS from "../src/core/assets.js";
 import {Tree} from "../src/core/tree.js";
-import {AssetMap} from "../src/core/assets.js";
+import {Assets} from "../src/core/assets.js";
 import {SkeletonUtils} from "../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
-var mixer;
-let mixerList=[];
+import {createPerformanceMonitor} from "../src/util/debug.js";
 
 window.onload = function () {
     init();
@@ -20,11 +19,11 @@ let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
 
+let stats;
+
 
 function init() {
     clock = new THREE.Clock();
-
-
 
 
     initCamera();
@@ -41,82 +40,48 @@ function init() {
     // helper.position.y = 1.0;
     // scene.add(helper);
 
-    ASSETS.load().then(function () {
+    Assets.load(function () {
         yourCallForAll = new YourCallForAll(scene);
-        /*let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
-        scene.add(tree1.root);
+        yourCallForAll.environment.props.healthFactor = 1.0;
+        // let tree1 = new Tree(Assets.glTF.PinkTree);
+        // scene.add(tree1.model);
 
 
-        let tree3 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
-        tree3.root.position.x=-10;
-        tree3.root.position.y=2;
-        tree3.root.scale.set(0.02,0.02,0.02);
-        scene.add(tree3.root);
+        // const clonedScene = SkeletonUtils.clone(Assets.glTF.PinkTree.scene);
+        // const root = new THREE.Object3D();
+        // root.add(clonedScene);
 
-        let tree10 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
-        tree10.root.position.x=10;
-        tree10.root.position.y=2;
-        tree10.root.scale.set(0.02,0.02,0.02);
-        scene.add(tree10.root);*/
-        /*let chunkDictionary = yourCallForAll.environment.terrain.chunks;
-        for (let key in chunkDictionary) {
-            console.log(chunkDictionary[key].heightData.x);
-        }
-        */
-/*
-        for (let i=0;i<5;i++){
-            let tree = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
-            tree.root.position.x=i*10;
-            let treeMixer = new THREE.AnimationMixer(tree.root);
-            tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
-            scene.add(tree.root);
-            mixerList.push(treeMixer);
+        // root.position.z = 10;
+        // root.position.x = 50;
+        // scene.add(root);
 
-        }
+        // let tree3 = new Tree(Assets.glTF.WillowTree);
+        // tree3.model.position.x = -10;
+        // tree3.model.position.y = 2;
+        // tree3.model.scale.set(0.02, 0.02, 0.02);
+        // scene.add(tree3.model);
 
-        let tree1 = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
+        // let tree4 = new Tree(Assets.glTF.PalmTree);
+        // tree4.model.position.x = -10;
+        // tree4.model.position.y = 4;
+        // tree4.model.position.z = 35;
+        // tree4.model.scale.set(0.01, 0.01, 0.01);
+        // scene.add(tree4.model);
 
-
-        mixer= new THREE.AnimationMixer(tree1.root);
-        tree1.animations.forEach((clip) => {mixer.clipAction(clip).play(); });
-
-
-        scene.add(tree1.root);
-
-
-
-        let tree3 = new Tree(AssetMap["Tree_Willow_GLTFModel"]);
-        tree3.model.position.x=-10;
-        tree3.model.position.y=2;
-        tree3.model.scale.set(0.02,0.02,0.02);
-        tree3.setupActions();
-        tree3.activateAllActions();
-        scene.add(tree3.model);
-
-
-        let tree4 = new Tree(AssetMap["Tree_Palm_GLTFModel"]);
-        tree4.model.position.x=-10;
-        tree4.model.position.y=4;
-        tree4.model.position.z=35;
-        tree4.model.scale.set(0.01,0.01,0.01);
-        tree4.setupActions();
-        tree4.activateAllActions();
-        scene.add(tree4.model);
-
-        let tree5 = new Tree(AssetMap["Tree_Real_GLTFModel"]);
-        tree5.model.position.x=-10;
-        tree5.model.position.y=4;
-        tree5.model.position.z=45;
-        tree5.model.scale.set(0.01,0.01,0.01);
-        scene.add(tree5.model);
-
-        */
+        // let tree5 = new Tree(Assets.glTF.RealTree);
+        // tree5.model.position.x = -10;
+        // tree5.model.position.y = 4;
+        // tree5.model.position.z = 45;
+        // tree5.model.scale.set(0.01, 0.01, 0.01);
+        // scene.add(tree5.model);
         clock.start();
         render();
-    })
+    });
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.update();
+
+    stats = createPerformanceMonitor(document.body);
 }
 
 
@@ -135,15 +100,16 @@ function render() {
 
     composer.render();
 
+    stats.update();
+
 
     requestAnimationFrame(render);
 }
 
 
-
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
-    camera.position.set(10,10, 100);
+    camera.position.set(10, 10, 100);
 
 }
 
@@ -156,10 +122,11 @@ function initRenderer() {
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
+
     // For some reason, these break the water color
-    //renderer.outputEncoding = THREE.sRGBEncoding;
-    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    //renderer.toneMappingExposure = 0.5;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // renderer.toneMappingExposure = 0.5;
     document.body.appendChild(renderer.domElement);
 }
 

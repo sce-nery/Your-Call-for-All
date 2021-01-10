@@ -1,6 +1,8 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import { Assets} from "./assets.js";
+import {Tree} from "./tree.js";
+
 
 class Terrain {
 
@@ -127,13 +129,18 @@ class Terrain {
         // Add the THREE.Mesh object to the THREE.Scene
         this.scene.add(chunk.mesh);
 
-        for (let tree in chunk.trees){
-            console.log("ağaç");
-            this.scene.add(tree.root);
-
+        console.log(`Number of trees for chunk (${key}):  ${chunk.trees.length}`);
+        for (let i = 0; i < chunk.trees.length; i++) {
+            let tree = chunk.trees[i];
+            this.scene.add(tree.model);
         }
 
         return chunk;
+    }
+
+    update (deltaTime) {
+        for (const key in this.chunks) {
+        }
     }
 }
 
@@ -145,7 +152,7 @@ class TerrainChunk {
         this.heightData = heightData;
 
         this.trees = [];
-       // this.mixerList = [];
+        // this.mixerList = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -190,23 +197,25 @@ class TerrainChunk {
                 // Set height
                 vertex.z = data.height;
 
-                let random = Math.random();
-                if( random <0.01){
 
-                if(data.height>0 && data.height<5){
-                    let tree = new Tree(AssetMap["Tree_Pink_GLTFModel"]);
-                    tree.root.position.x=data.x;
-                    tree.root.position.y=data.z;
-                    tree.root.position.z=data.height;
+                let random = this.environment.prng.random();
+                if (random < 0.0001) {
 
+                    if (data.height > 1 && data.height < 10) {
+                        let tree = new Tree(Assets.glTF.PinkTree);
+                        tree.model.position.x = data.x;
+                        tree.model.position.y = data.height;
+                        tree.model.position.z = -data.y;
+                        tree.model.scale.set(0.3,0.3,0.3)
 
-                   // let treeMixer = new THREE.AnimationMixer(tree.root);
-                    //tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
-                    //scene.add(tree.root);
-                    //this.mixerList.push(treeMixer);
-                    this.trees.push(tree);
+                        // let treeMixer = new THREE.AnimationMixer(tree.root);
+                        //tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
+                        //scene.add(tree.root);
+                        //this.mixerList.push(treeMixer);
+                        this.trees.push(tree);
+                    }
                 }
-                }
+
 
 
             }

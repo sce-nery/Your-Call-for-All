@@ -8,10 +8,9 @@ class Tree {
         const clonedScene = SkeletonUtils.clone(gltf.scene);
         const root = new THREE.Object3D();
         root.add(clonedScene);
-        this.root = root;
-        this.model = gltf.scene;
+        this.model = root;
         this.animations = gltf.animations;
-        this.mixer = new THREE.AnimationMixer(this.root);
+        this.mixer = new THREE.AnimationMixer(this.model);
         this.actionMap = {};
 
         this.setupShadows();
@@ -59,4 +58,4 @@ class Tree {
 
 }
 
-export{Tree};
+export {Tree};
