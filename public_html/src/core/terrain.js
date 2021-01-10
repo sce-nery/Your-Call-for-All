@@ -28,10 +28,10 @@ class Terrain {
         //  gigabytes. Intelligently remove far away chunks so that the memory won't suffer.
         this.chunks = {};
 
-        // The THREE.Mesh object that currently at the center of the whole terrain.
-        // Typically, this mesh would be the mesh that character is on top. So, any raycasting or
-        // physics operations regarding the character should be made on this mesh object.
-        this.centerMesh = null;
+        // TerrainChunk object that currently at the center of the whole terrain.
+        // Typically, this mesh would be the one that character is on top. So, any raycasting or
+        // physics operations regarding the character should be made on this chunk's mesh object.
+        this.centerChunk = null;
 
         this.loadChunks(new THREE.Vector3());
     }
@@ -79,7 +79,7 @@ class Terrain {
         for (let i = 0; i < chunkOffsets.length; i++) {
             let chunk = this.addChunk(chunkOffsets[i]);
 
-            if (i === 0) this.centerMesh = chunk.mesh;
+            if (i === 0) this.centerChunk = chunk;
         }
 
     }
