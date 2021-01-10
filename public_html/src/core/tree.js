@@ -12,9 +12,18 @@ class Tree {
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);
         this.actionMap = {};
+        this.actionList = [];
 
         this.setupShadows();
         this.setupActions();
+    }
+
+    playActionByName(name) {
+        this.actionMap[name].play();
+    }
+
+    playActionByIndex(idx) {
+        this.actionList[idx].play();
     }
 
     setupShadows() {
@@ -36,25 +45,14 @@ class Tree {
             actions.push(this.mixer.clipAction(animations[i]));
         }
 
+        this.actionList = actions;
+
         this.actionMap = actions.reduce(function (map, obj) {
             obj.paused = false;
             map[obj._clip.name] = obj;
             return map;
         }, {});
     }
-
-    activateAllActions() {
-        // TODO.
-        for (const key in this.actionMap) {
-            let action = this.actionMap[key];
-            action.enabled = true;
-            action.setEffectiveTimeScale(1);
-            action.setEffectiveWeight(0.0);
-            //action.play();
-        }
-
-    }
-
 
 }
 

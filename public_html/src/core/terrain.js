@@ -1,6 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
-import { Assets} from "./assets.js";
+import {Assets} from "./assets.js";
 import {Tree} from "./tree.js";
 
 
@@ -148,22 +148,14 @@ class Terrain {
             // Store this chunk in the cache.
             this.chunks[key] = chunk;
         }
-
-        // Add the THREE.Mesh object to the THREE.Scene
-        this.scene.add(chunk.mesh);
-
-        console.log(`Number of trees for chunk (${key}):  ${chunk.trees.length}`);
-        for (let i = 0; i < chunk.trees.length; i++) {
-            let tree = chunk.trees[i];
-            this.scene.add(tree.model);
-        }
-
+        
         return chunk;
     }
 
-    update (deltaTime) {
-        for (const key in this.chunks) {
-        }
+    update(deltaTime) {
+        this.centerChunk.trees.forEach((tree) => {
+            tree.mixer.update(deltaTime);
+        })
     }
 }
 
@@ -174,8 +166,10 @@ class TerrainChunk {
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
 
+        this.isActive = false;
+        this.isInScene = false;
+
         this.trees = [];
-        // this.mixerList = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -218,34 +212,55 @@ class TerrainChunk {
                 vertex.y = data.y;
 
                 // Set height
+                // This is normally the Y component but we are going to rotate the terrain along z-axis by -90 degrees
                 vertex.z = data.height;
 
+                let position = new THREE.Vector3();
+                position.x = data.x;
+                position.y = data.height;
+                position.z = -data.y; // Because we are rotating z-axis of the terrain by -90 deg.
 
-                let random = this.environment.prng.random();
-                if (random < 0.0001) {
-
-                    if (data.height > 1 && data.height < 10) {
-                        let tree = new Tree(Assets.glTF.PinkTree);
-                        tree.model.position.x = data.x;
-                        tree.model.position.y = data.height;
-                        tree.model.position.z = -data.y;
-                        tree.model.scale.set(0.3,0.3,0.3)
-
-                        // let treeMixer = new THREE.AnimationMixer(tree.root);
-                        //tree.animations.forEach((clip) => {treeMixer.clipAction(clip).play(); });
-                        //scene.add(tree.root);
-                        //this.mixerList.push(treeMixer);
-                        this.trees.push(tree);
-                    }
-                }
-
-
-
+                this.scatterTrees(position);
+                this.scatterRocks(position);
+                this.scatterBushes(position);
             }
         }
 
+        console.debug(`Created ${this.trees.length} trees.`);
+
         this.geometry.verticesNeedUpdate = true;
         this.geometry.computeVertexNormals();
+    }
+
+    scatterTrees(position) {
+
+        let random = this.environment.prng.random();
+
+        if (random * 100 < 0.1) { // %0.1 of the time.
+
+            if (position.y > 1 && position.y < 10) { // Height check
+
+                let tree = new Tree(Assets.glTF.PinkTree);
+                tree.model.position.set(position.x, position.y, position.z);
+
+                tree.model.scale.set(0.3, 0.3, 0.3);
+
+                // Sets the wind animation for play.
+                tree.playActionByIndex(0);
+
+                this.trees.push(tree);
+            }
+        }
+
+
+    }
+
+    scatterRocks(heightMapPoint) {
+        // Todo
+    }
+
+    scatterBushes(heightMapPoint) {
+        // Todo
     }
 
     setupChunkMesh() {
@@ -254,11 +269,23 @@ class TerrainChunk {
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
     }
+
     addObjectsTo(scene) {
         console.debug("Adding chunk objects to scene...");
+        // For trees:
+        console.debug(`Adding: ${this.trees.length} trees`);
+        for (let i = 0; i < this.trees.length; i++) {
+            scene.add(this.trees[i].model);
+        }
     }
 
     removeObjectsFrom(scene) {
+        console.debug("Removing chunk objects from scene...");
+        // For trees:
+        console.debug(`Removing: ${this.trees.length} trees`);
+        for (let i = 0; i < this.trees.length; i++) {
+            scene.remove(this.trees[i].model);
+        }
     }
 }
 
