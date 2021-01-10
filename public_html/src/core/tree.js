@@ -1,14 +1,12 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
+import {Assets} from "./assets.js";
 
 
 class Tree {
     constructor(gltf) {
-        const clonedScene = SkeletonUtils.clone(gltf.scene);
-        const root = new THREE.Object3D();
-        root.add(clonedScene);
-        this.model = root;
+        this.model = Assets.cloneGLTF(gltf);
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);
         this.actionMap = {};
