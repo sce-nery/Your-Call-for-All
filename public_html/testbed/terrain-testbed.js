@@ -43,7 +43,7 @@ let cannonDebugRenderer;
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 2000000);
-    camera.position.set(0, 3, 10);
+    camera.position.set(0, 30, 10);
 }
 
 function setupRenderer() {
@@ -73,7 +73,7 @@ function setupScene() {
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
-    physicsDemoMesh.position.set(0, 5, 0);
+    physicsDemoMesh.position.set(0, 10, 0);
     scene.add(physicsDemoMesh);
 
     // Physics
