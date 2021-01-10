@@ -120,6 +120,7 @@ class Environment {
     update(deltaTime) {
         this.updateWater(deltaTime);
         this.sky.update(deltaTime);
+        this.terrain.update(deltaTime);
     }
 
 }
