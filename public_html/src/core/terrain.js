@@ -148,7 +148,7 @@ class Terrain {
             // Store this chunk in the cache.
             this.chunks[key] = chunk;
         }
-        
+
         return chunk;
     }
 
@@ -232,16 +232,16 @@ class TerrainChunk {
         this.geometry.computeVertexNormals();
     }
 
-    scatterTrees(position) {
+    scatterTrees(candidatePosition) {
 
         let random = this.environment.prng.random();
 
         if (random * 100 < 0.1) { // %0.1 of the time.
 
-            if (position.y > 1 && position.y < 10) { // Height check
+            if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
 
                 let tree = new Tree(Assets.glTF.PinkTree);
-                tree.model.position.set(position.x, position.y, position.z);
+                tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
 
                 tree.model.scale.set(0.3, 0.3, 0.3);
 
@@ -255,11 +255,11 @@ class TerrainChunk {
 
     }
 
-    scatterRocks(heightMapPoint) {
+    scatterRocks(candidatePosition) {
         // Todo
     }
 
-    scatterBushes(heightMapPoint) {
+    scatterBushes(candidatePosition) {
         // Todo
     }
 
