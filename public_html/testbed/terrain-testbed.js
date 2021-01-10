@@ -269,7 +269,7 @@ function render() {
     }
 
     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
     if (intersects[0] !== undefined) {
         let distance = 1.75;
