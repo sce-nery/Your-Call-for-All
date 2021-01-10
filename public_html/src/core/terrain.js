@@ -2,6 +2,7 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {Tree} from "./tree.js";
+import {BrokenBottle} from "./decision-points.js";
 
 
 class Terrain {
@@ -171,6 +172,8 @@ class TerrainChunk {
 
         this.trees = [];
 
+        this.decisionPoints = [];
+
         this.setupChunkGeometry();
         this.setupChunkMaterial();
         this.setupChunkMesh();
@@ -215,14 +218,18 @@ class TerrainChunk {
                 // This is normally the Y component but we are going to rotate the terrain along z-axis by -90 degrees
                 vertex.z = data.height;
 
-                let position = new THREE.Vector3();
-                position.x = data.x;
-                position.y = data.height;
-                position.z = -data.y; // Because we are rotating z-axis of the terrain by -90 deg.
+                let candidatePosition = new THREE.Vector3();
+                candidatePosition.x = data.x;
+                candidatePosition.y = data.height;
+                candidatePosition.z = -data.y; // Because we are rotating z-axis of the terrain by -90 deg.
+                // TODO: Maybe calculate the slope of the vertex too?
 
-                this.scatterTrees(position);
-                this.scatterRocks(position);
-                this.scatterBushes(position);
+                this.scatterTrees(candidatePosition);
+                this.scatterRocks(candidatePosition);
+                this.scatterBushes(candidatePosition);
+
+                // Decision points:
+                this.scatterDecisionPoints(candidatePosition);
             }
         }
 
@@ -263,6 +270,19 @@ class TerrainChunk {
         // Todo
     }
 
+    scatterDecisionPoints(candidatePosition) {
+        const percent = this.environment.prng.random() * 100;
+
+        if (percent < 0.01) {
+            if (candidatePosition.y > 1 && candidatePosition.y < 10) {
+                let brokenBottle = new BrokenBottle();
+                brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                this.decisionPoints.push(brokenBottle);
+            }
+        }
+    }
+
     setupChunkMesh() {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
@@ -277,6 +297,11 @@ class TerrainChunk {
         for (let i = 0; i < this.trees.length; i++) {
             scene.add(this.trees[i].model);
         }
+        // For decision points:
+        console.debug(`Adding: ${this.decisionPoints.length} decision points`);
+        for (let i = 0; i < this.decisionPoints.length; i++) {
+            scene.add(this.decisionPoints[i].model);
+        }
     }
 
     removeObjectsFrom(scene) {
@@ -285,6 +310,11 @@ class TerrainChunk {
         console.debug(`Removing: ${this.trees.length} trees`);
         for (let i = 0; i < this.trees.length; i++) {
             scene.remove(this.trees[i].model);
+        }
+        // For decision points:
+        console.debug(`Removing: ${this.decisionPoints.length} decision points`);
+        for (let i = 0; i < this.decisionPoints.length; i++) {
+            scene.remove(this.decisionPoints[i].model);
         }
     }
 }
