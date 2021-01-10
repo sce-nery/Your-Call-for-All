@@ -1,0 +1,45 @@
+import {LinearInterpolator} from "../math/math.js";
+import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {Assets} from "./assets.js";
+import {Water as ThreeWater} from "../../vendor/three-js/examples/jsm/objects/Water.js";
+
+
+class Water {
+    constructor(environment) {
+        this.environment = environment;
+
+        const waterGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
+
+        Assets.Texture.WaterNormals.wrapS = Assets.Texture.WaterNormals.wrapT = THREE.RepeatWrapping;
+
+        let waterMesh = new ThreeWater(
+            waterGeometry,
+            {
+                textureWidth: 512,
+                textureHeight: 512,
+                waterNormals: Assets.Texture.WaterNormals,
+                alpha: 0.2,
+                sunDirection: new THREE.Vector3(),
+                sunColor: 0xffffff,
+                waterColor: 0x001e0f,
+                distortionScale: 1.0,
+                fog: this.environment.scene.fog !== undefined
+            }
+        );
+
+        waterMesh.rotation.x = -Math.PI / 2;
+
+        this.mesh = waterMesh;
+    }
+
+    update(deltaTime) {
+        const health = this.environment.props.healthFactor;
+
+        this.mesh.material.uniforms['time'].value += deltaTime / 2.0;
+        this.mesh.material.uniforms['sunDirection'].value = this.environment.sky.sunLight.position.clone().negate();
+        this.mesh.material.uniforms['sunColor'].value = this.environment.sky.sunLight.color;
+        this.mesh.material.uniforms['waterColor'].value = new THREE.Color(LinearInterpolator.color(0xad7f00, 0x001e0f, health));
+    }
+}
+
+export {Water};
