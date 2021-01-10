@@ -116,7 +116,7 @@ class Environment {
 
     update(deltaTime) {
         this.updateWater(deltaTime);
-        this.sky.update();
+        this.sky.update(deltaTime);
     }
 
 }
