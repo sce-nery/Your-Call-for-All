@@ -5,7 +5,7 @@ import {Sky} from "./sky.js";
 import {Water} from "../../vendor/three-js/examples/jsm/objects/Water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {Color} from "../../vendor/three-js/build/three.module.js";
-import {AssetMap} from "./assets.js";
+import {Assets} from "./assets.js";
 import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 
@@ -14,17 +14,18 @@ class Environment {
      * Game object dealing with the environment objects like terrains, waters, sky,
      * trees, bushes, rocks and decision point objects
      *
-     * @param scene The models will be added to this THREE.Scene object
+     * @param yourCallForAll The owner game state
      * @param seed The integer number that will be used to create random number generator.
      * This seed number ensures that the same random numbers are generated. You can supply a different
      * scene to create different random number that will be used for terrain generation and object scattering.
      */
-    constructor(scene, seed) {
+    constructor(yourCallForAll, seed) {
+        this.owner = yourCallForAll;
 
         this.seed = seed;
         this.setupPRNG();
 
-        this.scene = scene;
+        this.scene = this.owner.scene;
 
         this.setupTerrain();
         this.setupSky();
@@ -61,7 +62,7 @@ class Environment {
         });
         // Creates a terrain object that will control terrain chunks.
         // terrain.loadChunks(position) will load 9 chunks around that position.
-        this.terrain = new Terrain(this.scene, heightMap, {chunkSize: 200});
+        this.terrain = new Terrain(this, heightMap, {chunkSize: 200});
     }
 
     setupSky() {
@@ -84,12 +85,14 @@ class Environment {
     setupWater() {
         const waterGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
+        Assets.Texture.WaterNormals.wrapS = Assets.Texture.WaterNormals.wrapT = THREE.RepeatWrapping;
+
         let water = new Water(
             waterGeometry,
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: AssetMap["WaterNormals"],
+                waterNormals: Assets.Texture.WaterNormals,
                 alpha: 0.2,
                 sunDirection: new THREE.Vector3(),
                 sunColor: 0xffffff,
@@ -117,6 +120,7 @@ class Environment {
     update(deltaTime) {
         this.updateWater(deltaTime);
         this.sky.update(deltaTime);
+        this.terrain.update(deltaTime);
     }
 
 }
