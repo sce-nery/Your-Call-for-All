@@ -1,10 +1,6 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
-import {AssetMap} from "./assets.js";
-import {Tree} from "./tree.js";
-
-
-
+import { Assets} from "./assets.js";
 
 class Terrain {
 
@@ -12,14 +8,15 @@ class Terrain {
      * A Terrain object that will control terrain chunks.
      * Terrain chunks are generated according to the supplied heightmap object.
      *
-     * @param scene THREE.Scene object that we will add terrain chunks to.
+     * @param environment The Environment instance that this terrain belongs to.
      * @param heightMap Heightmap supplier of this terrain.
      * @param props Properties such as chunk size.
      */
-    constructor(scene, heightMap, props = {
+    constructor(environment, heightMap, props = {
         chunkSize: 256
     }) {
-        this.scene = scene;
+        this.environment = environment;
+        this.scene = environment.scene;
         this.props = props;
         this.heightMap = heightMap;
 
@@ -43,7 +40,7 @@ class Terrain {
      * @param position Generally, the character's position.
      * @param purgeCache Whether to remove cache before loading.
      */
-    loadChunks(position, purgeCache=false) {
+    loadChunks(position, purgeCache = false) {
         if (purgeCache) {
             this.removeChunks();
             this.chunks = {};
@@ -120,7 +117,7 @@ class Terrain {
             // If the chunk is not found on the cache, create a new one.
             // Sample height data from the heightmap. This is a matrix of vertex positions in 3D.
             let heightData = this.heightMap.sample(this.props.chunkSize, this.props.chunkSize, offset.x, offset.y);
-            chunk = new TerrainChunk(this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
+            chunk = new TerrainChunk(this.environment, this.props.chunkSize, new THREE.Vector3(offset.x, 0, offset.y), heightData);
             chunk.isActive = true;
             console.debug(`Creating new chunk: ${key}`);
             // Store this chunk in the cache.
@@ -141,7 +138,8 @@ class Terrain {
 }
 
 class TerrainChunk {
-    constructor(chunkSize, chunkPosition, heightData) {
+    constructor(environment, chunkSize, chunkPosition, heightData) {
+        this.environment = environment;
         this.chunkSize = chunkSize;
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
@@ -157,8 +155,8 @@ class TerrainChunk {
     setupChunkMaterial() {
         // Retrieve textures.
         // TODO: This material should change based on the health of the environment.
-        let colorMap = AssetMap["Ground1_Color"];
-        let normalMap = AssetMap["Ground1_Normal"];
+        let colorMap = Assets.Texture.Ground1_Color;
+        let normalMap = Assets.Texture.Ground1_Normal;
 
         TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
         TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);

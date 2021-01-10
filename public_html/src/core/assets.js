@@ -2,30 +2,46 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
-export const AssetMap = {};
+const loadingManager = new THREE.LoadingManager();
 
-const gltfLoader = new GLTFLoader();
+export const Assets = {
+    glTF: {
+        MoCapMan: {url: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb"},
+        PinkTree: {url: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf"},
+        WillowTree: {url: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf"},
+        PalmTree: {url: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf"},
+        RealTree: {url: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf"},
+    },
 
-export async function load() {
-    AssetMap["Ground1_Color"] = new THREE.TextureLoader().load('/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png');
-    AssetMap["Ground1_Normal"] = new THREE.TextureLoader().load('/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png');
+    Texture: {
+        Ground1_Color: {url: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png'},
+        Ground1_Normal: {url: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png'},
+        WaterNormals: {url: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg'},
+    },
 
-    AssetMap["WaterNormals"] = new THREE.TextureLoader().load('/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg');
-    AssetMap["WaterNormals"].wrapS = AssetMap["WaterNormals"].wrapT = THREE.RepeatWrapping;
+    load: function (onLoad) {
+        const gltfLoader = new GLTFLoader(loadingManager);
+        const textureLoader = new THREE.TextureLoader(loadingManager);
 
-    AssetMap["MoCapManGLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb");
+        gltfLoader.setWithCredentials(true);
+        textureLoader.setWithCredentials(true);
+
+        for (const key of Object.keys(this.glTF)) {
+            gltfLoader.load(this.glTF[key].url, (gltf) => {
+                this.glTF[key] = gltf;
+            });
+        }
+
+        for (const key of Object.keys(this.Texture)) {
+            textureLoader.load(this.Texture[key].url, (texture) => {
+                this.Texture[key] = texture;
+            });
+        }
+
+        loadingManager.onLoad = onLoad;
+    }
+};
 
 
-    AssetMap["Tree_Pink_GLTFModel"] = await asyncLoadGLTF( "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf");
-    AssetMap["Tree_Willow_GLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf");
-    AssetMap["Tree_Palm_GLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf");
-    AssetMap["Tree_Real_GLTFModel"] = await asyncLoadGLTF("/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf");
-}
-
-function asyncLoadGLTF(url) {
-    return new Promise((resolve, reject) => {
-        gltfLoader.load(url, data => resolve(data), null, reject);
-    });
-}
 
 

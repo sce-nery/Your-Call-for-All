@@ -20,7 +20,7 @@ class Sky {
         this.skyDome.scale.setScalar(450000);
     }
 
-    update() {
+    update(deltaTime) {
         const uniforms = this.skyDome.material.uniforms;
 
         uniforms["turbidity"].value = this.props.turbidity;
