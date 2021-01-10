@@ -57,8 +57,8 @@ export const Assets = {
         }
 
         for (const key of Object.keys(this.URL.OBJ)) {
-            objLoader.load(this.URL.OBJ[key], (gltf) => {
-                this.OBJ[key] = gltf;
+            objLoader.load(this.URL.OBJ[key], (obj) => {
+                this.OBJ[key] = obj;
             });
         }
 
