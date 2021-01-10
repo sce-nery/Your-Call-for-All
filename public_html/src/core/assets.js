@@ -24,11 +24,11 @@ export const Assets = {
     },
 
     glTF: {
-        MoCapMan: undefined,
-        PinkTree: undefined,
-        WillowTree: undefined,
-        PalmTree: undefined,
-        RealTree: undefined,
+        MoCapMan: null,
+        PinkTree: null,
+        WillowTree: null,
+        PalmTree: null,
+        RealTree: null,
     },
 
     OBJ: {
@@ -36,9 +36,9 @@ export const Assets = {
     },
 
     Texture: {
-        Ground1_Color: undefined,
-        Ground1_Normal: undefined,
-        WaterNormals: undefined,
+        Ground1_Color: null,
+        Ground1_Normal: null,
+        WaterNormals: null,
     },
 
     load: function (onLoad) {
