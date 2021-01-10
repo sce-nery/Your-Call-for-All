@@ -3,7 +3,7 @@ import {Sky as ThreeSky} from "../../vendor/three-js/examples/jsm/objects/Sky.js
 import {LinearInterpolator} from "../math/math.js";
 
 class Sky {
-    constructor(props = {
+    constructor(environment, props = {
         turbidity: 10,
         rayleigh: 3,
         mieCoefficient: 0.005,
