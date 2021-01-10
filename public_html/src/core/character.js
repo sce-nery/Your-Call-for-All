@@ -9,15 +9,30 @@ class Character {
         this.mixer = new THREE.AnimationMixer(this.model);
         this.actions = this.setupActions();
 
+
+
         this.setupShadows();
         this.scene.add(this.model);
+        this.model.position.x = 10;
+        this.model.position.y = 10;
+
+        this.actions.forEach((action) =>  {
+            action.play();
+        } );
+
     }
 
+    update(deltaTime) {
+        this.mixer.update( deltaTime );
+    }
+    
     setupActions() {
         Logger.debug("Setting up actions for this character model.")
         let idleAction = this.mixer.clipAction(this.animations[0]);
         let walkAction = this.mixer.clipAction(this.animations[3]);
         let runAction = this.mixer.clipAction(this.animations[1]);
+
+
         return [idleAction, walkAction, runAction];
     }
 

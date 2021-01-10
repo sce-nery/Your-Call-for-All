@@ -14,6 +14,7 @@ class YourCallForAll {
 
     update(deltaTime){
         this.environment.update(deltaTime);
+        this.character.update(deltaTime);
     }
 }
 
