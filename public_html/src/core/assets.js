@@ -22,8 +22,8 @@ export const Assets = {
         Texture: {
             Grass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Color.png',
             Grass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Normal.png',
-            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Color.jpg',
-            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Normal.jpg',
+            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_1K_Color.jpg',
+            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_1K_Normal.jpg',
             Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_1K_Color.jpg',
             Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_1K_Color.jpg',
             Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_1K_Color.jpg',
