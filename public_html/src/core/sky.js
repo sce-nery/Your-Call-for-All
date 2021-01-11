@@ -28,7 +28,7 @@ class Sky extends GameObject {
         this.time += deltaTime;
         const uniforms = this.skyDome.material.uniforms;
 
-        let dayCycle = 120;
+        let dayCycle = 60;
 
         let inc = (this.time / dayCycle) % 1.0;
 

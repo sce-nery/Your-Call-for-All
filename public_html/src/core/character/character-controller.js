@@ -57,6 +57,7 @@ class BasicCharacterController {
             loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
             loader.load('run.fbx', (a) => { _OnLoad('run', a); });
             loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
+            loader.load('jump.fbx', (a) => { _OnLoad('jump', a); });
         });
 
 

@@ -1,4 +1,4 @@
-import {IdleState, RunState, WalkState} from "./states.js";
+import {IdleState, RunState, WalkState, JumpState} from "./states.js";
 
 class FiniteStateMachine {
     constructor() {
@@ -42,6 +42,8 @@ class CharacterFSM extends FiniteStateMachine {
         this.addState('idle', IdleState);
         this.addState('walk', WalkState);
         this.addState('run', RunState);
+        this.addState('jump', JumpState);
+
     }
 
 }

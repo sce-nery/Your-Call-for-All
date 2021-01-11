@@ -141,6 +141,40 @@ class IdleState extends State {
     }
 }
 
+class JumpState extends State {
+    constructor(parent) {
+        super(parent);
+    }
+
+    get Name() {
+        return 'jump';
+    }
+
+    Enter(prevState) {
+        const jumpAction = this._parent._proxy._animations['idle'].action;
+        if (prevState.Name === 'walk') {
+            const prevAction = this._parent._proxy._animations[prevState.Name].action;
+            const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
+            jumpAction.time = prevAction.time * ratio;
+        } else {
+            jumpAction.time = 0.0;
+            jumpAction.setEffectiveTimeScale(1.0);
+            jumpAction.setEffectiveWeight(1.0);
+        }
+    }
+
+    Exit() {
+    }
+
+    Update(_, input) {
+        if (input._keys.forward || input._keys.backward) {
+
+        } else if (input._keys.space) {
+            this._parent.SetState('jump');
+        }
+    }
+}
 
 
-export {State, WalkState, RunState, IdleState};
+
+export {State, WalkState, RunState, IdleState, JumpState};
