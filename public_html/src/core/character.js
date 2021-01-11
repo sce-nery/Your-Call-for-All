@@ -124,7 +124,7 @@ class BasicCharacterController {
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/zombie/');
         loader.load('mremireh_o_desbiens.fbx', (fbx) => {
-            fbx.scale.setScalar(0.1);
+            fbx.scale.setScalar(0.01);
             fbx.traverse(c => {
                 c.castShadow = true;
             });
@@ -154,7 +154,7 @@ class BasicCharacterController {
             loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
             loader.load('run.fbx', (a) => { _OnLoad('run', a); });
             loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
-            loader.load('dance.fbx', (a) => { _OnLoad('dance', a); });
+
         });
     }
 
@@ -197,10 +197,6 @@ class BasicCharacterController {
         const acc = this._acceleration.clone();
         if (this._input._keys.shift) {
             acc.multiplyScalar(2.0);
-        }
-
-        if (this._stateMachine._currentState.Name === 'dance') {
-            acc.multiplyScalar(0.0);
         }
 
         if (this._input._keys.forward) {
@@ -356,7 +352,6 @@ class CharacterFSM extends FiniteStateMachine {
         this._AddState('idle', IdleState);
         this._AddState('walk', WalkState);
         this._AddState('run', RunState);
-        this._AddState('dance', DanceState);
     }
 }
 
@@ -369,56 +364,6 @@ class State {
     Enter() {}
     Exit() {}
     Update() {}
-}
-
-class DanceState extends State {
-    constructor(parent) {
-        super(parent);
-
-        this._FinishedCallback = () => {
-            this._Finished();
-        }
-    }
-
-    get Name() {
-        return 'dance';
-    }
-
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['dance'].action;
-        const mixer = curAction.getMixer();
-        mixer.addEventListener('finished', this._FinishedCallback);
-
-        if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name].action;
-
-            curAction.reset();
-            curAction.setLoop(THREE.LoopOnce, 1);
-            curAction.clampWhenFinished = true;
-            curAction.crossFadeFrom(prevAction, 0.2, true);
-            curAction.play();
-        } else {
-            curAction.play();
-        }
-    }
-
-    _Finished() {
-        this._Cleanup();
-        this._parent.SetState('idle');
-    }
-
-    _Cleanup() {
-        const action = this._parent._proxy._animations['dance'].action;
-
-        action.getMixer().removeEventListener('finished', this._CleanupCallawback);
-    }
-
-    Exit() {
-        this._Cleanup();
-    }
-
-    Update(_) {
-    }
 }
 
 
@@ -549,7 +494,6 @@ class IdleState extends State {
         if (input._keys.forward || input._keys.backward) {
             this._parent.SetState('walk');
         } else if (input._keys.space) {
-            this._parent.SetState('dance');
         }
     }
 }
@@ -564,7 +508,7 @@ class ThirdPersonCamera {
     }
 
     _CalculateIdealOffset() {
-        const idealOffset = new THREE.Vector3(-15, 20, -30);
+        const idealOffset = new THREE.Vector3(-1, 2, -8);
         idealOffset.applyQuaternion(this._params.target.Rotation);
         idealOffset.add(this._params.target.Position);
         return idealOffset;
