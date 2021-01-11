@@ -40,14 +40,14 @@ function init() {
 
 
     Assets.load(() => {
-        yourCallForAll = new YourCallForAll(scene);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
     });
 
     stats = createPerformanceMonitor(document.body);
 
-    char = new Character(scene, camera, renderer);
+
 
     //controls = new OrbitControls(camera, renderer.domElement);
     //controls.update();

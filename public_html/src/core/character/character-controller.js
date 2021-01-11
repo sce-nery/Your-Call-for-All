@@ -6,10 +6,6 @@ import {CharacterFSM} from "./finite-state-machines.js";
 
 class BasicCharacterController {
     constructor(params) {
-        this._Init(params);
-    }
-
-    _Init(params) {
         this._params = params;
         this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
         this._acceleration = new THREE.Vector3(1, 0.25, 50.0);
@@ -27,13 +23,15 @@ class BasicCharacterController {
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/zombie/');
         let charPath = 'mremireh_o_desbiens.fbx';
-        //let charPath = 'remy.fbx';
 
         loader.load(charPath, (fbx) => {
+
             fbx.scale.setScalar(0.01);
             fbx.traverse(c => {
                 c.castShadow = true;
             });
+
+            console.log(fbx.position);
 
             this._target = fbx;
             this._params.scene.add(this._target);
@@ -60,8 +58,9 @@ class BasicCharacterController {
             loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
             loader.load('run.fbx', (a) => { _OnLoad('run', a); });
             loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
-
         });
+
+
     }
 
     get Position() {

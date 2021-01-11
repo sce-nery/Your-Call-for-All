@@ -6,7 +6,7 @@ class FiniteStateMachine {
         this._currentState = null;
     }
 
-    _AddState(name, type) {
+    addState(name, type) {
         this._states[name] = type;
     }
 
@@ -39,14 +39,11 @@ class CharacterFSM extends FiniteStateMachine {
     constructor(proxy) {
         super();
         this._proxy = proxy;
-        this._Init();
+        this.addState('idle', IdleState);
+        this.addState('walk', WalkState);
+        this.addState('run', RunState);
     }
 
-    _Init() {
-        this._AddState('idle', IdleState);
-        this._AddState('walk', WalkState);
-        this._AddState('run', RunState);
-    }
 }
 
 
