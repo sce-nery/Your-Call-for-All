@@ -13,8 +13,6 @@ class YourCallForAll {
     }
 
 
-
-
     update(deltaTime){
         this.environment.update(deltaTime,new THREE.Vector3(0));
         //this.character.update(deltaTime);

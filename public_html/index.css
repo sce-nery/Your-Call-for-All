@@ -60,8 +60,6 @@
 
 }
 
-
-
 #main-menu {
     width:0px;
     height:0px;
@@ -108,7 +106,7 @@
 
 }
 
-#multiplayer:hover {
+#start:hover {
     background:#7A0000;
     color:white;
 
@@ -141,7 +139,7 @@
     right:4px;
 }
 
-#multiplayer {
+#start {
     height:50px;
     width:300px;
     right:150px;
@@ -152,14 +150,14 @@
 
     font-size:30px;
     text-align:center;
-    font-family:shadows into light;
+    font-family:"Arial Rounded MT Bold";
     color:orange;
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
 
 }
-#multiplayer p {
+#start p {
     position:relative;
     top:0px;
     right:9px;

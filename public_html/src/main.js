@@ -28,7 +28,7 @@ function init() {
         const loadingElem = document.querySelector('#loading');
         loadingElem.style.display = 'none';
 
-        document.querySelector('#main-menu').style.visibility = 'visible';
+        //document.querySelector('#main-menu').style.visibility = 'visible';
 
         clock = new THREE.Clock();
 
