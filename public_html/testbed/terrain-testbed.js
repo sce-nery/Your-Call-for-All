@@ -43,7 +43,7 @@ let cannonDebugRenderer;
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 2000000);
-    camera.position.set(0, 3, 10);
+    camera.position.set(0, 30, 10);
 }
 
 function setupRenderer() {
@@ -73,7 +73,7 @@ function setupScene() {
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
-    physicsDemoMesh.position.set(0, 5, 0);
+    physicsDemoMesh.position.set(0, 10, 0);
     scene.add(physicsDemoMesh);
 
     // Physics
@@ -253,20 +253,12 @@ let velocity = new THREE.Vector3();
 function render() {
     let deltaTime = clock.getDelta();
 
-    ycfa.update(deltaTime);
-
-    let lastPos = physicsDemoMesh.position.clone();
-
     let physicsDemoMeshVelocity = new THREE.Vector3();
     physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
     physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
 
     physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
     physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
-
-    if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
-        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position);
-    }
 
     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
     let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
@@ -287,6 +279,8 @@ function render() {
 
         physicsDemoMesh.translateY(physicsDemoMeshVelocity.y);
     }
+
+    ycfa.update(deltaTime, physicsDemoMesh.position);
 
     composer.render();
 

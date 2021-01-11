@@ -1,10 +1,12 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {OBJLoader} from "../../vendor/three-js/examples/jsm/loaders/OBJLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 
 const loadingManager = new THREE.LoadingManager();
 
 export const Assets = {
+
     URL: {
         glTF: {
             MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
@@ -24,10 +26,11 @@ export const Assets = {
             WoodenBlock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/wooden-block/scene.gltf",
             TropicalPlant:   "/Your-Call-for-All/public_html/assets/models/grass-bush/tropical-plant/scene.gltf",
             Rock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
-        },
-        OBJ: {
+            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
+
 
         },
+        OBJ: {},
         Texture: {
             Ground1_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png',
             Ground1_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png',
@@ -53,13 +56,14 @@ export const Assets = {
         WoodenBlock:  null,
         TropicalPlant:  null,
         Rock:  null,
+        BrokenBottle: null,
 
     },
 
     Texture: {
-        Ground1_Color: undefined,
-        Ground1_Normal: undefined,
-        WaterNormals: undefined,
+        Ground1_Color: null,
+        Ground1_Normal: null,
+        WaterNormals: null,
     },
 
     load: function (onLoad) {
@@ -91,13 +95,22 @@ export const Assets = {
 
         loadingManager.onLoad = onLoad;
 
-        loadingManager.onError = function (e) {
-            console.error(e);
-            console.warn("Attempting to load assets by refreshing site in a second.");
-            setTimeout(function () {
-                location.reload();
-            }, 1000);
-        };
+        // Comment this if error is unrelated to asset loading,
+        // and check preserve logs checkbox in browser console
+        // loadingManager.onError = function (e) {
+        //     console.error(e);
+        //     console.warn("Attempting to load assets by refreshing site in 2 secs.");
+        //     setTimeout(function () {
+        //         location.reload();
+        //     }, 2000);
+        // };
+    },
+
+    cloneGLTF: function (gltf) {
+        const clonedScene = SkeletonUtils.clone(gltf.scene);
+        const root = new THREE.Object3D();
+        root.add(clonedScene);
+        return root;
     }
 };
 

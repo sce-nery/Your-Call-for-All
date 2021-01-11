@@ -84,6 +84,7 @@ function init() {
     stats = createPerformanceMonitor(document.body);
 }
 
+let  position = new  THREE.Vector3();
 
 function render() {
     let deltaTime = clock.getDelta();
@@ -95,7 +96,8 @@ function render() {
 
     }*/
     controls.update();
-    yourCallForAll.update(deltaTime);
+
+    yourCallForAll.update(deltaTime, position);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
     composer.render();
