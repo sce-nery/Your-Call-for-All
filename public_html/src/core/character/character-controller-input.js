@@ -1,4 +1,3 @@
-
 class BasicCharacterControllerInput {
     constructor() {
         this._Init();

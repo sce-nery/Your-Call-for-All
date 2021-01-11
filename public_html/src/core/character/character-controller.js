@@ -1,5 +1,7 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
+import {BasicCharacterControllerInput} from "./character-controller-input.js";
+import {CharacterFSM} from "./finite-state-machines.js";
 
 
 class BasicCharacterController {

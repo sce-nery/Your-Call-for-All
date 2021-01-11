@@ -1,3 +1,4 @@
+import {IdleState, RunState, WalkState} from "./states.js";
 
 class FiniteStateMachine {
     constructor() {

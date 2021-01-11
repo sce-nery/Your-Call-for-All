@@ -1,4 +1,4 @@
-import * as THREE from "../../../vendor/three-js/build/three.module";
+import * as THREE from "../../../vendor/three-js/build/three.module.js";
 
 
 class ThirdPersonCamera {
@@ -39,3 +39,6 @@ class ThirdPersonCamera {
         this._camera.lookAt(this._currentLookat);
     }
 }
+
+
+export {ThirdPersonCamera};

@@ -140,3 +140,7 @@ class IdleState extends State {
         }
     }
 }
+
+
+
+export {State, WalkState, RunState, IdleState};

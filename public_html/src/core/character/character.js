@@ -1,6 +1,8 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {GLTFLoader} from "../../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {BasicCharacterController} from "./character-controller.js";
+import {ThirdPersonCamera} from "./third-person-camera.js";
 
 
 class Character  {
@@ -89,13 +91,6 @@ class Character  {
 
 
 }
-
-
-
-
-
-
-
 
 
 export {Character};
