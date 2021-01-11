@@ -18,9 +18,14 @@ export const Assets = {
         },
         OBJ: {},
         Texture: {
-            Ground1_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png',
-            Ground1_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png',
-            WaterNormals: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg',
+            Grass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Color.png',
+            Grass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Normal.png',
+            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Color.jpg',
+            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Normal.jpg',
+            Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_1K_Color.jpg',
+            Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_1K_Color.jpg',
+            Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_1K_Color.jpg',
+            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg',
         }
     },
 
@@ -36,9 +41,14 @@ export const Assets = {
     OBJ: {},
 
     Texture: {
-        Ground1_Color: null,
-        Ground1_Normal: null,
-        WaterNormals: null,
+        ShallowGrass_Color: null,
+        ShallowGrass_Normal: null,
+        Sand_Color: null,
+        Grass_Color: null,
+        Grass_Normal: null,
+        Snow_Color: null,
+        Rocks_Color: null,
+        Water_Normal: null,
     },
 
     load: function (onLoad) {
@@ -72,13 +82,13 @@ export const Assets = {
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
-        loadingManager.onError = function (e) {
-            console.error(e);
-            console.warn("Attempting to load assets by refreshing site in 2 secs.");
-            setTimeout(function () {
-                location.reload();
-            }, 2000);
-        };
+        // loadingManager.onError = function (e) {
+        //     console.error(e);
+        //     console.warn("Attempting to load assets by refreshing site in 2 secs.");
+        //     setTimeout(function () {
+        //         location.reload();
+        //     }, 2000);
+        // };
     },
 
     cloneGLTF: function (gltf) {
