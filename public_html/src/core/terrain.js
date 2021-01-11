@@ -3,6 +3,7 @@ import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {Tree} from "./tree.js";
 import {BrokenBottle} from "./decision-points.js";
+import {GameObject} from "./objects.js";
 
 
 class Terrain {
@@ -76,10 +77,6 @@ class Terrain {
             new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z - chunkSize),
         ];
 
-        if (this.centerChunk) {
-            this.centerChunk.removeObjectsFrom(this.scene);
-        }
-
         this.makeAllChunksInactive();
 
         this.centerChunk = this.createChunk(chunkOffsets[0]);
@@ -98,7 +95,7 @@ class Terrain {
     }
 
     /**
-     * Removes active chunks from the scene in order to improve FPS.
+     * Removes inactive chunks from the scene in order to improve FPS.
      */
     removeInactiveChunksFromScene() {
         for (let key in this.chunks) {
@@ -118,7 +115,6 @@ class Terrain {
                 chunk.isInScene = true;
             }
         }
-        this.centerChunk.addObjectsTo(this.scene);
     }
 
     /**
@@ -153,26 +149,26 @@ class Terrain {
         return chunk;
     }
 
-    update(deltaTime) {
-        this.centerChunk.trees.forEach((tree) => {
-            tree.mixer.update(deltaTime);
-        })
+    update(deltaTime, playerPosition) {
+        for (let key in this.chunks) {
+            let chunk = this.chunks[key];
+            if (chunk.isActive) {
+                chunk.update(deltaTime, playerPosition);
+            }
+        }
     }
 }
 
-class TerrainChunk {
+class TerrainChunk extends GameObject {
     constructor(environment, chunkSize, chunkPosition, heightData) {
+        super();
+
         this.environment = environment;
         this.chunkSize = chunkSize;
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
 
         this.isActive = false;
-        this.isInScene = false;
-
-        this.trees = [];
-
-        this.decisionPoints = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -233,7 +229,7 @@ class TerrainChunk {
             }
         }
 
-        console.debug(`Created ${this.trees.length} trees.`);
+        console.debug(`Created ${this.environment.objects.length} objects.`);
 
         this.geometry.verticesNeedUpdate = true;
         this.geometry.computeVertexNormals();
@@ -255,7 +251,7 @@ class TerrainChunk {
                 // Sets the wind animation for play.
                 tree.playActionByIndex(0);
 
-                this.trees.push(tree);
+                this.environment.objects.push(tree);
             }
         }
 
@@ -278,7 +274,7 @@ class TerrainChunk {
                 let brokenBottle = new BrokenBottle();
                 brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
 
-                this.decisionPoints.push(brokenBottle);
+                this.environment.objects.push(brokenBottle);
             }
         }
     }
@@ -290,32 +286,8 @@ class TerrainChunk {
         this.mesh.rotation.x = -Math.PI / 2;
     }
 
-    addObjectsTo(scene) {
-        console.debug("Adding chunk objects to scene...");
-        // For trees:
-        console.debug(`Adding: ${this.trees.length} trees`);
-        for (let i = 0; i < this.trees.length; i++) {
-            scene.add(this.trees[i].model);
-        }
-        // For decision points:
-        console.debug(`Adding: ${this.decisionPoints.length} decision points`);
-        for (let i = 0; i < this.decisionPoints.length; i++) {
-            scene.add(this.decisionPoints[i].model);
-        }
-    }
-
-    removeObjectsFrom(scene) {
-        console.debug("Removing chunk objects from scene...");
-        // For trees:
-        console.debug(`Removing: ${this.trees.length} trees`);
-        for (let i = 0; i < this.trees.length; i++) {
-            scene.remove(this.trees[i].model);
-        }
-        // For decision points:
-        console.debug(`Removing: ${this.decisionPoints.length} decision points`);
-        for (let i = 0; i < this.decisionPoints.length; i++) {
-            scene.remove(this.decisionPoints[i].model);
-        }
+    update (deltaTime, playerPosition) {
+        //
     }
 }
 

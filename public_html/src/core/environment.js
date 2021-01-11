@@ -26,15 +26,21 @@ class Environment {
         this.setupPRNG();
 
         this.scene = this.owner.scene;
+        this.scene.fog = new THREE.Fog(0xa0afa0, 100, 200);
+
+        // Other game objects
+        this.objects = [];
 
         this.setupTerrain();
         this.setupSky();
         this.setupWater();
 
+        this.lastPlayerPos = null;
+
         this.props = {
             healthFactor: 0.0,
+            drawDistance: 100,
         }
-        // this.scene.fog = new THREE.Fog(0xa0afa0, 100, 200);
     }
 
     /**
@@ -90,12 +96,52 @@ class Environment {
 
     }
 
-    update(deltaTime) {
+    update(deltaTime, playerPosition) {
         this.water.update(deltaTime);
         this.sky.update(deltaTime);
-        this.terrain.update(deltaTime);
+        this.terrain.update(deltaTime, playerPosition);
+
+        if (this.lastPlayerPos === null || !this.lastPlayerPos.equals(playerPosition)) {
+            console.debug(`Player moved to: (${playerPosition.x},${playerPosition.y},${playerPosition.z})`)
+            this.terrain.loadChunks(playerPosition);
+            this.addObjectsWithinRangeToScene(playerPosition);
+            this.removeObjectsOutOfRangeFromScene(playerPosition);
+            this.lastPlayerPos = playerPosition.clone();
+        }
+
+        this.updateObjectsWithinRange(deltaTime, playerPosition);
     }
 
+    updateObjectsWithinRange(deltaTime, playerPosition) {
+        for (let i = 0; i < this.objects.length; i++) {
+            const object = this.objects[i];
+            if (object.isInScene && object.mixer !== undefined) {
+                object.mixer.update(deltaTime);
+            }
+        }
+    }
+
+    addObjectsWithinRangeToScene(playerPosition) {
+        console.debug("Adding chunk objects to scene...");
+        for (let i = 0; i < this.objects.length; i++) {
+            const object = this.objects[i];
+            if  (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
+                this.scene.add(object.model);
+                object.isInScene = true;
+            }
+        }
+    }
+
+    removeObjectsOutOfRangeFromScene(playerPosition) {
+        console.debug("Removing chunk objects from scene...");
+        for (let i = 0; i < this.objects.length; i++) {
+            const object = this.objects[i];
+            if  (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
+                this.scene.remove(object.model);
+                object.isInScene = false;
+            }
+        }
+    }
 }
 
 
