@@ -9,6 +9,7 @@ class Bushes {
         const root = new THREE.Object3D();
         root.add(clonedScene);
         this.model = root;
+        this.healtFactor =0.0;
         this.setupShadows();
 
     }

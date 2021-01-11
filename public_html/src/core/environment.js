@@ -8,6 +8,7 @@ import {Color} from "../../vendor/three-js/build/three.module.js";
 import {Assets} from "./assets.js";
 import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
+import {Tree} from "./tree.js";
 
 class Environment {
     /**
@@ -125,7 +126,20 @@ class Environment {
         console.debug("Adding chunk objects to scene...");
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
-            if  (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
+
+            if (object instanceof Tree) {
+                if (this.props.healthFactor >= 0.5 && object.healthFactor>0.5) {
+                    this.scene.add(object.model);
+                    object.isInScene = true;
+                }
+                else if (this.props.healthFactor < 0.5 && object.healthFactor<0.5) {
+                    this.scene.add(object.model);
+                    object.isInScene = true;
+                }
+
+            }
+
+            if (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
                 this.scene.add(object.model);
                 object.isInScene = true;
             }
@@ -136,11 +150,29 @@ class Environment {
         console.debug("Removing chunk objects from scene...");
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
-            if  (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
+
+            if (object instanceof Tree) {
+                if (this.props.healthFactor >= 0.5 && object.healthFactor<0.5) {
+
+                    this.scene.remove(object.model);
+                    object.isInScene = false;
+
+                }
+                else if (this.props.healthFactor < 0.5 && object.healthFactor>0.5) {
+
+                    this.scene.remove(object.model);
+                    object.isInScene = false;
+                }
+
+            }
+            if (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
+
                 this.scene.remove(object.model);
                 object.isInScene = false;
             }
+
         }
+
     }
 }
 

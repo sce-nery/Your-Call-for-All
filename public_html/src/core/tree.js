@@ -14,7 +14,7 @@ class Tree extends GameObject {
         this.mixer = new THREE.AnimationMixer(this.model);
         this.actionMap = {};
         this.actionList = [];
-
+        this.healthFactor=0.0;
         this.setupShadows();
         this.setupActions();
     }
@@ -36,6 +36,7 @@ class Tree extends GameObject {
             }
         });
     }
+
 
     setupActions() {
         Logger.debug("Setting up actions for this tree model.")

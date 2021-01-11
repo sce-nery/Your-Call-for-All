@@ -15,6 +15,7 @@ export const Assets = {
             PalmTree:   "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             LowPolyTree:   "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree/scene.gltf",
             PineTree:   "/Your-Call-for-All/public_html/assets/models/trees/pine-tree/scene.gltf",
+            DriedPine:   "/Your-Call-for-All/public_html/assets/models/trees/dried-pine/scene.gltf",
             TwoTrees:   "/Your-Call-for-All/public_html/assets/models/trees/two-trees/scene.gltf",
             Butterfly:   "/Your-Call-for-All/public_html/assets/models/trees/butterfly/scene.gltf",
             FrogOnLeaf:   "/Your-Call-for-All/public_html/assets/models/trees/frog-on-leaf/scene.gltf",
@@ -45,6 +46,7 @@ export const Assets = {
         PalmTree:   null,
         LowPolyTree:  null,
         PineTree:   null,
+        DriedPine:null,
         TwoTrees:  null,
         Butterfly: null,
         FrogOnLeaf: null,
@@ -57,6 +59,7 @@ export const Assets = {
         TropicalPlant:  null,
         Rock:  null,
         BrokenBottle: null,
+
 
     },
 
