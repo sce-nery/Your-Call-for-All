@@ -16,7 +16,7 @@ export const Assets = {
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
             LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
-            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/main_character/jackie.glb"
+            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb"
         },
         OBJ: {},
         Texture: {
