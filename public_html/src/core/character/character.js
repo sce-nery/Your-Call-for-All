@@ -11,7 +11,6 @@ class Character  {
       this.renderer = renderer;
       this.previousRAF = null;
       this.loadAnimatedModel();
-      this.raf();
     }
 
     loadAnimatedModel() {
@@ -19,8 +18,8 @@ class Character  {
         const params = {
             camera: this.camera,
             scene: this.scene,
-
         }
+
         this.controls = new BasicCharacterController(params);
         this.thirdPersonCamera = new ThirdPersonCamera({
             camera: this.camera,
@@ -28,29 +27,14 @@ class Character  {
         });
     }
 
-    raf() {
-        requestAnimationFrame((t) => {
-            if (this.previousRAF === null) {
-                this.previousRAF = t;
-            }
-
-            this.raf();
-
-            this.renderer.render(this.scene, this.camera);
-            this.update(t - this.previousRAF);
-            this.previousRAF = t;
-        });
-    }
-
-    update(timeElapsed) {
-        const timeElapsedS = timeElapsed * 0.001;
+    update(timeElapsed, ycfa) {
         if (this.mixers) {
-            this.mixers.map(m => m.update(timeElapsedS));
+            this.mixers.map(m => m.update(timeElapsed));
         }
         if (this.controls) {
-            this.controls.Update(timeElapsedS);
+            this.controls.Update(timeElapsed, ycfa);
         }
-        this.thirdPersonCamera.Update(timeElapsedS);
+        this.thirdPersonCamera.Update(timeElapsed);
     }
 
 }

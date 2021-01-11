@@ -2,6 +2,7 @@ import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {BasicCharacterControllerInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
+import {Assets} from "../assets.js";
 
 
 class BasicCharacterController {
@@ -12,52 +13,54 @@ class BasicCharacterController {
         this._velocity = new THREE.Vector3(0, 0, 0);
         this._position = new THREE.Vector3();
 
-        this._animations = {};
+
+        this._LoadModels();
         this._input = new BasicCharacterControllerInput();
         this._stateMachine = new CharacterFSM(new BasicCharacterControllerProxy(this._animations));
-        this._LoadModels();
+        this._stateMachine.SetState('Idle');
+
     }
+
+
+    setupActions() {
+        Logger.debug("Setting up actions for this tree model.")
+        const animations = this.animations;
+        let actions = [];
+
+        for (let i = 0; i < animations.length; i++) {
+            actions.push(this._mixer.clipAction(animations[i]));
+        }
+
+        this.actionList = actions;
+
+        this.actionMap = actions.reduce(function (map, obj) {
+            obj.paused = false;
+            map[obj._clip.name] = obj;
+            return map;
+        }, {});
+    }
+
 
     _LoadModels() {
 
-        const loader = new FBXLoader();
-        loader.setPath('./assets/models/characters/zombie/');
-        let charPath = 'zombie.fbx';
+        this.gltf =  Assets.glTF.Jackie;
+        this.model = this.gltf.scene;
+        this.animations = this.gltf.animations;
 
-        loader.load(charPath, (fbx) => {
-            fbx.position.x = -28;
-            fbx.scale.setScalar(0.01);
-            fbx.traverse(c => {
-                c.castShadow = true;
-            });
+        this._target = this.model;
+        this._params.scene.add(this._target);
 
-            this._target = fbx;
-            this._params.scene.add(this._target);
+        this._mixer = new THREE.AnimationMixer(this._target);
 
-            this._mixer = new THREE.AnimationMixer(this._target);
+       this.setupActions();
 
-            this._manager = new THREE.LoadingManager();
-            this._manager.onLoad = () => {
-                this._stateMachine.SetState('idle');
-            };
+       this._animations= this.actionMap;
 
-            const _OnLoad = (animName, anim) => {
-                const clip = anim.animations[0];
-                const action = this._mixer.clipAction(clip);
-
-                this._animations[animName] = {
-                    clip: clip,
-                    action: action,
-                };
-            };
-
-            const loader = new FBXLoader(this._manager);
-            loader.setPath('./assets/models/characters/zombie/');
-            loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
-            loader.load('run.fbx', (a) => { _OnLoad('run', a); });
-            loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
+        this.model.position.x = -28;
+       // this.model.scale.setScalar(1);
+        this.model.traverse(c => {
+            c.castShadow = true;
         });
-
 
     }
 
@@ -73,7 +76,7 @@ class BasicCharacterController {
     }
 
 
-    Update(timeInSeconds) {
+    Update(timeInSeconds, ycfa) {
         if (!this._target) {
             return;
         }
@@ -87,10 +90,33 @@ class BasicCharacterController {
             velocity.z * this._decceleration.z
         );
         frameDecceleration.multiplyScalar(timeInSeconds);
-        frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
-            Math.abs(frameDecceleration.z), Math.abs(velocity.z));
+        frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(Math.abs(frameDecceleration.z), Math.abs(velocity.z));
 
         velocity.add(frameDecceleration);
+
+
+        /*
+        let raycaster = new THREE.Raycaster(this.model.position, new THREE.Vector3(0, -1, 0));
+        let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
+
+        if (intersects[0] !== undefined) {
+            let distance = 1.75;
+            //new position is higher so you need to move you object upwards
+            if (distance > intersects[0].distance) {
+                this.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+            }
+
+            //gravity and prevent falling through floor
+            if (distance >= intersects[0].distance && this._velocity.y <= 0) {
+                this._velocity.y = 0;
+            } else if (distance <= intersects[0].distance &&  this._velocity.y=== 0) {
+                this._velocity.y-= 0.1;
+            }
+
+            this.model.translateY( this._velocity.y);
+        }
+        */
+
 
         const controlObject = this._target;
         const _Q = new THREE.Quaternion();

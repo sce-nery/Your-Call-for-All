@@ -16,6 +16,7 @@ export const Assets = {
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
             LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
+            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/main_character/jackie.glb"
         },
         OBJ: {},
         Texture: {
@@ -38,6 +39,7 @@ export const Assets = {
         RealTree: null,
         BrokenBottle: null,
         LowPolyTree: null,
+        Jackie: null,
     },
 
     OBJ: {},
@@ -55,7 +57,7 @@ export const Assets = {
 
     load: function (onLoad) {
         const gltfLoader = new GLTFLoader(loadingManager);
-        const objLoader = new OBJLoader();
+        const objLoader = new OBJLoader(loadingManager);
         const textureLoader = new THREE.TextureLoader(loadingManager);
 
         gltfLoader.setWithCredentials(true);
@@ -80,7 +82,16 @@ export const Assets = {
             });
         }
 
+
+
         loadingManager.onLoad = onLoad;
+
+
+        const progressbarElem = document.querySelector('#progressbar');
+        loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
+        }
+
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console

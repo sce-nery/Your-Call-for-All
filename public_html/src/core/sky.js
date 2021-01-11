@@ -12,6 +12,7 @@ class Sky extends GameObject {
         inclination: 0.49,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
         azimuth: 0.25,     // Facing front,
         exposure: 0.5,
+
     }) {
         super();
         this.environment = environment;
@@ -19,13 +20,21 @@ class Sky extends GameObject {
         this.skyDome = new ThreeSky();
         this.sunLight = new THREE.DirectionalLight(0xffffff);
         this.sunLight.castShadow = true;
-
+        this.time = 0;
         this.props = props;
         this.skyDome.scale.setScalar(450000);
     }
 
     update(deltaTime) {
+        this.time += deltaTime;
         const uniforms = this.skyDome.material.uniforms;
+
+        let dayCycle = 60;
+
+        let inc = (this.time / dayCycle) % 1.0;
+
+        this.props.inclination = inc;
+
 
         uniforms["turbidity"].value = this.props.turbidity;
         uniforms["rayleigh"].value = this.props.rayleigh;
