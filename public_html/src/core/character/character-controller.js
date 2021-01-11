@@ -22,8 +22,8 @@ class BasicCharacterController {
     _LoadModels() {
 
         const loader = new FBXLoader();
-        loader.setPath('./assets/models/characters/zombie/');
-        let charPath = 'ybot.fbx';
+        loader.setPath('./assets/models/characters/main_character/');
+        let charPath = 'jackie.fbx';
 
         loader.load(charPath, (fbx) => {
 
@@ -54,10 +54,10 @@ class BasicCharacterController {
             };
 
             const loader = new FBXLoader(this._manager);
-            loader.setPath('./assets/models/characters/zombie/');
-            loader.load('Walking.fbx', (a) => { _OnLoad('walk', a); });
-            loader.load('Running.fbx', (a) => { _OnLoad('run', a); });
-            loader.load('HappyIdle.fbx', (a) => { _OnLoad('idle', a); });
+            loader.setPath('./assets/models/characters/main_character/');
+            loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
+            loader.load('run.fbx', (a) => { _OnLoad('run', a); });
+            loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
         });
 
 
