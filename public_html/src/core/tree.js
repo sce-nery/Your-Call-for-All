@@ -2,10 +2,13 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 import {Assets} from "./assets.js";
+import {GameObject} from "./objects.js";
 
 
-class Tree {
+class Tree extends GameObject {
     constructor(gltf) {
+        super();
+
         this.model = Assets.cloneGLTF(gltf);
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);

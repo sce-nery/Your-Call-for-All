@@ -2,6 +2,8 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {Tree} from "./tree.js";
+import {BrokenBottle} from "./decision-points.js";
+import {GameObject} from "./objects.js";
 
 
 class Terrain {
@@ -75,10 +77,6 @@ class Terrain {
             new THREE.Vector2(chunkPosition.x + chunkSize, chunkPosition.z - chunkSize),
         ];
 
-        if (this.centerChunk) {
-            this.centerChunk.removeObjectsFrom(this.scene);
-        }
-
         this.makeAllChunksInactive();
 
         this.centerChunk = this.createChunk(chunkOffsets[0]);
@@ -97,7 +95,7 @@ class Terrain {
     }
 
     /**
-     * Removes active chunks from the scene in order to improve FPS.
+     * Removes inactive chunks from the scene in order to improve FPS.
      */
     removeInactiveChunksFromScene() {
         for (let key in this.chunks) {
@@ -117,7 +115,6 @@ class Terrain {
                 chunk.isInScene = true;
             }
         }
-        this.centerChunk.addObjectsTo(this.scene);
     }
 
     /**
@@ -152,24 +149,26 @@ class Terrain {
         return chunk;
     }
 
-    update(deltaTime) {
-        this.centerChunk.trees.forEach((tree) => {
-            tree.mixer.update(deltaTime);
-        })
+    update(deltaTime, playerPosition) {
+        for (let key in this.chunks) {
+            let chunk = this.chunks[key];
+            if (chunk.isActive) {
+                chunk.update(deltaTime, playerPosition);
+            }
+        }
     }
 }
 
-class TerrainChunk {
+class TerrainChunk extends GameObject {
     constructor(environment, chunkSize, chunkPosition, heightData) {
+        super();
+
         this.environment = environment;
         this.chunkSize = chunkSize;
         this.chunkPosition = chunkPosition;
         this.heightData = heightData;
 
         this.isActive = false;
-        this.isInScene = false;
-
-        this.trees = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -215,18 +214,22 @@ class TerrainChunk {
                 // This is normally the Y component but we are going to rotate the terrain along z-axis by -90 degrees
                 vertex.z = data.height;
 
-                let position = new THREE.Vector3();
-                position.x = data.x;
-                position.y = data.height;
-                position.z = -data.y; // Because we are rotating z-axis of the terrain by -90 deg.
+                let candidatePosition = new THREE.Vector3();
+                candidatePosition.x = data.x;
+                candidatePosition.y = data.height;
+                candidatePosition.z = -data.y; // Because we are rotating z-axis of the terrain by -90 deg.
+                // TODO: Maybe calculate the slope of the vertex too?
 
-                this.scatterTrees(position);
-                this.scatterRocks(position);
-                this.scatterBushes(position);
+                this.scatterTrees(candidatePosition);
+                this.scatterRocks(candidatePosition);
+                this.scatterBushes(candidatePosition);
+
+                // Decision points:
+                this.scatterDecisionPoints(candidatePosition);
             }
         }
 
-        console.debug(`Created ${this.trees.length} trees.`);
+        console.debug(`Created ${this.environment.objects.length} objects.`);
 
         this.geometry.verticesNeedUpdate = true;
         this.geometry.computeVertexNormals();
@@ -248,7 +251,7 @@ class TerrainChunk {
                 // Sets the wind animation for play.
                 tree.playActionByIndex(0);
 
-                this.trees.push(tree);
+                this.environment.objects.push(tree);
             }
         }
 
@@ -263,6 +266,19 @@ class TerrainChunk {
         // Todo
     }
 
+    scatterDecisionPoints(candidatePosition) {
+        const percent = this.environment.prng.random() * 100;
+
+        if (percent < 0.01) {
+            if (candidatePosition.y > 1 && candidatePosition.y < 10) {
+                let brokenBottle = new BrokenBottle();
+                brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                this.environment.objects.push(brokenBottle);
+            }
+        }
+    }
+
     setupChunkMesh() {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.castShadow = true;
@@ -270,22 +286,8 @@ class TerrainChunk {
         this.mesh.rotation.x = -Math.PI / 2;
     }
 
-    addObjectsTo(scene) {
-        console.debug("Adding chunk objects to scene...");
-        // For trees:
-        console.debug(`Adding: ${this.trees.length} trees`);
-        for (let i = 0; i < this.trees.length; i++) {
-            scene.add(this.trees[i].model);
-        }
-    }
-
-    removeObjectsFrom(scene) {
-        console.debug("Removing chunk objects from scene...");
-        // For trees:
-        console.debug(`Removing: ${this.trees.length} trees`);
-        for (let i = 0; i < this.trees.length; i++) {
-            scene.remove(this.trees[i].model);
-        }
+    update (deltaTime, playerPosition) {
+        // TODO: Update terrain chunk material based on health factor
     }
 }
 

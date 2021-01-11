@@ -6,6 +6,7 @@ import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUt
 const loadingManager = new THREE.LoadingManager();
 
 export const Assets = {
+
     URL: {
         glTF: {
             MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
@@ -13,6 +14,7 @@ export const Assets = {
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
+            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -28,6 +30,7 @@ export const Assets = {
         WillowTree: null,
         PalmTree: null,
         RealTree: null,
+        BrokenBottle: null,
     },
 
     OBJ: {},
@@ -67,12 +70,14 @@ export const Assets = {
 
         loadingManager.onLoad = onLoad;
 
+        // Comment this if error is unrelated to asset loading,
+        // and check preserve logs checkbox in browser console
         loadingManager.onError = function (e) {
             console.error(e);
-            console.warn("Attempting to load assets by refreshing site in a second.");
+            console.warn("Attempting to load assets by refreshing site in 2 secs.");
             setTimeout(function () {
                 location.reload();
-            }, 1000);
+            }, 2000);
         };
     },
 

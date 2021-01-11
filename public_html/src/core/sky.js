@@ -1,8 +1,9 @@
 import * as THREE from '../../vendor/three-js/build/three.module.js';
 import {Sky as ThreeSky} from "../../vendor/three-js/examples/jsm/objects/Sky.js";
 import {LinearInterpolator} from "../math/math.js";
+import {GameObject} from "./objects.js";
 
-class Sky {
+class Sky extends GameObject {
     constructor(environment, props = {
         turbidity: 10,
         rayleigh: 3,
@@ -12,6 +13,8 @@ class Sky {
         azimuth: 0.25,     // Facing front,
         exposure: 0.5,
     }) {
+        super();
+
         this.skyDome = new ThreeSky();
         this.sunLight = new THREE.DirectionalLight(0xffffff);
         this.sunLight.castShadow = true;
@@ -45,4 +48,4 @@ class Sky {
     }
 }
 
-export { Sky};
+export {Sky};

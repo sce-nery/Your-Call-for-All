@@ -2,10 +2,13 @@ import {LinearInterpolator} from "../math/math.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {Assets} from "./assets.js";
 import {Water as ThreeWater} from "../../vendor/three-js/examples/jsm/objects/Water.js";
+import {GameObject} from "./objects.js";
 
 
-class Water {
+class Water extends  GameObject {
     constructor(environment) {
+        super();
+
         this.environment = environment;
 
         const waterGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
