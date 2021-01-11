@@ -2,7 +2,6 @@ import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 
 
-
 class BasicCharacterController {
     constructor(params) {
         this._Init(params);
@@ -148,4 +147,14 @@ class BasicCharacterController {
     }
 }
 
-export {BasicCharacterController}
+class BasicCharacterControllerProxy {
+    constructor(animations) {
+        this._animations = animations;
+    }
+    get animations() {
+        return this._animations;
+    }
+}
+
+
+export {BasicCharacterController, BasicCharacterControllerProxy}
