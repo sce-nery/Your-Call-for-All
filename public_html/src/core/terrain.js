@@ -287,7 +287,7 @@ class TerrainChunk extends GameObject {
     }
 
     update (deltaTime, playerPosition) {
-        //
+        // TODO: Update terrain chunk material based on health factor
     }
 }
 
