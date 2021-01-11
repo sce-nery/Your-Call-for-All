@@ -1,16 +1,30 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
+import {Assets} from "./assets.js";
+import {GameObject} from "./objects.js";
 
 
-class Tree {
+class Tree extends GameObject {
     constructor(gltf) {
-        this.model = gltf.scene;
+        super();
+
+        this.model = Assets.cloneGLTF(gltf);
         this.animations = gltf.animations;
         this.mixer = new THREE.AnimationMixer(this.model);
         this.actionMap = {};
+        this.actionList = [];
 
         this.setupShadows();
         this.setupActions();
+    }
+
+    playActionByName(name) {
+        this.actionMap[name].play();
+    }
+
+    playActionByIndex(idx) {
+        this.actionList[idx].play();
     }
 
     setupShadows() {
@@ -32,6 +46,8 @@ class Tree {
             actions.push(this.mixer.clipAction(animations[i]));
         }
 
+        this.actionList = actions;
+
         this.actionMap = actions.reduce(function (map, obj) {
             obj.paused = false;
             map[obj._clip.name] = obj;
@@ -39,18 +55,6 @@ class Tree {
         }, {});
     }
 
-    activateAllActions() {
-        // TODO.
-        for (const key in this.actionMap) {
-            let action = this.actionMap[key];
-            action.enabled = true;
-            action.setEffectiveTimeScale(1);
-            action.setEffectiveWeight(0.0);
-            //action.play();
-        }
-
-    }
-
 }
 
-export{Tree};
+export {Tree};

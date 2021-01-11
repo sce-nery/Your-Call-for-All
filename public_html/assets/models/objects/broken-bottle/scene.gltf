@@ -1,0 +1,259 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 6488,
+      "max": [
+        11.096099853515625,
+        88.068603515625,
+        12.057900428771973
+      ],
+      "min": [
+        -21.871799468994141,
+        43.600299835205078,
+        0.056099999696016312
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 77856,
+      "componentType": 5126,
+      "count": 6488,
+      "max": [
+        0.99987280368804932,
+        0.99985826015472412,
+        0.99999856948852539
+      ],
+      "min": [
+        -0.99990308284759521,
+        -0.99990308284759521,
+        -0.99999856948852539
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 6488,
+      "max": [
+        1,
+        0.99993264675140381,
+        0.97157472372055054,
+        1
+      ],
+      "min": [
+        -0.99927991628646851,
+        -0.99994683265686035,
+        -0.99491822719573975,
+        -1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 36864,
+      "max": [
+        6487
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Ivan_Valbuena (https://sketchfab.com/Ivan_Valbuena)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/models/a3c190342c6a4ea2b7fd0428ee1c0d97",
+      "title": "Broken Wine Bottle"
+    },
+    "generator": "Sketchfab-3.18.7",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 147456,
+      "byteOffset": 0,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 155712,
+      "byteOffset": 147456,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 103808,
+      "byteOffset": 303168,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 406976,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "Botella_1hdd",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.0120025276,
+          0.1167337209,
+          0.0037813376999999999,
+          0.88852896339999998
+        ],
+        "metallicFactor": 0.63586128050000001,
+        "roughnessFactor": 0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Botella_rota_parte_de_abajo__Botella 1hdd_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode (gltf orientation matrix)",
+      "rotation": [
+        -0.70710678118654746,
+        -0,
+        -0,
+        0.70710678118654757
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "59a4c096199948958c92d3c3a9c62149.fbx"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        5
+      ],
+      "matrix": [
+        -0.020656234105125071,
+        -1.6653345369377348e-16,
+        0.99978663723446237,
+        0,
+        0.99978663723446237,
+        -8.8817841970012523e-16,
+        0.020656234105124849,
+        0,
+        7.2164496600635175e-16,
+        1.0000000000000002,
+        0,
+        0,
+        0.190948486328125,
+        6.0570001602172852,
+        -0.1601104736328125,
+        1
+      ],
+      "name": "Botella_rota_parte_de_abajo"
+    },
+    {
+      "children": [
+        6
+      ],
+      "matrix": [
+        1,
+        0,
+        -0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        5.3878498077392578,
+        -65.834457397460938,
+        -6.0570001602172852,
+        1
+      ],
+      "name": ""
+    },
+    {
+      "mesh": 0,
+      "name": "Botella_rota_parte_de_abajo__Botella 1hdd_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "OSG_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}
+

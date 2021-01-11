@@ -17,7 +17,7 @@ import CannonDebugRenderer from "../vendor/cannon-debug-renderer.js";
 import PhysicsUtils from "../src/util/physics-utils.js";
 import {BokehPass} from "../vendor/three-js/examples/jsm/postprocessing/BokehPass.js";
 import {YourCallForAll} from "../src/core/your-call-for-all.js";
-import * as ASSETS from "../src/core/assets.js";
+import {Assets} from "../src/core/assets.js";
 import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
 import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
@@ -43,12 +43,12 @@ let cannonDebugRenderer;
 
 function setupCamera() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 2000000);
-    camera.position.set(0, 3, 10);
+    camera.position.set(0, 30, 10);
 }
 
 function setupRenderer() {
     renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(1.0);
+    renderer.setPixelRatio(1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // These somehow break the water colour
     //renderer.outputEncoding = THREE.sRGBEncoding;
@@ -63,8 +63,9 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    // const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
-    // scene.add(helper);
+    const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+    helper.position.y = 1;
+    scene.add(helper);
 
 
     const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
@@ -72,7 +73,7 @@ function setupScene() {
     physicsDemoMesh = new THREE.Mesh(geometry, material);
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
-    physicsDemoMesh.position.set(0, 5, 0);
+    physicsDemoMesh.position.set(0, 10, 0);
     scene.add(physicsDemoMesh);
 
     // Physics
@@ -173,13 +174,14 @@ function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    ASSETS.load().then(function () {
+    Assets.load(function () {
+        document.getElementById("loading-label").remove();
         ycfa = new YourCallForAll(scene);
         ycfa.environment.props.healthFactor = 1.0;
         initGUI();
         clock.start();
         render();
-    })
+    });
 }
 
 function initGUI() {
@@ -190,7 +192,7 @@ function initGUI() {
         ycfa.environment.terrain.removeChunks();
         ycfa.environment.setupPRNG();
         ycfa.environment.terrain.heightMap.noiseProvider = new SimplexNoise(ycfa.environment.prng);
-        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position,true);
+        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
     }
     gui.add(ycfa.environment, "seed", 1, 10000, 1).onFinishChange(seedChanged);
 
@@ -235,7 +237,7 @@ function initGUI() {
     bloomFolder.add(bloomPass, "strength", 0.0, 3, 0.001);
     bloomFolder.add(bloomPass, "radius", 0.1, 1, 0.001);
     bloomFolder.add(bloomPass, "threshold", 0, 1, 0.0001);
-    bloomFolder.add(bloomPass,  "enabled", false, true);
+    bloomFolder.add(bloomPass, "enabled", false, true);
 }
 
 function onWindowResize() {
@@ -251,10 +253,6 @@ let velocity = new THREE.Vector3();
 function render() {
     let deltaTime = clock.getDelta();
 
-    ycfa.update(deltaTime);
-
-    let lastPos = physicsDemoMesh.position.clone();
-
     let physicsDemoMeshVelocity = new THREE.Vector3();
     physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
     physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
@@ -262,12 +260,8 @@ function render() {
     physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
     physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
 
-    if (lastPos.x !== physicsDemoMesh.position.x || lastPos.z !== physicsDemoMesh.position.z) {
-        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position);
-    }
-
     let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerMesh); //use intersectObjects() to check the intersection on multiple
+    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
     if (intersects[0] !== undefined) {
         let distance = 1.75;
@@ -286,6 +280,8 @@ function render() {
         physicsDemoMesh.translateY(physicsDemoMeshVelocity.y);
     }
 
+    ycfa.update(deltaTime, physicsDemoMesh.position);
+
     composer.render();
 
 
@@ -296,6 +292,4 @@ function render() {
 
 window.onload = function () {
     init();
-
-    document.getElementById("loading-label").remove();
 }
