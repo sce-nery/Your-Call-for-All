@@ -209,7 +209,8 @@ function initGUI() {
     let button = {
         regenerate: function () {
             console.log("Regenerating...")
-            ycfa.environment.terrain.removeChunks();
+            ycfa.environment.terrain.makeAllChunksInactive();
+            ycfa.environment.terrain.removeInactiveChunksFromScene();
             ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
         }
     };

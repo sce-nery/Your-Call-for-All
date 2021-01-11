@@ -9,7 +9,7 @@ class YourCallForAll {
         this.scene = scene;
 
         this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
-        this.character = new Character(scene, camera, renderer);
+        // this.character = new Character(scene, camera, renderer);
     }
 
 
