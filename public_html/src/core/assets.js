@@ -9,9 +9,21 @@ export const Assets = {
         glTF: {
             MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
-            WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
-            PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
-            RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
+            WillowTree:   "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
+            PalmTree:   "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
+            LowPolyTree:   "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree/scene.gltf",
+            PineTree:   "/Your-Call-for-All/public_html/assets/models/trees/pine-tree/scene.gltf",
+            TwoTrees:   "/Your-Call-for-All/public_html/assets/models/trees/two-trees/scene.gltf",
+            Butterfly:   "/Your-Call-for-All/public_html/assets/models/trees/butterfly/scene.gltf",
+            FrogOnLeaf:   "/Your-Call-for-All/public_html/assets/models/trees/frog-on-leaf/scene.gltf",
+            Shark:   "/Your-Call-for-All/public_html/assets/models/trees/shark/scene.gltf",
+            YardGrass:   "/Your-Call-for-All/public_html/assets/models/grass-bush/yard-grass/scene.gltf",
+            PlantShrub:   "/Your-Call-for-All/public_html/assets/models/grass-bush/plant-shrub/scene.gltf",
+            Grass:   "/Your-Call-for-All/public_html/assets/models/grass-bush/grass/scene.gltf",
+            Lavender:   "/Your-Call-for-All/public_html/assets/models/grass-bush/lavender/scene.gltf",
+            WoodenBlock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/wooden-block/scene.gltf",
+            TropicalPlant:   "/Your-Call-for-All/public_html/assets/models/grass-bush/tropical-plant/scene.gltf",
+            Rock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
         },
         OBJ: {
 
@@ -24,14 +36,23 @@ export const Assets = {
     },
 
     glTF: {
-        MoCapMan: undefined,
-        PinkTree: undefined,
-        WillowTree: undefined,
-        PalmTree: undefined,
-        RealTree: undefined,
-    },
-
-    OBJ: {
+        MoCapMan:   null,
+        PinkTree:   null,
+        WillowTree:   null,
+        PalmTree:   null,
+        LowPolyTree:  null,
+        PineTree:   null,
+        TwoTrees:  null,
+        Butterfly: null,
+        FrogOnLeaf: null,
+        Shark:  null,
+        YardGrass:   null,
+        PlantShrub:  null,
+        Grass:   null,
+        Lavender:  null,
+        WoodenBlock:  null,
+        TropicalPlant:  null,
+        Rock:  null,
 
     },
 

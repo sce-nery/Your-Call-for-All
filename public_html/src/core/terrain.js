@@ -2,7 +2,7 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {Tree} from "./tree.js";
-
+import {Bushes} from "./bushes-rocks.js";
 
 class Terrain {
 
@@ -170,6 +170,7 @@ class TerrainChunk {
         this.isInScene = false;
 
         this.trees = [];
+        this.bushes = [];
 
         this.setupChunkGeometry();
         this.setupChunkMaterial();
@@ -235,21 +236,198 @@ class TerrainChunk {
     scatterTrees(candidatePosition) {
 
         let random = this.environment.prng.random();
+        if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
+            if (random * 100 < 0.1) { // %0.1 of the time.
 
-        if (random * 100 < 0.1) { // %0.1 of the time.
+                let tree = new Tree(Assets.glTF.FrogOnLeaf);
+                tree.model.position.set(candidatePosition.x, 0, candidatePosition.z);
 
-            if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
-
-                let tree = new Tree(Assets.glTF.PinkTree);
-                tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                tree.model.scale.set(0.3, 0.3, 0.3);
+                tree.model.scale.set(0.5, 0.5, 0.5);
 
                 // Sets the wind animation for play.
                 tree.playActionByIndex(0);
 
                 this.trees.push(tree);
+
             }
+
+            else if (random * 100 > 1.7 && random * 100 < 1.8) { // %0.1 of the time.
+
+                let tree = new Tree(Assets.glTF.Shark);
+                tree.model.position.set(candidatePosition.x, -0.5, candidatePosition.z);
+
+                tree.model.scale.set(0.9, 0.9, 0.9);
+
+                // Sets the wind animation for play.
+                tree.playActionByIndex(0);
+
+                this.trees.push(tree);
+
+            }
+
+
+        }
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
+/*
+            if (random * 100 < 0.1) { // %0.1 of the time.
+
+                    let tree = new Tree(Assets.glTF.PinkTree);
+                    tree.model.position.set(position.x, position.y, position.z);
+
+                    tree.model.scale.set(0.3, 0.3, 0.3);
+
+                    // Sets the wind animation for play.
+                    tree.playActionByIndex(0);
+
+                    this.trees.push(tree);
+
+            }*/
+            /*else*/ if(random * 100 > 0.1 && random * 100 < 0.2){ // %0.1 of the time.
+
+                    let tree = new Tree(Assets.glTF.TwoTrees);
+                    tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    tree.model.scale.set(0.03, 0.03, 0.03);
+
+                    // Sets the wind animation for play.
+                    tree.playActionByIndex(0);
+
+                    this.trees.push(tree);
+
+
+            }
+            else if(random * 100 > 1.7 && random * 100 < 1.8){ // %0.1 of the time.
+
+                let tree = new Tree(Assets.glTF.Butterfly);
+                tree.model.position.set(candidatePosition.x, candidatePosition.y+1.0, candidatePosition.z);
+
+                tree.model.scale.set(0.015, 0.015, 0.015);
+
+                // Sets the wind animation for play.
+                tree.playActionByIndex(0);
+
+                this.trees.push(tree);
+
+
+            }
+
+
+
+
+            if (candidatePosition.y < 5) {
+
+                if (random * 100 > 0.3 && random * 100 < 0.6) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.Grass);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.015, 0.015, 0.015);
+
+
+                    this.bushes.push(bush);
+
+                } else if (random * 100 > 0.6 && random * 100 < 0.7) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.PlantShrub);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.005, 0.005, 0.005);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if (random * 100 > 0.7 && random * 100 < 0.9) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.Lavender);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.005, 0.005, 0.005);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if (random * 100 > 0.9 && random * 100 < 1.0) { // %0.1 of the time.
+
+                    let tree = new Tree(Assets.glTF.YardGrass);
+                    tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    tree.model.scale.set(0.08, 0.08, 0.08);
+
+                    // Sets the wind animation for play.
+                    tree.playActionByIndex(0);
+
+                    this.trees.push(tree);
+
+                }
+                else if (random * 100 > 1.0 && random * 100 < 1.2) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.WoodenBlock);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.005, 0.005, 0.005);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if (random * 100 > 1.2 && random * 100 < 1.4) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.PineTree);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.01, 0.01, 0.01);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if (random * 100 > 1.4 && random * 100 < 1.6) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.TropicalPlant);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.9, 0.9, 0.9);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if (random * 100 > 1.6 && random * 100 < 1.7) { // %0.1 of the time.
+
+                    let bush = new Bushes(Assets.glTF.Rock);
+                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    bush.model.scale.set(0.006, 0.006, 0.006);
+
+
+                    this.bushes.push(bush);
+
+                }
+                else if(random * 100 > 1.8 && random * 100 < 2.0){ // %0.1 of the time.
+
+                    let tree = new Tree(Assets.glTF.LowPolyTree);
+                    tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                    tree.model.scale.set(2.0, 2.0, 2.0);
+
+                    // Sets the wind animation for play.
+                    tree.playActionByIndex(0);
+
+                    this.trees.push(tree);
+
+
+                }
+
+
+
+
+
+            }
+
+
+
         }
 
 
@@ -276,6 +454,9 @@ class TerrainChunk {
         console.debug(`Adding: ${this.trees.length} trees`);
         for (let i = 0; i < this.trees.length; i++) {
             scene.add(this.trees[i].model);
+        }
+        for (let j = 0; j<this.bushes.length;j++){
+            scene.add(this.bushes[j].model);
         }
     }
 
