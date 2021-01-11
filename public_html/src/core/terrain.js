@@ -178,17 +178,41 @@ class TerrainChunk extends GameObject {
     setupChunkMaterial() {
         // Retrieve textures.
         // TODO: This material should change based on the health of the environment.
-        let colorMap = Assets.Texture.Ground1_Color;
-        let normalMap = Assets.Texture.Ground1_Normal;
+        //let healthyGrassColorMap = Assets.Texture.Ground1_Color;
+        //let healthyGrassNormalMap = Assets.Texture.Ground1_Normal;
 
-        TextureUtils.makeRepeating(colorMap, this.chunkSize, this.chunkSize);
-        TextureUtils.makeRepeating(normalMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(healthyGrassColorMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(healthyGrassNormalMap, this.chunkSize, this.chunkSize);
 
-        this.material = new THREE.MeshPhongMaterial({
-            map: colorMap,
-            bumpMap: normalMap,
-            bumpScale: 0.85,
-        });
+        //let mediumHealthGroundColorMap = Assets.Texture.Ground2_Color;
+        //let mediumHealthGroundNormalMap = Assets.Texture.Ground2_Normal;
+
+        //TextureUtils.makeRepeating(mediumHealthGroundColorMap, this.chunkSize, this.chunkSize);
+        //TextureUtils.makeRepeating(mediumHealthGroundNormalMap, this.chunkSize, this.chunkSize);
+
+        let t1 = Assets.Texture.Sand_Color;
+        let t2 = Assets.Texture.Grass_Color;
+        let t3 = Assets.Texture.Rocks_Color;
+        let t4 = Assets.Texture.Snow_Color;
+
+        TextureUtils.makeRepeating(t1, this.chunkSize/2, this.chunkSize/2);
+        TextureUtils.makeRepeating(t2, this.chunkSize/2, this.chunkSize/2);
+        TextureUtils.makeRepeating(t3, this.chunkSize/2, this.chunkSize/2);
+        TextureUtils.makeRepeating(t4, this.chunkSize/2, this.chunkSize/2);
+
+        this.material = TextureUtils.generateBlendedMaterial([
+            // The first texture is the base; other textures are blended in on top.
+            {texture: t1},
+            // Start blending in at height -80; opaque between -35 and 20; blend out by 50
+            {texture: t2, levels: [0, 3, 10, 20]},
+            {texture: t3, levels: [10, 20, 22, 25]},
+            {texture: t4, levels: [22, 25, 2000, 3000]},
+            // How quickly this texture is blended in depends on its x-position.
+            {texture: t4, glsl: '1.0 - smoothstep(65.0 + smoothstep(-256.0, 256.0, vPosition.x) * 10.0, 80.0, vPosition.z)'},
+            // Use this texture if the slope is between 27 and 45 degrees
+            {texture: t3, glsl: 'slope > 0.7853981633974483 ? 0.2 : 1.0 - smoothstep(0.47123889803846897, 0.7853981633974483, slope) + 0.2'},
+        ]);
+
     }
 
     setupChunkGeometry() {
@@ -239,11 +263,11 @@ class TerrainChunk extends GameObject {
 
         let random = this.environment.prng.random();
 
-        if (random * 100 < 0.5) { // %0.1 of the time.
+        if (random * 100 < 0.1) { // %0.1 of the time.
 
             if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
 
-                let tree = new Tree(Assets.glTF.LowPolyTree);
+                let tree = new Tree(Assets.glTF.PinkTree);
                 tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
 
                 tree.model.scale.set(0.01, 0.01, 0.01);
@@ -288,6 +312,13 @@ class TerrainChunk extends GameObject {
 
     update (deltaTime, playerPosition) {
         // TODO: Update terrain chunk material based on health factor
+
+        // this.mesh.material.uniforms["health"].value = this.environment.props.healthFactor;
+
+        //this.materials[0].opacity = this.environment.props.healthFactor;
+        //this.materials[1].opacity = 1.0 - this.environment.props.healthFactor;
+        //this.materials[0].visible = true;
+        //this.materials[1].visible = true;
     }
 }
 

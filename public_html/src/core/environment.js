@@ -20,13 +20,19 @@ class Environment {
      * scene to create different random number that will be used for terrain generation and object scattering.
      */
     constructor(yourCallForAll, seed) {
+        this.props = {
+            healthFactor: 0.0,
+            drawDistance: 100,
+        }
+
         this.owner = yourCallForAll;
 
         this.seed = seed;
         this.setupPRNG();
 
         this.scene = this.owner.scene;
-        this.scene.fog = new THREE.Fog(0xa0afa0, 100, 200);
+
+        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 30);
 
         // Other game objects
         this.objects = [];
@@ -36,11 +42,6 @@ class Environment {
         this.setupWater();
 
         this.lastPlayerPos = null;
-
-        this.props = {
-            healthFactor: 0.0,
-            drawDistance: 100,
-        }
     }
 
     /**

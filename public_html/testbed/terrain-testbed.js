@@ -63,9 +63,9 @@ function setupScene() {
 
     scene = new THREE.Scene();
 
-    const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
-    helper.position.y = 1;
-    scene.add(helper);
+    //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+    //helper.position.y = 1;
+    //scene.add(helper);
 
 
     const geometry = new THREE.CylinderGeometry(0.375, 0.375, 1.75, 32, 1);
@@ -209,7 +209,8 @@ function initGUI() {
     let button = {
         regenerate: function () {
             console.log("Regenerating...")
-            ycfa.environment.terrain.removeChunks();
+            ycfa.environment.terrain.makeAllChunksInactive();
+            ycfa.environment.terrain.removeInactiveChunksFromScene();
             ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
         }
     };

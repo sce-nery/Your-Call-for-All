@@ -13,15 +13,15 @@ class Water extends  GameObject {
 
         const waterGeometry = new THREE.PlaneBufferGeometry(10000, 10000);
 
-        Assets.Texture.WaterNormals.wrapS = Assets.Texture.WaterNormals.wrapT = THREE.RepeatWrapping;
+        Assets.Texture.Water_Normal.wrapS = Assets.Texture.Water_Normal.wrapT = THREE.RepeatWrapping;
 
         let waterMesh = new ThreeWater(
             waterGeometry,
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: Assets.Texture.WaterNormals,
-                alpha: 0.2,
+                waterNormals: Assets.Texture.Water_Normal,
+                alpha: 0.95,
                 sunDirection: new THREE.Vector3(),
                 sunColor: 0xffffff,
                 waterColor: 0x001e0f,
@@ -29,6 +29,8 @@ class Water extends  GameObject {
                 fog: this.environment.scene.fog !== undefined
             }
         );
+
+        waterMesh.material.transparent = true;
 
         waterMesh.rotation.x = -Math.PI / 2;
 
