@@ -43,6 +43,7 @@ function init() {
         //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
 
+
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
