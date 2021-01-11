@@ -12,8 +12,8 @@ class YourCallForAll {
         //this.character = new Character();
     }
 
-    update(deltaTime){
-        this.environment.update(deltaTime);
+    update(deltaTime, playerPosition){
+        this.environment.update(deltaTime, playerPosition);
     }
 }
 
