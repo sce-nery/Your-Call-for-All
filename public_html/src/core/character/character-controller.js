@@ -4,7 +4,6 @@ import {BasicCharacterControllerInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
 
 
-
 class BasicCharacterController {
     constructor(params) {
         this._params = params;

@@ -25,28 +25,34 @@ let char;
 
 
 function init() {
-    clock = new THREE.Clock();
-
-    initCamera();
-    initListeners();
-    initScene();
-    initRenderer();
-
-    composer = new EffectComposer(renderer);
-    let renderPass = new RenderPass(scene, camera);
-    composer.addPass(renderPass);
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
-
 
 
     Assets.load(() => {
+        const loadingElem = document.querySelector('#loading');
+        loadingElem.style.display = 'none';
+
+        clock = new THREE.Clock();
+
+        initCamera();
+        initListeners();
+        initScene();
+        initRenderer();
+
+        composer = new EffectComposer(renderer);
+        let renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+        composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
+
+
+
+
+
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
     });
 
-    stats = createPerformanceMonitor(document.body);
-
+    //stats = createPerformanceMonitor(document.body);
 
 
     //controls = new OrbitControls(camera, renderer.domElement);
@@ -56,7 +62,7 @@ function init() {
 
 function render() {
     let deltaTime = clock.getDelta();
-    stats.update();
+    //stats.update();
     //controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
