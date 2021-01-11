@@ -17,12 +17,13 @@ class Character {
         this.addCharacterToTheScene();
         this.setupShadows();
 
+        this.idleAction = this.mixer.clipAction( this.animations[ 0 ]);
+        this.walkAction = this.mixer.clipAction( this.animations[ 3 ] );
+        this.runAction = this.mixer.clipAction( this.animations[ 1 ] );
 
-        this.actions.forEach( function ( action ) {
+        //this.actions.forEach( function ( action ) {action.play();} );
 
-            action.play();
-
-        } );
+        this.walkAction.play();
 
     }
 
@@ -40,7 +41,7 @@ class Character {
     }
 
     prepareCrossFade(startAction, endAction, crossFadeDuration) {
-        // Switch default / custom crossfade duration (according to the user's choice)
+        // Switch default / custom crossfade durataion (according to the user's choice)
         const duration = crossFadeDuration;
 
         // Make sure that we don't go on in singleStepMode, and that all actions are unpaused
@@ -77,7 +78,6 @@ class Character {
         // (concerning the start action this is already guaranteed in this place)
         this.setWeight( endAction, 1 );
         endAction.time = 0;
-
         // Crossfade with warping - you can also try without warping by setting the third parameter to false
         startAction.crossFadeTo( endAction, duration, true );
     }
@@ -126,16 +126,16 @@ class CharacterController {
     update(deltaTime) {
 
         if (this.input.keys.moveForward) {
-            this.character.prepareCrossFade( this.character.actions[1], this.character.actions[2], 0.5 );
+            this.character.prepareCrossFade( this.character.idleAction, this.character.walkAction, 0.5 );
         }
         if (this.input.keys.moveLeft) {
-            this.character.prepareCrossFade( this.character.actions[0], this.character.actions[2], 1.0 );
+            this.character.prepareCrossFade( this.character.walkAction, this.character.runAction, 1.0 );
         }
         if (this.input.keys.moveRight) {
-            this.character.prepareCrossFade( this.character.actions[2], this.character.actions[0], 2.5 );
+            this.character.prepareCrossFade( this.character.idleAction, this.character.walkAction, 2.5 );
         }
         if (this.input.keys.moveBackward) {
-            this.character.prepareCrossFade( this.character.actions[0], this.character.actions[1], 5.0 );
+            this.character.prepareCrossFade( this.character.idleAction, this.character.walkAction,5.0 );
         }
         this.character.mixer.update(deltaTime);
     }
