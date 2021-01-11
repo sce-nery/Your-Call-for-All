@@ -239,9 +239,9 @@ class TerrainChunk extends GameObject {
 
         let random = this.environment.prng.random();
 
-        if (random * 100 < 10) { // %0.1 of the time.
+        if (random * 100 < 0.5) { // %0.1 of the time.
 
-            if (candidatePosition.y > 1 && candidatePosition.y < 20) { // Height check
+            if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
 
                 let tree = new Tree(Assets.glTF.LowPolyTree);
                 tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
