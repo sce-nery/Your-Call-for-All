@@ -4,6 +4,7 @@ import {BasicCharacterControllerInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
 
 
+
 class BasicCharacterController {
     constructor(params) {
         this._params = params;
@@ -22,9 +23,10 @@ class BasicCharacterController {
 
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/zombie/');
-        let charPath = 'zombie.fbx';
+        let charPath = 'ybot.fbx';
 
         loader.load(charPath, (fbx) => {
+
             fbx.position.x = -28;
             fbx.scale.setScalar(0.01);
             fbx.traverse(c => {
@@ -53,9 +55,9 @@ class BasicCharacterController {
 
             const loader = new FBXLoader(this._manager);
             loader.setPath('./assets/models/characters/zombie/');
-            loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
-            loader.load('run.fbx', (a) => { _OnLoad('run', a); });
-            loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
+            loader.load('Walking.fbx', (a) => { _OnLoad('walk', a); });
+            loader.load('Running.fbx', (a) => { _OnLoad('run', a); });
+            loader.load('HappyIdle.fbx', (a) => { _OnLoad('idle', a); });
         });
 
 
