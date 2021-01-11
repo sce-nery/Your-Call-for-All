@@ -28,8 +28,7 @@ export const Assets = {
             TropicalPlant:   "/Your-Call-for-All/public_html/assets/models/grass-bush/tropical-plant/scene.gltf",
             Rock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
-
-
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -59,10 +58,11 @@ export const Assets = {
         TropicalPlant:  null,
         Rock:  null,
         BrokenBottle: null,
-
-
+        LowPolyTree: null,
     },
 
+
+ OBJ: {},
     Texture: {
         Ground1_Color: null,
         Ground1_Normal: null,
@@ -71,7 +71,7 @@ export const Assets = {
 
     load: function (onLoad) {
         const gltfLoader = new GLTFLoader(loadingManager);
-        const objLoader = new OBJLoader();
+        const objLoader = new OBJLoader(loadingManager);
         const textureLoader = new THREE.TextureLoader(loadingManager);
 
         gltfLoader.setWithCredentials(true);
@@ -96,7 +96,16 @@ export const Assets = {
             });
         }
 
+
+
         loadingManager.onLoad = onLoad;
+
+
+        const progressbarElem = document.querySelector('#progressbar');
+        loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
+        }
+
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console

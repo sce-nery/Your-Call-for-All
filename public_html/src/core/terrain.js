@@ -188,7 +188,8 @@ class TerrainChunk extends GameObject {
         this.material = new THREE.MeshPhongMaterial({
             map: colorMap,
             bumpMap: normalMap,
-            bumpScale: 0.85
+            bumpScale: 0.85,
+            side: THREE.DoubleSide
         });
     }
 
