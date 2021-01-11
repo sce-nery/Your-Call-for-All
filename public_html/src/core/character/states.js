@@ -151,7 +151,7 @@ class JumpState extends State {
     }
 
     Enter(prevState) {
-        const jumpAction = this._parent._proxy._animations['Idle'];
+        const jumpAction = this._parent._proxy._animations['Jump'];
         if (prevState.Name === 'Walk') {
             const prevAction = this._parent._proxy._animations[prevState.Name];
             const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;

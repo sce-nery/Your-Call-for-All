@@ -188,7 +188,6 @@ class TerrainChunk extends GameObject {
             map: colorMap,
             bumpMap: normalMap,
             bumpScale: 0.85,
-            side: THREE.DoubleSide
         });
     }
 

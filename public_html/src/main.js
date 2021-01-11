@@ -48,6 +48,9 @@ function init() {
         clock.start();
         render();
 
+        const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+        helper.position.y = 1;
+        scene.add(helper);
 
 
     });

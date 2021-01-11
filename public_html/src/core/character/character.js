@@ -27,12 +27,12 @@ class Character  {
         });
     }
 
-    update(timeElapsed) {
+    update(timeElapsed, ycfa) {
         if (this.mixers) {
             this.mixers.map(m => m.update(timeElapsed));
         }
         if (this.controls) {
-            this.controls.Update(timeElapsed);
+            this.controls.Update(timeElapsed, ycfa);
         }
         this.thirdPersonCamera.Update(timeElapsed);
     }
