@@ -2,6 +2,7 @@ import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {BasicCharacterControllerInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
+import {Assets} from "../assets";
 
 
 class BasicCharacterController {
@@ -20,6 +21,29 @@ class BasicCharacterController {
 
     _LoadModels() {
 
+        this.gltf =  Assets.glTF.Jackie;
+        this.model = this.gltf.scene;
+        this.animations = this.gltf.animations;
+
+
+        this.model.position.x = -28;
+        this.model.scale.setScalar(0.01);
+        this.model.traverse(c => {
+            c.castShadow = true;
+        });
+
+
+        this._target = this.model;
+        this._params.scene.add(this._target);
+
+        this._mixer = new THREE.AnimationMixer(this._target);
+        this._stateMachine.SetState('idle');
+
+
+
+
+
+        /*
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/main_character/');
         let charPath = 'jackie.fbx';
@@ -59,7 +83,7 @@ class BasicCharacterController {
             loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
             loader.load('jump.fbx', (a) => { _OnLoad('jump', a); });
         });
-
+        */
 
     }
 
