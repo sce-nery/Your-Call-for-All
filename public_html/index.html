@@ -1,69 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="index.css">
+
     <meta charset="utf-8">
     <title>Your Call for All</title>
-    <style>
-        body { margin: 0; }
-        canvas { display: block; background-color: #c2ccd1}
-        #loading {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: xx-large;
-            font-family: sans-serif;
-        }
-        #loading>div>div {
-            padding: 2px;
-        }
-        .progress {
-            width: 50vw;
-            border: 1px solid black;
-        }
-        #progressbar {
-            width: 0;
-            transition: width ease-out .5s;
-            height: 1em;
-            background-color: #888;
-            background-image: linear-gradient(
-                    -45deg,
-                    rgba(255, 255, 255, .5) 25%,
-                    transparent 25%,
-                    transparent 50%,
-                    rgba(255, 255, 255, .5) 50%,
-                    rgba(255, 255, 255, .5) 75%,
-                    transparent 75%,
-                    transparent
-            );
-            background-size: 50px 50px;
-            animation: progressanim 2s linear infinite;
-        }
 
-        @keyframes progressanim {
-            0% {
-                background-position: 50px 50px;
-            }
-            100% {
-                background-position: 0 0;
-            }
-        }
-    </style>
+
 </head>
 <body>
 <script src="vendor/jquery-3.5.1.min.js"></script>
 <script src="vendor/logger.js"></script>
 
 
+<div id="main-menu" style="visibility: hidden">
+    <div id="left"></div>
+    <div id="multiplayer"><p>MULTIPLAYER</p></div>
+    <div id="options"><p>OPTIONS</p></div>
+    <div id="credits"><p>CREDITS</p></div>
+    <div id="right"></div>
+
+</div>
+
 <div id="loading">
     <div>
-        <div>...loading...</div>
+        <div>World is being generated...</div>
         <div class="progress"><div id="progressbar"></div></div>
+
     </div>
 </div>
 

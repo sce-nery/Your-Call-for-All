@@ -21,15 +21,14 @@ let camera, scene, renderer, composer;
 let stats;
 
 
-let char;
-
-
 function init() {
 
 
     Assets.load(() => {
         const loadingElem = document.querySelector('#loading');
         loadingElem.style.display = 'none';
+
+        document.querySelector('#main-menu').style.visibility = 'visible';
 
         clock = new THREE.Clock();
 
@@ -42,9 +41,6 @@ function init() {
         let renderPass = new RenderPass(scene, camera);
         composer.addPass(renderPass);
         composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
-
-
-
 
 
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
