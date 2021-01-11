@@ -5,7 +5,7 @@ import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/Eff
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
-import {Character} from "./core/character.js";
+import {Character} from "./core/character/character.js";
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 
@@ -21,6 +21,9 @@ let camera, scene, renderer, composer;
 let stats;
 
 
+let char;
+
+
 function init() {
     clock = new THREE.Clock();
 
@@ -34,8 +37,10 @@ function init() {
     composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
+
+
     Assets.load(() => {
-        yourCallForAll = new YourCallForAll(scene);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
     });
@@ -43,15 +48,16 @@ function init() {
     stats = createPerformanceMonitor(document.body);
 
 
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
+
+    //controls = new OrbitControls(camera, renderer.domElement);
+    //controls.update();
 }
 
 
 function render() {
     let deltaTime = clock.getDelta();
     stats.update();
-    controls.update();
+    //controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
