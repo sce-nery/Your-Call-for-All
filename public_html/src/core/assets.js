@@ -45,7 +45,7 @@ export const Assets = {
 
     load: function (onLoad) {
         const gltfLoader = new GLTFLoader(loadingManager);
-        const objLoader = new OBJLoader();
+        const objLoader = new OBJLoader(loadingManager);
         const textureLoader = new THREE.TextureLoader(loadingManager);
 
         gltfLoader.setWithCredentials(true);
@@ -70,7 +70,16 @@ export const Assets = {
             });
         }
 
+
+
         loadingManager.onLoad = onLoad;
+
+
+        const progressbarElem = document.querySelector('#progressbar');
+        loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
+        }
+
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
