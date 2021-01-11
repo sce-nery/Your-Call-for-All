@@ -84,7 +84,7 @@ class Environment {
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
         this.sky = sky;
-        sky.update();
+        //sky.update();
     }
 
     setupWater() {

@@ -40,7 +40,7 @@ function init() {
         composer = new EffectComposer(renderer);
         let renderPass = new RenderPass(scene, camera);
         composer.addPass(renderPass);
-        composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
+        //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
 
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
@@ -61,7 +61,7 @@ function render() {
     //stats.update();
     //controls.update();
     yourCallForAll.update(deltaTime);
-    //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
+    renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
     composer.render();
 
@@ -87,9 +87,9 @@ function initRenderer() {
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // For some reason, these break the water color
-    //renderer.outputEncoding = THREE.sRGBEncoding;
-    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    //renderer.toneMappingExposure = 0.5;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.5;
     document.body.appendChild(renderer.domElement);
 }
 
