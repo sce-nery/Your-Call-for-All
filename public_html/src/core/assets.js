@@ -15,6 +15,8 @@ export const Assets = {
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
+            Soldier: "/Your-Call-for-All/public_html/assets/models/characters/Soldier.glb",
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -31,6 +33,8 @@ export const Assets = {
         PalmTree: null,
         RealTree: null,
         BrokenBottle: null,
+        Soldier: null,
+        LowPolyTree: null,
     },
 
     OBJ: {},
@@ -72,13 +76,13 @@ export const Assets = {
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
-        loadingManager.onError = function (e) {
-            console.error(e);
-            console.warn("Attempting to load assets by refreshing site in 2 secs.");
-            setTimeout(function () {
-                location.reload();
-            }, 2000);
-        };
+        //loadingManager.onError = function (e) {
+        //    console.error(e);
+        //    console.warn("Attempting to load assets by refreshing site in 2 secs.");
+        //    setTimeout(function () {
+        //        location.reload();
+        //    }, 2000);
+        //};
     },
 
     cloneGLTF: function (gltf) {

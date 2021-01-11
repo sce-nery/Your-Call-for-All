@@ -1,5 +1,4 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {GUI} from "../../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
 
 class Character {
     constructor(scene, gltf) {
