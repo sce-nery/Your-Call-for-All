@@ -22,7 +22,7 @@ class BasicCharacterController {
 
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/zombie/');
-        let charPath = 'mremireh_o_desbiens.fbx';
+        let charPath = 'zombie.fbx';
 
         loader.load(charPath, (fbx) => {
             fbx.position.x = -28;
