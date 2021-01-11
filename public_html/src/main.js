@@ -21,6 +21,7 @@ let camera, scene, renderer, composer;
 let stats;
 
 
+
 function init() {
 
 
@@ -43,10 +44,12 @@ function init() {
         //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
 
-
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
+
+
+
     });
 
     //stats = createPerformanceMonitor(document.body);
@@ -88,14 +91,20 @@ function initRenderer() {
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // For some reason, these break the water color
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+
+    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    //renderer.toneMappingExposure = 0.5;
+
+    //renderer.outputEncoding = THREE.sRGBEncoding;
+    //renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
     document.body.appendChild(renderer.domElement);
 }
 
 function initScene() {
     scene = new THREE.Scene();
+
 }
 
 

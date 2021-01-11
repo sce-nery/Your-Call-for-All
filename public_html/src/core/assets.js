@@ -16,6 +16,7 @@ export const Assets = {
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
             LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
+            JackieGLTF:  "/Your-Call-for-All/public_html/assets/models/characters/main_character/gltf_jackie.glb"
         },
         OBJ: {},
         Texture: {
@@ -33,6 +34,7 @@ export const Assets = {
         RealTree: null,
         BrokenBottle: null,
         LowPolyTree: null,
+        JackieGLTF: null,
     },
 
     OBJ: {},
