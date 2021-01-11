@@ -15,6 +15,7 @@ export const Assets = {
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -36,6 +37,7 @@ export const Assets = {
         PalmTree: null,
         RealTree: null,
         BrokenBottle: null,
+        LowPolyTree: null,
     },
 
     OBJ: {},

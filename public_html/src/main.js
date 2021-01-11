@@ -4,7 +4,10 @@ import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitContr
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
-import * as ASSETS from "./core/assets.js";
+import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import {Character} from "./core/character/character.js";
+import {Assets} from "./core/assets.js";
+import {createPerformanceMonitor} from "./util/debug.js";
 
 
 window.onload = function () {
@@ -15,13 +18,14 @@ let controls;
 let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
+let stats;
+
+
+let char;
 
 
 function init() {
     clock = new THREE.Clock();
-
-
-
 
     initCamera();
     initListeners();
@@ -33,24 +37,27 @@ function init() {
     composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
-    // let helper = new THREE.GridHelper(1000,1000, 0xffffff,0xffffff);
-    // helper.position.y = 1.0;
-    // scene.add(helper);
 
-    ASSETS.load().then(function () {
-        yourCallForAll = new YourCallForAll(scene);
+
+    Assets.load(() => {
+        yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         render();
-    })
+    });
 
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
+    stats = createPerformanceMonitor(document.body);
+
+
+
+    //controls = new OrbitControls(camera, renderer.domElement);
+    //controls.update();
 }
 
 
 function render() {
     let deltaTime = clock.getDelta();
-    controls.update();
+    stats.update();
+    //controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
