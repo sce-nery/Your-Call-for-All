@@ -9,7 +9,6 @@ export const Assets = {
 
     URL: {
         glTF: {
-            MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
@@ -27,12 +26,11 @@ export const Assets = {
             Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_1K_Color.jpg',
             Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_1K_Color.jpg',
             Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_1K_Color.jpg',
-            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg',
+            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/Water_Normal.jpg',
         }
     },
 
     glTF: {
-        MoCapMan: null,
         PinkTree: null,
         WillowTree: null,
         PalmTree: null,
