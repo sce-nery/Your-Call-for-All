@@ -25,13 +25,11 @@ class BasicCharacterController {
         let charPath = 'mremireh_o_desbiens.fbx';
 
         loader.load(charPath, (fbx) => {
-
+            fbx.position.x = -28;
             fbx.scale.setScalar(0.01);
             fbx.traverse(c => {
                 c.castShadow = true;
             });
-
-            console.log(fbx.position);
 
             this._target = fbx;
             this._params.scene.add(this._target);
