@@ -2,7 +2,7 @@ import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {BasicCharacterControllerInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
-import {Assets} from "../assets";
+import {Assets} from "../assets.js";
 
 
 class BasicCharacterController {
@@ -13,11 +13,32 @@ class BasicCharacterController {
         this._velocity = new THREE.Vector3(0, 0, 0);
         this._position = new THREE.Vector3();
 
-        this._animations = {};
+
+        this._LoadModels();
         this._input = new BasicCharacterControllerInput();
         this._stateMachine = new CharacterFSM(new BasicCharacterControllerProxy(this._animations));
-        this._LoadModels();
+        this._stateMachine.SetState('Idle');
     }
+
+
+    setupActions() {
+        Logger.debug("Setting up actions for this tree model.")
+        const animations = this.animations;
+        let actions = [];
+
+        for (let i = 0; i < animations.length; i++) {
+            actions.push(this._mixer.clipAction(animations[i]));
+        }
+
+        this.actionList = actions;
+
+        this.actionMap = actions.reduce(function (map, obj) {
+            obj.paused = false;
+            map[obj._clip.name] = obj;
+            return map;
+        }, {});
+    }
+
 
     _LoadModels() {
 
@@ -25,19 +46,21 @@ class BasicCharacterController {
         this.model = this.gltf.scene;
         this.animations = this.gltf.animations;
 
-
-        this.model.position.x = -28;
-        this.model.scale.setScalar(0.01);
-        this.model.traverse(c => {
-            c.castShadow = true;
-        });
-
-
         this._target = this.model;
         this._params.scene.add(this._target);
 
         this._mixer = new THREE.AnimationMixer(this._target);
-        this._stateMachine.SetState('idle');
+
+       this.setupActions();
+
+       this._animations= this.actionMap;
+
+        this.model.position.x = -28;
+       // this.model.scale.setScalar(1);
+        this.model.traverse(c => {
+            c.castShadow = true;
+        });
+
 
 
 

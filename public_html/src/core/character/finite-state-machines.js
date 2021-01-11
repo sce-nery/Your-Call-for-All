@@ -39,10 +39,10 @@ class CharacterFSM extends FiniteStateMachine {
     constructor(proxy) {
         super();
         this._proxy = proxy;
-        this.addState('idle', IdleState);
-        this.addState('walk', WalkState);
-        this.addState('run', RunState);
-        this.addState('jump', JumpState);
+        this.addState('Idle', IdleState);
+        this.addState('Walk', WalkState);
+        this.addState('Run', RunState);
+        this.addState('Jump', JumpState);
 
     }
 
