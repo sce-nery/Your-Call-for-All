@@ -21,6 +21,9 @@ let camera, scene, renderer, composer;
 let stats;
 
 
+let char;
+
+
 function init() {
     clock = new THREE.Clock();
 
@@ -34,6 +37,8 @@ function init() {
     composer.addPass(renderPass);
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
+
+
     Assets.load(() => {
         yourCallForAll = new YourCallForAll(scene);
         clock.start();
@@ -42,16 +47,17 @@ function init() {
 
     stats = createPerformanceMonitor(document.body);
 
+    char = new Character(scene, camera, renderer);
 
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
+    //controls = new OrbitControls(camera, renderer.domElement);
+    //controls.update();
 }
 
 
 function render() {
     let deltaTime = clock.getDelta();
     stats.update();
-    controls.update();
+    //controls.update();
     yourCallForAll.update(deltaTime);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
