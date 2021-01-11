@@ -5,7 +5,7 @@ import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/Eff
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
-import {Character} from "./core/character.js";
+import {Character} from "./core/character/character.js";
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 

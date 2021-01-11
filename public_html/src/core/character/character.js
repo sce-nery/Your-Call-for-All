@@ -1,6 +1,6 @@
-import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {FBXLoader} from "../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
-import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "../../../vendor/three-js/build/three.module.js";
+import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
+import {GLTFLoader} from "../../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 
 
 class Character  {
@@ -123,7 +123,10 @@ class BasicCharacterController {
 
         const loader = new FBXLoader();
         loader.setPath('./assets/models/characters/zombie/');
-        loader.load('mremireh_o_desbiens.fbx', (fbx) => {
+        let charPath = 'mremireh_o_desbiens.fbx';
+        //let charPath = 'remy.fbx';
+
+        loader.load(charPath, (fbx) => {
             fbx.scale.setScalar(0.01);
             fbx.traverse(c => {
                 c.castShadow = true;

@@ -1,5 +1,5 @@
 import {Environment} from "./environment.js";
-import {Character} from "./character.js";
+import {Character} from "./character/character.js";
 import {Assets} from "./assets.js";
 
 import * as THREE from "../../vendor/three-js/build/three.module.js";
