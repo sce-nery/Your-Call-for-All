@@ -5,7 +5,7 @@ import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/Eff
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import * as ASSETS from "../src/core/assets.js";
-import {Tree} from "../src/core/tree.js";
+import {AnimatedObject} from "../src/core/animatedObject.js";
 import {Assets} from "../src/core/assets.js";
 import {SkeletonUtils} from "../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 import {createPerformanceMonitor} from "../src/util/debug.js";
@@ -84,6 +84,7 @@ function init() {
     stats = createPerformanceMonitor(document.body);
 }
 
+let  position = new  THREE.Vector3();
 
 function render() {
     let deltaTime = clock.getDelta();
@@ -95,7 +96,8 @@ function render() {
 
     }*/
     controls.update();
-    yourCallForAll.update(deltaTime);
+
+    yourCallForAll.update(deltaTime, position);
     //renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
     composer.render();

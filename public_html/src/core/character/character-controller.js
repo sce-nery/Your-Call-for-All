@@ -11,7 +11,7 @@ class CharacterController {
 
         this.locomotion = {
             deceleration: new THREE.Vector3(-0.0005, -0.0001, -5.0),
-            acceleration: new THREE.Vector3(1, 0.25, 50.0),
+            acceleration: new THREE.Vector3(1, 0.25, 20.0),
             velocity: new THREE.Vector3(0, 0, 0),
             rotation: new THREE.Quaternion(),
             position: new THREE.Vector3(),
