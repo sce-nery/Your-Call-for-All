@@ -5,6 +5,8 @@ import {Sky} from "./sky.js";
 import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
+import {AnimatedObject} from "./animatedObject.js";
+import {StaticObject} from "./bushes-rocks.js";
 
 class Environment {
     /**
@@ -29,7 +31,7 @@ class Environment {
 
         this.scene = this.owner.scene;
 
-        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 30);
+        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 2);
 
         // Other game objects
         this.objects = [];
@@ -66,7 +68,7 @@ class Environment {
         });
         // Creates a terrain object that will control terrain chunks.
         // terrain.loadChunks(position) will load 9 chunks around that position.
-        this.terrain = new Terrain(this, heightMap, {chunkSize: 30});
+        this.terrain = new Terrain(this, heightMap, {chunkSize: 100});
     }
 
     setupSky() {
@@ -123,7 +125,20 @@ class Environment {
         console.debug("Adding chunk objects to scene...");
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
-            if  (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
+
+            if (object instanceof AnimatedObject || object instanceof StaticObject) {
+                if (this.props.healthFactor >= 0.5 && object.healthFactor>0.5) {
+                    this.scene.add(object.model);
+                    object.isInScene = true;
+                }
+                else if (this.props.healthFactor < 0.5 && object.healthFactor<0.5) {
+                    this.scene.add(object.model);
+                    object.isInScene = true;
+                }
+
+            }
+
+            if (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
                 this.scene.add(object.model);
                 object.isInScene = true;
             }
@@ -134,11 +149,29 @@ class Environment {
         console.debug("Removing chunk objects from scene...");
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
-            if  (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
+
+            if (object instanceof AnimatedObject|| object instanceof StaticObject) {
+                if (this.props.healthFactor >= 0.5 && object.healthFactor<0.5) {
+
+                    this.scene.remove(object.model);
+                    object.isInScene = false;
+
+                }
+                else if (this.props.healthFactor < 0.5 && object.healthFactor>0.5) {
+
+                    this.scene.remove(object.model);
+                    object.isInScene = false;
+                }
+
+            }
+            if (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
+
                 this.scene.remove(object.model);
                 object.isInScene = false;
             }
+
         }
+
     }
 }
 

@@ -522,7 +522,7 @@
       "author": "Anskar (https://sketchfab.com/Anskar)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
       "source": "https://sketchfab.com/3d-models/low-poly-tree-wind-82ad872d9b994af9a6b74a453c03e01f",
-      "title": "Low Poly Tree Wind"
+      "title": "Low Poly AnimatedObject Wind"
     },
     "generator": "Sketchfab-7.60.0",
     "version": "2.0"
@@ -708,7 +708,7 @@
         0,
         1
       ],
-      "name": "Low poly Tree wind.fbx"
+      "name": "Low poly AnimatedObject wind.fbx"
     },
     {
       "children": [

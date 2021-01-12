@@ -11,7 +11,7 @@ class CharacterController {
 
         this.locomotion = {
             deceleration: new THREE.Vector3(-0.0005, -0.0001, -5.0),
-            acceleration: new THREE.Vector3(1, 0.25, 50.0),
+            acceleration: new THREE.Vector3(1, 0.25, 10.0),
             velocity: new THREE.Vector3(0, 0, 0),
             rotation: new THREE.Quaternion(),
             position: new THREE.Vector3(),
@@ -45,7 +45,7 @@ class CharacterController {
         let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
         if (intersects[0] !== undefined) {
-            let distance = 1.25;
+            let distance = 1.05;
             //new position is higher so you need to move you object upwards
             if (distance > intersects[0].distance) {
                 this.character.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
@@ -69,7 +69,7 @@ class CharacterController {
 
         const acc = this.locomotion.acceleration.clone();
         if (this.input.keys.shift) {
-            acc.multiplyScalar(2.0);
+            acc.multiplyScalar(3.0);
         }
 
         if (this.input.keys.forward) {
