@@ -74,7 +74,7 @@ function setupScene() {
     physicsDemoMesh.receiveShadow = true;
     physicsDemoMesh.castShadow = true;
     physicsDemoMesh.position.set(0, 10, 0);
-    scene.add(physicsDemoMesh);
+    // scene.add(physicsDemoMesh);
 
     // Physics
     setupPhysics();
@@ -109,45 +109,9 @@ function setupPhysics() {
 
 }
 
-let basicControls = {
-    horizontalMove: 0,
-    verticalMove: 0
-
-}
-
 function setupControls() {
 
     controls = new MapControls(camera, renderer.domElement);
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "w") {
-            basicControls.verticalMove = -1.0;
-        }
-        if (event.key === "a") {
-            basicControls.horizontalMove = -1.0;
-        }
-        if (event.key === "s") {
-            basicControls.verticalMove = 1.0;
-        }
-        if (event.key === "d") {
-            basicControls.horizontalMove = 1.0;
-        }
-    });
-
-    document.addEventListener("keyup", function (event) {
-        if (event.key === "w") {
-            basicControls.verticalMove = 0.0;
-        }
-        if (event.key === "a") {
-            basicControls.horizontalMove = 0.0;
-        }
-        if (event.key === "s") {
-            basicControls.verticalMove = 0.0;
-        }
-        if (event.key === "d") {
-            basicControls.horizontalMove = 0.0;
-        }
-    });
 }
 
 function init() {
@@ -181,10 +145,10 @@ function init() {
         bloomPass.enabled = false;
         composer.addPass(bloomPass);
 
-        let playerCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
-        playerCamera.position.set(10,10, 100);
+        //let playerCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
+        //playerCamera.position.set(10,10, 100);
 
-        ycfa = new YourCallForAll(scene, playerCamera);
+        ycfa = new YourCallForAll(scene, camera);
         ycfa.environment.props.healthFactor = 1.0;
         initGUI();
         clock.start();
@@ -257,37 +221,37 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-let velocity = new THREE.Vector3();
+// let velocity = new THREE.Vector3();
 
 function render() {
     let deltaTime = clock.getDelta();
 
-    let physicsDemoMeshVelocity = new THREE.Vector3();
-    physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
-    physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
+    // let physicsDemoMeshVelocity = new THREE.Vector3();
+    // physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
+    // physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
 
-    physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
-    physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
+    // physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
+    // physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
 
-    let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
+    // let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
+    // let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
-    if (intersects[0] !== undefined) {
-        let distance = 1.75;
-        //new position is higher so you need to move you object upwards
-        if (distance > intersects[0].distance) {
-            physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
-        }
+    // if (intersects[0] !== undefined) {
+    //     let distance = 1.75;
+    //     //new position is higher so you need to move you object upwards
+    //     if (distance > intersects[0].distance) {
+    //         physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+    //     }
 
-        //gravity and prevent falling through floor
-        if (distance >= intersects[0].distance && velocity.y <= 0) {
-            velocity.y = 0;
-        } else if (distance <= intersects[0].distance && velocity.y === 0) {
-            velocity.y -= 0.1;
-        }
+    //     //gravity and prevent falling through floor
+    //     if (distance >= intersects[0].distance && velocity.y <= 0) {
+    //         velocity.y = 0;
+    //     } else if (distance <= intersects[0].distance && velocity.y === 0) {
+    //         velocity.y -= 0.1;
+    //     }
 
-        physicsDemoMesh.translateY(velocity.y);
-    }
+    //     physicsDemoMesh.translateY(velocity.y);
+    // }
 
     ycfa.update(deltaTime, physicsDemoMesh.position);
 

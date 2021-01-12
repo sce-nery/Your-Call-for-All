@@ -1,140 +1,96 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {CharacterControllerKeyboardInput} from "./character-controller-input.js";
-import {CharacterFSM} from "./finite-state-machines.js";
+import {CharacterStateMachine} from "./finite-state-machines.js";
 import {Assets} from "../assets.js";
 
 
-class BasicCharacterController {
-    constructor(camera, scene) {
-        this.camera = camera;
-        this.scene = scene;
-        this._deceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
-        this._acceleration = new THREE.Vector3(1, 0.25, 50.0);
-        this._velocity = new THREE.Vector3(0, 0, 0);
-        this._position = new THREE.Vector3();
+class CharacterController {
+    constructor(character) {
+        this.character = character;
+        this.camera = character.camera;
+        this.scene = character.scene;
 
-
-        this.loadModels();
-
-        this.input = new CharacterControllerKeyboardInput();
-        this.fsm = new CharacterFSM(this.actionMap);
-        this.fsm.setState('Idle');
-
-    }
-
-
-    setupActions() {
-        Logger.debug("Setting up actions for this tree model.")
-        const animations = this.animations;
-        let actionList = [];
-
-        for (let i = 0; i < animations.length; i++) {
-            actionList.push(this.mixer.clipAction(animations[i]));
+        this.locomotion = {
+            deceleration: new THREE.Vector3(-0.0005, -0.0001, -5.0),
+            acceleration: new THREE.Vector3(1, 0.25, 50.0),
+            velocity: new THREE.Vector3(0, 0, 0),
         }
 
-        this.actionList = actionList;
+        this.input = new CharacterControllerKeyboardInput();
 
-        this.actionMap = actionList.reduce(function (map, obj) {
-            obj.paused = false;
-            map[obj._clip.name] = obj;
-            return map;
-        }, {});
+        this.fsm = new CharacterStateMachine(this.character.actionMap);
+        this.fsm.setState('Idle');
     }
 
-
-    loadModels() {
-
-        this.gltf =  Assets.glTF.Jackie;
-        this.model = this.gltf.scene;
-        this.animations = this.gltf.animations;
-
-        this.scene.add(this.model);
-
-        this.mixer = new THREE.AnimationMixer(this.model);
-
-       this.setupActions();
-       this.setupShadows();
-
-    }
-
-    setupShadows() {
-        this.model.traverse(function (object) {
-            if (object.isMesh) {
-                object.castShadow = true;
-                object.receiveShadow = true;
-            }
-        });
-    }
-
-    Update(timeInSeconds, ycfa) {
-        if (!this.model) {
+    update(deltaTime, ycfa) {
+        if (!this.character.model) {
             return;
         }
 
-        this.fsm.update(timeInSeconds, this.input);
+        this.fsm.update(deltaTime, this.input);
 
-        const velocity = this._velocity;
+        const velocity = this.locomotion.velocity;
         const frameDeceleration = new THREE.Vector3(
-            velocity.x * this._deceleration.x,
-            velocity.y * this._deceleration.y,
-            velocity.z * this._deceleration.z
+            velocity.x * this.locomotion.deceleration.x,
+            velocity.y * this.locomotion.deceleration.y,
+            velocity.z * this.locomotion.deceleration.z
         );
-        frameDeceleration.multiplyScalar(timeInSeconds);
+        frameDeceleration.multiplyScalar(deltaTime);
         frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
         velocity.add(frameDeceleration);
 
 
-        let raycaster = new THREE.Raycaster(this.model.position, new THREE.Vector3(0, -1, 0));
+        let raycaster = new THREE.Raycaster(this.character.model.position, new THREE.Vector3(0, -1, 0));
         let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
         if (intersects[0] !== undefined) {
             let distance = 1.25;
             //new position is higher so you need to move you object upwards
             if (distance > intersects[0].distance) {
-                this.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+                this.character.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
             }
 
             //gravity and prevent falling through floor
-            if (distance >= intersects[0].distance && this._velocity.y <= 0) {
-                this._velocity.y = 0;
-            } else if (distance <= intersects[0].distance &&  this._velocity.y=== 0) {
-                this._velocity.y-= 0.1;
+            if (distance >= intersects[0].distance && this.locomotion.velocity.y <= 0) {
+                this.locomotion.velocity.y = 0;
+            } else if (distance <= intersects[0].distance && this.locomotion.velocity.y === 0) {
+                this.locomotion.velocity.y -= 0.1;
             }
 
-            this.model.translateY( this._velocity.y);
+            this.character.model.translateY(this.locomotion.velocity.y);
         }
 
 
-        const controlObject = this.model;
-        const _Q = new THREE.Quaternion();
-        const _A = new THREE.Vector3();
-        const _R = controlObject.quaternion.clone();
+        const controlObject = this.character.model;
+        const q = new THREE.Quaternion();
+        const a = new THREE.Vector3();
+        const r = controlObject.quaternion.clone();
 
-        const acc = this._acceleration.clone();
+        const acc = this.locomotion.acceleration.clone();
         if (this.input.keys.shift) {
             acc.multiplyScalar(2.0);
         }
 
         if (this.input.keys.forward) {
-            velocity.z += acc.z * timeInSeconds;
+            velocity.z += acc.z * deltaTime;
         }
         if (this.input.keys.backward) {
-            velocity.z -= acc.z * timeInSeconds;
+            velocity.z -= acc.z * deltaTime;
         }
         if (this.input.keys.left) {
-            _A.set(0, 1, 0);
-            _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
-            _R.multiply(_Q);
+            a.set(0, 1, 0);
+            q.setFromAxisAngle(a, 4.0 * Math.PI * deltaTime * this.locomotion.acceleration.y);
+            r.multiply(q);
         }
         if (this.input.keys.right) {
-            _A.set(0, 1, 0);
-            _Q.setFromAxisAngle(_A, 4.0 * -Math.PI * timeInSeconds * this._acceleration.y);
-            _R.multiply(_Q);
+            a.set(0, 1, 0);
+            q.setFromAxisAngle(a, 4.0 * -Math.PI * deltaTime * this.locomotion.acceleration.y);
+            r.multiply(q);
         }
 
-        controlObject.quaternion.copy(_R);
+        controlObject.quaternion.copy(r);
 
         const oldPosition = new THREE.Vector3();
         oldPosition.copy(controlObject.position);
@@ -147,28 +103,13 @@ class BasicCharacterController {
         sideways.applyQuaternion(controlObject.quaternion);
         sideways.normalize();
 
-        sideways.multiplyScalar(velocity.x * timeInSeconds);
-        forward.multiplyScalar(velocity.z * timeInSeconds);
+        sideways.multiplyScalar(velocity.x * deltaTime);
+        forward.multiplyScalar(velocity.z * deltaTime);
 
         controlObject.position.add(forward);
         controlObject.position.add(sideways);
 
-        this._position.copy(controlObject.position);
-
-        if (this.mixer) {
-            this.mixer.update(timeInSeconds);
-        }
     }
 }
 
-class BasicCharacterControllerProxy {
-    constructor(actionMap) {
-        this.actionMap = actionMap;
-    }
-    get animations() {
-        return this.actionMap;
-    }
-}
-
-
-export {BasicCharacterController, BasicCharacterControllerProxy}
+export {CharacterController};

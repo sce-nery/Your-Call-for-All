@@ -2,9 +2,9 @@ import * as THREE from "../../../vendor/three-js/build/three.module.js";
 
 
 class ThirdPersonCameraController {
-    constructor(camera, characterController) {
-        this.characterController = characterController;
-        this.camera = camera;
+    constructor(character) {
+        this.character = character;
+        this.camera = this.character.camera;
 
         this.currentPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
@@ -12,15 +12,15 @@ class ThirdPersonCameraController {
 
     calculateIdealOffset() {
         const idealOffset = new THREE.Vector3(-1, 2, -13);
-        idealOffset.applyQuaternion(this.characterController.model.quaternion);
-        idealOffset.add(this.characterController.model.position);
+        idealOffset.applyQuaternion(this.character.model.quaternion);
+        idealOffset.add(this.character.model.position);
         return idealOffset;
     }
 
     calculateIdealLookAt() {
         const idealLookAt = new THREE.Vector3(0, 10, 50);
-        idealLookAt.applyQuaternion(this.characterController.model.quaternion);
-        idealLookAt.add(this.characterController.model.position);
+        idealLookAt.applyQuaternion(this.character.model.quaternion);
+        idealLookAt.add(this.character.model.position);
         return idealLookAt;
     }
 

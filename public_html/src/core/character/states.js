@@ -1,6 +1,6 @@
-class State {
+class CharacterState {
     constructor(parent) {
-        this.parent = parent;
+        this.characterStateMachine = parent;
     }
 
     enter() {
@@ -14,7 +14,7 @@ class State {
 }
 
 
-class WalkState extends State {
+class WalkState extends CharacterState {
     constructor(parent) {
         super(parent);
 
@@ -22,9 +22,9 @@ class WalkState extends State {
     }
 
     enter(prevState) {
-        const curAction = this.parent.actions['Walk'];
+        const curAction = this.characterStateMachine.actions['Walk'];
         if (prevState) {
-            const prevAction = this.parent.actions[prevState.name];
+            const prevAction = this.characterStateMachine.actions[prevState.name];
 
             curAction.enabled = true;
 
@@ -50,17 +50,17 @@ class WalkState extends State {
     update(deltaTime, input) {
         if (input.keys.forward || input.keys.backward) {
             if (input.keys.shift) {
-                this.parent.setState('Run');
+                this.characterStateMachine.setState('Run');
             }
             return;
         }
 
-        this.parent.setState('Idle');
+        this.characterStateMachine.setState('Idle');
     }
 }
 
 
-class RunState extends State {
+class RunState extends CharacterState {
     constructor(parent) {
         super(parent);
 
@@ -68,9 +68,9 @@ class RunState extends State {
     }
 
     enter(prevState) {
-        const curAction = this.parent.actions['Run'];
+        const curAction = this.characterStateMachine.actions['Run'];
         if (prevState) {
-            const prevAction = this.parent.actions[prevState.name];
+            const prevAction = this.characterStateMachine.actions[prevState.name];
 
             curAction.enabled = true;
 
@@ -96,17 +96,17 @@ class RunState extends State {
     update(deltaTime, input) {
         if (input.keys.forward || input.keys.backward) {
             if (!input.keys.shift) {
-                this.parent.setState('Walk');
+                this.characterStateMachine.setState('Walk');
             }
             return;
         }
 
-        this.parent.setState('Idle');
+        this.characterStateMachine.setState('Idle');
     }
 }
 
 
-class IdleState extends State {
+class IdleState extends CharacterState {
     constructor(parent) {
         super(parent);
 
@@ -114,9 +114,9 @@ class IdleState extends State {
     }
 
     enter(prevState) {
-        const idleAction = this.parent.actions['Idle'];
+        const idleAction = this.characterStateMachine.actions['Idle'];
         if (prevState) {
-            const prevAction = this.parent.actions[prevState.name];
+            const prevAction = this.characterStateMachine.actions[prevState.name];
             idleAction.time = 0.0;
             idleAction.enabled = true;
             idleAction.setEffectiveTimeScale(1.0);
@@ -133,13 +133,13 @@ class IdleState extends State {
 
     update(deltaTime, input) {
         if (input.keys.forward || input.keys.backward) {
-            this.parent.setState('Walk');
+            this.characterStateMachine.setState('Walk');
         } else if (input.keys.space) {
         }
     }
 }
 
-class JumpState extends State {
+class JumpState extends CharacterState {
     constructor(parent) {
         super(parent);
 
@@ -147,9 +147,9 @@ class JumpState extends State {
     }
 
     enter(prevState) {
-        const jumpAction = this.parent.actions['Jump'];
+        const jumpAction = this.characterStateMachine.actions['Jump'];
         if (prevState.name === 'Walk') {
-            const prevAction = this.parent.actions[prevState.name];
+            const prevAction = this.characterStateMachine.actions[prevState.name];
             const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
             jumpAction.time = prevAction.time * ratio;
         } else {
@@ -166,10 +166,10 @@ class JumpState extends State {
         if (input.keys.forward || input.keys.backward) {
 
         } else if (input.keys.space) {
-            this.parent.setState('Jump');
+            this.characterStateMachine.setState('Jump');
         }
     }
 }
 
 
-export {State, WalkState, RunState, IdleState, JumpState};
+export {CharacterState, WalkState, RunState, IdleState, JumpState};

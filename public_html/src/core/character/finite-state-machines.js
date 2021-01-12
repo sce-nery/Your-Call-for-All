@@ -1,9 +1,17 @@
 import {IdleState, RunState, WalkState, JumpState} from "./states.js";
 
-class FiniteStateMachine {
-    constructor() {
+
+class CharacterStateMachine {
+    constructor(actions) {
         this.states = {};
         this.currentState = null;
+
+        this.actions = actions;
+
+        this.addState('Idle', IdleState);
+        this.addState('Walk', WalkState);
+        this.addState('Run', RunState);
+        this.addState('Jump', JumpState);
     }
 
     addState(name, type) {
@@ -34,19 +42,4 @@ class FiniteStateMachine {
 }
 
 
-
-class CharacterFSM extends FiniteStateMachine {
-    constructor(actions) {
-        super();
-        this.actions = actions;
-        this.addState('Idle', IdleState);
-        this.addState('Walk', WalkState);
-        this.addState('Run', RunState);
-        this.addState('Jump', JumpState);
-
-    }
-
-}
-
-
-export {FiniteStateMachine, CharacterFSM}
+export {CharacterStateMachine};

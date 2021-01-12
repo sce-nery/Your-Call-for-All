@@ -14,7 +14,7 @@ class YourCallForAll {
 
 
     update(deltaTime){
-        this.environment.update(deltaTime,new THREE.Vector3(0));
+        this.environment.update(deltaTime, this.character.model.position);
         this.character.update(deltaTime, this);
     }
 }
