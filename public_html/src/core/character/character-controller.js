@@ -95,12 +95,11 @@ class BasicCharacterController {
         velocity.add(frameDecceleration);
 
 
-        /*
         let raycaster = new THREE.Raycaster(this.model.position, new THREE.Vector3(0, -1, 0));
         let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
         if (intersects[0] !== undefined) {
-            let distance = 1.75;
+            let distance = 1.25;
             //new position is higher so you need to move you object upwards
             if (distance > intersects[0].distance) {
                 this.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
@@ -115,7 +114,6 @@ class BasicCharacterController {
 
             this.model.translateY( this._velocity.y);
         }
-        */
 
 
         const controlObject = this._target;

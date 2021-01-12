@@ -15,7 +15,7 @@ export const Assets = {
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
             LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
-            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb"
+            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
         },
         OBJ: {},
         Texture: {
@@ -94,6 +94,7 @@ export const Assets = {
 
 
         const progressbarElem = document.querySelector('#progressbar');
+
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
         }
