@@ -5,6 +5,7 @@ import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderP
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
+import {GameAudio} from "./core/audio.js";
 
 
 let settings = {
@@ -18,18 +19,19 @@ let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
 let stats;
+let audio;
 
-let listener;
-let material1;
 
+const startButton = document.getElementById( 'overlay' );
+startButton.addEventListener( 'click', addAudio );
+
+
+function addAudio(){
+    audio = new GameAudio(scene, camera);
+}
 
 
 function init() {
-
-    const startButton = document.getElementById( 'overlay' );
-    startButton.addEventListener( 'click', audio );
-
-
     Assets.load(() => {
         removeLoadingBar();
         clock = new THREE.Clock();
@@ -42,34 +44,8 @@ function init() {
         applySettings();
         render();
     });
-
 }
 
-function audio(){
-    listener = new THREE.AudioListener();
-    camera.add(listener);
-
-    const sphere = new THREE.SphereBufferGeometry( 20, 32, 16 );
-
-    material1 = new THREE.MeshPhongMaterial( { color: 0xffaa00, flatShading: true, shininess: 0 } );
-
-    const audioLoader = new THREE.AudioLoader();
-
-    const mesh1 = new THREE.Mesh( sphere, material1 );
-    mesh1.position.set( 10, 20, 0 );
-    scene.add( mesh1 );
-
-
-    const sound1 = new THREE.PositionalAudio( listener );
-    audioLoader.load( './assets/sounds/song1.ogg', function ( buffer ) {
-        sound1.setBuffer( buffer );
-        sound1.setRefDistance( 50 );
-        sound1.setLoop(true);
-        sound1.play();
-    } );
-    mesh1.add( sound1 );
-
-}
 
 function render() {
     let deltaTime = clock.getDelta();
