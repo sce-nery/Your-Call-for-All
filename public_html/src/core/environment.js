@@ -69,7 +69,7 @@ class Environment {
         });
         // Creates a terrain object that will control terrain chunks.
         // terrain.loadChunks(position) will load 9 chunks around that position.
-        this.terrain = new Terrain(this, heightMap, {chunkSize: 200});
+        this.terrain = new Terrain(this, heightMap, {chunkSize: 30});
     }
 
     setupSky() {

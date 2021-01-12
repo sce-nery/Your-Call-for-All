@@ -1,40 +1,31 @@
 import {BasicCharacterController} from "./character-controller.js";
-import {ThirdPersonCamera} from "./third-person-camera.js";
+import {ThirdPersonCameraController} from "./third-person-camera-controller.js";
 
 
 class Character  {
 
-    constructor(scene, camera, renderer) {
+    constructor(scene, camera) {
       this.scene = scene;
       this.camera = camera;
+
       this.mixers = [];
-      this.renderer = renderer;
-      this.previousRAF = null;
+
       this.loadAnimatedModel();
     }
 
     loadAnimatedModel() {
-
-        const params = {
-            camera: this.camera,
-            scene: this.scene,
-        }
-
-        this.controls = new BasicCharacterController(params);
-        this.thirdPersonCamera = new ThirdPersonCamera({
-            camera: this.camera,
-            target: this.controls,
-        });
+        this.controls = new BasicCharacterController(this.camera, this.scene);
+        this.thirdPersonCamera = new ThirdPersonCameraController(this.camera, this.controls);
     }
 
-    update(timeElapsed, ycfa) {
+    update(deltaTime, ycfa) {
         if (this.mixers) {
-            this.mixers.map(m => m.update(timeElapsed));
+            this.mixers.map(m => m.update(deltaTime));
         }
         if (this.controls) {
-            this.controls.Update(timeElapsed, ycfa);
+            this.controls.Update(deltaTime, ycfa);
         }
-        this.thirdPersonCamera.Update(timeElapsed);
+        this.thirdPersonCamera.update(deltaTime);
     }
 
 }

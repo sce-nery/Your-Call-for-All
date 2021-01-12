@@ -1,32 +1,34 @@
-
 class State {
     constructor(parent) {
-        this._parent = parent;
+        this.parent = parent;
     }
 
-    Enter() {}
-    Exit() {}
-    Update() {}
+    enter() {
+    }
+
+    exit() {
+    }
+
+    update() {
+    }
 }
 
 
 class WalkState extends State {
     constructor(parent) {
         super(parent);
+
+        this.name = "Walk";
     }
 
-    get Name() {
-        return 'Walk';
-    }
-
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['Walk'];
+    enter(prevState) {
+        const curAction = this.parent.actions['Walk'];
         if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name];
+            const prevAction = this.parent.actions[prevState.name];
 
             curAction.enabled = true;
 
-            if (prevState.Name === 'Run') {
+            if (prevState.name === 'Run') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -42,18 +44,18 @@ class WalkState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (input._keys.shift) {
-                this._parent.SetState('Run');
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            if (input.keys.shift) {
+                this.parent.setState('Run');
             }
             return;
         }
 
-        this._parent.SetState('Idle');
+        this.parent.setState('Idle');
     }
 }
 
@@ -61,20 +63,18 @@ class WalkState extends State {
 class RunState extends State {
     constructor(parent) {
         super(parent);
+
+        this.name = "Run";
     }
 
-    get Name() {
-        return 'Run';
-    }
-
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['Run'];
+    enter(prevState) {
+        const curAction = this.parent.actions['Run'];
         if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name];
+            const prevAction = this.parent.actions[prevState.name];
 
             curAction.enabled = true;
 
-            if (prevState.Name === 'Walk') {
+            if (prevState.name === 'Walk') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -90,18 +90,18 @@ class RunState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (!input._keys.shift) {
-                this._parent.SetState('Walk');
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            if (!input.keys.shift) {
+                this.parent.setState('Walk');
             }
             return;
         }
 
-        this._parent.SetState('Idle');
+        this.parent.setState('Idle');
     }
 }
 
@@ -109,16 +109,14 @@ class RunState extends State {
 class IdleState extends State {
     constructor(parent) {
         super(parent);
+
+        this.name = "Idle";
     }
 
-    get Name() {
-        return 'Idle';
-    }
-
-    Enter(prevState) {
-        const idleAction = this._parent._proxy._animations['Idle'];
+    enter(prevState) {
+        const idleAction = this.parent.actions['Idle'];
         if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name];
+            const prevAction = this.parent.actions[prevState.name];
             idleAction.time = 0.0;
             idleAction.enabled = true;
             idleAction.setEffectiveTimeScale(1.0);
@@ -130,13 +128,13 @@ class IdleState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(_, input) {
-        if (input._keys.forward || input._keys.backward) {
-            this._parent.SetState('Walk');
-        } else if (input._keys.space) {
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            this.parent.setState('Walk');
+        } else if (input.keys.space) {
         }
     }
 }
@@ -144,16 +142,14 @@ class IdleState extends State {
 class JumpState extends State {
     constructor(parent) {
         super(parent);
+
+        this.name = "Jump";
     }
 
-    get Name() {
-        return 'Jump';
-    }
-
-    Enter(prevState) {
-        const jumpAction = this._parent._proxy._animations['Jump'];
-        if (prevState.Name === 'Walk') {
-            const prevAction = this._parent._proxy._animations[prevState.Name];
+    enter(prevState) {
+        const jumpAction = this.parent.actions['Jump'];
+        if (prevState.name === 'Walk') {
+            const prevAction = this.parent.actions[prevState.name];
             const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
             jumpAction.time = prevAction.time * ratio;
         } else {
@@ -163,18 +159,17 @@ class JumpState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(_, input) {
-        if (input._keys.forward || input._keys.backward) {
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
 
-        } else if (input._keys.space) {
-            this._parent.SetState('Jump');
+        } else if (input.keys.space) {
+            this.parent.setState('Jump');
         }
     }
 }
-
 
 
 export {State, WalkState, RunState, IdleState, JumpState};

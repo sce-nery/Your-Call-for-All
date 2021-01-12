@@ -2,33 +2,33 @@ import {IdleState, RunState, WalkState, JumpState} from "./states.js";
 
 class FiniteStateMachine {
     constructor() {
-        this._states = {};
-        this._currentState = null;
+        this.states = {};
+        this.currentState = null;
     }
 
     addState(name, type) {
-        this._states[name] = type;
+        this.states[name] = type;
     }
 
-    SetState(name) {
-        const prevState = this._currentState;
+    setState(name) {
+        const prevState = this.currentState;
 
         if (prevState) {
-            if (prevState.Name === name) {
+            if (prevState.name === name) {
                 return;
             }
-            prevState.Exit();
+            prevState.exit();
         }
 
-        const state = new this._states[name](this);
+        const state = new this.states[name](this);
 
-        this._currentState = state;
-        state.Enter(prevState);
+        this.currentState = state;
+        state.enter(prevState);
     }
 
-    Update(timeElapsed, input) {
-        if (this._currentState) {
-            this._currentState.Update(timeElapsed, input);
+    update(deltaTime, input) {
+        if (this.currentState) {
+            this.currentState.update(deltaTime, input);
         }
     }
 }
@@ -36,9 +36,9 @@ class FiniteStateMachine {
 
 
 class CharacterFSM extends FiniteStateMachine {
-    constructor(proxy) {
+    constructor(actions) {
         super();
-        this._proxy = proxy;
+        this.actions = actions;
         this.addState('Idle', IdleState);
         this.addState('Walk', WalkState);
         this.addState('Run', RunState);

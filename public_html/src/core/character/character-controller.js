@@ -1,23 +1,25 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
-import {BasicCharacterControllerInput} from "./character-controller-input.js";
+import {CharacterControllerKeyboardInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
 import {Assets} from "../assets.js";
 
 
 class BasicCharacterController {
-    constructor(params) {
-        this._params = params;
-        this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
+    constructor(camera, scene) {
+        this.camera = camera;
+        this.scene = scene;
+        this._deceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
         this._acceleration = new THREE.Vector3(1, 0.25, 50.0);
         this._velocity = new THREE.Vector3(0, 0, 0);
         this._position = new THREE.Vector3();
 
 
-        this._LoadModels();
-        this._input = new BasicCharacterControllerInput();
-        this._stateMachine = new CharacterFSM(new BasicCharacterControllerProxy(this._animations));
-        this._stateMachine.SetState('Idle');
+        this.loadModels();
+
+        this.input = new CharacterControllerKeyboardInput();
+        this.fsm = new CharacterFSM(this.actionMap);
+        this.fsm.setState('Idle');
 
     }
 
@@ -25,15 +27,15 @@ class BasicCharacterController {
     setupActions() {
         Logger.debug("Setting up actions for this tree model.")
         const animations = this.animations;
-        let actions = [];
+        let actionList = [];
 
         for (let i = 0; i < animations.length; i++) {
-            actions.push(this._mixer.clipAction(animations[i]));
+            actionList.push(this.mixer.clipAction(animations[i]));
         }
 
-        this.actionList = actions;
+        this.actionList = actionList;
 
-        this.actionMap = actions.reduce(function (map, obj) {
+        this.actionMap = actionList.reduce(function (map, obj) {
             obj.paused = false;
             map[obj._clip.name] = obj;
             return map;
@@ -41,58 +43,47 @@ class BasicCharacterController {
     }
 
 
-    _LoadModels() {
+    loadModels() {
 
         this.gltf =  Assets.glTF.Jackie;
         this.model = this.gltf.scene;
         this.animations = this.gltf.animations;
 
-        this._target = this.model;
-        this._params.scene.add(this._target);
+        this.scene.add(this.model);
 
-        this._mixer = new THREE.AnimationMixer(this._target);
+        this.mixer = new THREE.AnimationMixer(this.model);
 
        this.setupActions();
+       this.setupShadows();
 
-       this._animations= this.actionMap;
+    }
 
-        this.model.position.x = -28;
-       // this.model.scale.setScalar(1);
-        this.model.traverse(c => {
-            c.castShadow = true;
+    setupShadows() {
+        this.model.traverse(function (object) {
+            if (object.isMesh) {
+                object.castShadow = true;
+                object.receiveShadow = true;
+            }
         });
-
     }
-
-    get Position() {
-        return this._position;
-    }
-
-    get Rotation() {
-        if (!this._target) {
-            return new THREE.Quaternion();
-        }
-        return this._target.quaternion;
-    }
-
 
     Update(timeInSeconds, ycfa) {
-        if (!this._target) {
+        if (!this.model) {
             return;
         }
 
-        this._stateMachine.Update(timeInSeconds, this._input);
+        this.fsm.update(timeInSeconds, this.input);
 
         const velocity = this._velocity;
-        const frameDecceleration = new THREE.Vector3(
-            velocity.x * this._decceleration.x,
-            velocity.y * this._decceleration.y,
-            velocity.z * this._decceleration.z
+        const frameDeceleration = new THREE.Vector3(
+            velocity.x * this._deceleration.x,
+            velocity.y * this._deceleration.y,
+            velocity.z * this._deceleration.z
         );
-        frameDecceleration.multiplyScalar(timeInSeconds);
-        frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(Math.abs(frameDecceleration.z), Math.abs(velocity.z));
+        frameDeceleration.multiplyScalar(timeInSeconds);
+        frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
-        velocity.add(frameDecceleration);
+        velocity.add(frameDeceleration);
 
 
         let raycaster = new THREE.Raycaster(this.model.position, new THREE.Vector3(0, -1, 0));
@@ -116,28 +107,28 @@ class BasicCharacterController {
         }
 
 
-        const controlObject = this._target;
+        const controlObject = this.model;
         const _Q = new THREE.Quaternion();
         const _A = new THREE.Vector3();
         const _R = controlObject.quaternion.clone();
 
         const acc = this._acceleration.clone();
-        if (this._input._keys.shift) {
+        if (this.input.keys.shift) {
             acc.multiplyScalar(2.0);
         }
 
-        if (this._input._keys.forward) {
+        if (this.input.keys.forward) {
             velocity.z += acc.z * timeInSeconds;
         }
-        if (this._input._keys.backward) {
+        if (this.input.keys.backward) {
             velocity.z -= acc.z * timeInSeconds;
         }
-        if (this._input._keys.left) {
+        if (this.input.keys.left) {
             _A.set(0, 1, 0);
             _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
             _R.multiply(_Q);
         }
-        if (this._input._keys.right) {
+        if (this.input.keys.right) {
             _A.set(0, 1, 0);
             _Q.setFromAxisAngle(_A, 4.0 * -Math.PI * timeInSeconds * this._acceleration.y);
             _R.multiply(_Q);
@@ -164,18 +155,18 @@ class BasicCharacterController {
 
         this._position.copy(controlObject.position);
 
-        if (this._mixer) {
-            this._mixer.update(timeInSeconds);
+        if (this.mixer) {
+            this.mixer.update(timeInSeconds);
         }
     }
 }
 
 class BasicCharacterControllerProxy {
-    constructor(animations) {
-        this._animations = animations;
+    constructor(actionMap) {
+        this.actionMap = actionMap;
     }
     get animations() {
-        return this._animations;
+        return this.actionMap;
     }
 }
 
