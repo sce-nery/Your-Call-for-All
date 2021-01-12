@@ -270,7 +270,7 @@ class TerrainChunk extends GameObject {
                 let tree = new Tree(Assets.glTF.PinkTree);
                 tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
 
-                tree.model.scale.set(0.01, 0.01, 0.01);
+                tree.model.scale.set(0.3, 0.3, 0.3);
 
                 // Sets the wind animation for play.
                 tree.playActionByIndex(0);

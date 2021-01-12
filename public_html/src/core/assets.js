@@ -9,30 +9,28 @@ export const Assets = {
 
     URL: {
         glTF: {
-            MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
-            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
-            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/main_character/jackie.glb"
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
+            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
         },
         OBJ: {},
         Texture: {
             Grass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Color.png',
             Grass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Normal.png',
-            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_1K_Color.jpg',
-            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_1K_Normal.jpg',
-            Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_1K_Color.jpg',
-            Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_1K_Color.jpg',
-            Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_1K_Color.jpg',
-            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg',
+            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Color.jpg',
+            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Normal.jpg',
+            Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_Color.jpg',
+            Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_Color.jpg',
+            Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_Color.jpg',
+            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/Water_Normal.jpg',
         }
     },
 
     glTF: {
-        MoCapMan: null,
         PinkTree: null,
         WillowTree: null,
         PalmTree: null,
@@ -67,27 +65,36 @@ export const Assets = {
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
                 this.glTF[key] = gltf;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
                 this.OBJ[key] = obj;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
                 this.Texture[key] = texture;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
-
 
 
         loadingManager.onLoad = onLoad;
 
 
         const progressbarElem = document.querySelector('#progressbar');
+
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
         }

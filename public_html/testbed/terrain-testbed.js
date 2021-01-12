@@ -152,31 +152,39 @@ function setupControls() {
 
 function init() {
 
-    clock = new THREE.Clock();
-
-    setupCamera();
-
-    setupRenderer();
-
-    setupScene();
-
-    setupControls();
-
-    composer = new EffectComposer(renderer);
-    let renderPass = new RenderPass(scene, camera);
-    composer.addPass(renderPass);
-
-    bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2);
-    bloomPass.enabled = false;
-    composer.addPass(bloomPass);
-
     stats = createPerformanceMonitor(document.body);
 
-    window.addEventListener('resize', onWindowResize, false);
-
     Assets.load(function () {
-        document.getElementById("loading-label").remove();
-        ycfa = new YourCallForAll(scene);
+        const loadingElem = document.querySelector('#loading');
+        loadingElem.style.display = 'none';
+
+
+        window.addEventListener('resize', onWindowResize, false);
+
+
+
+        clock = new THREE.Clock();
+
+        setupCamera();
+
+        setupRenderer();
+
+        setupScene();
+
+        setupControls();
+
+        composer = new EffectComposer(renderer);
+        let renderPass = new RenderPass(scene, camera);
+        composer.addPass(renderPass);
+
+        bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2);
+        bloomPass.enabled = false;
+        composer.addPass(bloomPass);
+
+        let playerCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
+        playerCamera.position.set(10,10, 100);
+
+        ycfa = new YourCallForAll(scene, playerCamera);
         ycfa.environment.props.healthFactor = 1.0;
         initGUI();
         clock.start();
@@ -278,7 +286,7 @@ function render() {
             velocity.y -= 0.1;
         }
 
-        physicsDemoMesh.translateY(physicsDemoMeshVelocity.y);
+        physicsDemoMesh.translateY(velocity.y);
     }
 
     ycfa.update(deltaTime, physicsDemoMesh.position);
