@@ -8,6 +8,7 @@ class YourCallForAll {
 
         this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
         this.character = new Character(scene, camera);
+        this.character.model.position.set(-26, 0, -4);
     }
 
 
