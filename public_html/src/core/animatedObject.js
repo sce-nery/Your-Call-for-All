@@ -5,7 +5,7 @@ import {Assets} from "./assets.js";
 import {GameObject} from "./objects.js";
 
 
-class Tree extends GameObject {
+class AnimatedObject extends GameObject {
     constructor(gltf) {
         super();
 
@@ -58,4 +58,4 @@ class Tree extends GameObject {
 
 }
 
-export {Tree};
+export {AnimatedObject};

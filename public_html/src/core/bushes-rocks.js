@@ -1,15 +1,17 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
+import {GameObject} from "./objects.js";
+import {Assets} from "./assets.js";
 
-
-class Bushes {
+class StaticObject extends GameObject{
     constructor(gltf) {
+        super();
         const clonedScene = SkeletonUtils.clone(gltf.scene);
         const root = new THREE.Object3D();
         root.add(clonedScene);
-        this.model = root;
-        this.healtFactor =0.0;
+        this.model = Assets.cloneGLTF(gltf);;
+        this.healthFactor =0.0;
         this.setupShadows();
 
     }
@@ -28,4 +30,4 @@ class Bushes {
 
 }
 
-export {Bushes};
+export {StaticObject};

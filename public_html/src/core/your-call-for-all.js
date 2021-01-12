@@ -9,12 +9,12 @@ class YourCallForAll {
         this.scene = scene;
 
         this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
-        this.character = new Character(scene, camera, renderer);
+       // this.character = new Character(scene, camera, renderer);
     }
 
 
-    update(deltaTime){
-        this.environment.update(deltaTime,new THREE.Vector3(0));
+    update(deltaTime, playerPosition){
+        this.environment.update(deltaTime,playerPosition);
         //this.character.update(deltaTime);
     }
 }

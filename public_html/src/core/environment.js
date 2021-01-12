@@ -8,7 +8,8 @@ import {Color} from "../../vendor/three-js/build/three.module.js";
 import {Assets} from "./assets.js";
 import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
-import {Tree} from "./tree.js";
+import {AnimatedObject} from "./animatedObject.js";
+import {StaticObject} from "./bushes-rocks.js";
 
 class Environment {
     /**
@@ -127,7 +128,7 @@ class Environment {
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
 
-            if (object instanceof Tree) {
+            if (object instanceof AnimatedObject || object instanceof StaticObject) {
                 if (this.props.healthFactor >= 0.5 && object.healthFactor>0.5) {
                     this.scene.add(object.model);
                     object.isInScene = true;
@@ -151,7 +152,7 @@ class Environment {
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
 
-            if (object instanceof Tree) {
+            if (object instanceof AnimatedObject|| object instanceof StaticObject) {
                 if (this.props.healthFactor >= 0.5 && object.healthFactor<0.5) {
 
                     this.scene.remove(object.model);
