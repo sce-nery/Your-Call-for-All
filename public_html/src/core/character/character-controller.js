@@ -1,6 +1,6 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
-import {BasicCharacterControllerInput} from "./character-controller-input.js";
+import {CharacterControllerKeyboardInput} from "./character-controller-input.js";
 import {CharacterFSM} from "./finite-state-machines.js";
 import {Assets} from "../assets.js";
 
@@ -15,7 +15,7 @@ class BasicCharacterController {
 
 
         this._LoadModels();
-        this._input = new BasicCharacterControllerInput();
+        this._input = new CharacterControllerKeyboardInput();
         this._stateMachine = new CharacterFSM(new BasicCharacterControllerProxy(this._animations));
         this._stateMachine.SetState('Idle');
 
@@ -124,22 +124,22 @@ class BasicCharacterController {
         const _R = controlObject.quaternion.clone();
 
         const acc = this._acceleration.clone();
-        if (this._input._keys.shift) {
+        if (this._input.keys.shift) {
             acc.multiplyScalar(2.0);
         }
 
-        if (this._input._keys.forward) {
+        if (this._input.keys.forward) {
             velocity.z += acc.z * timeInSeconds;
         }
-        if (this._input._keys.backward) {
+        if (this._input.keys.backward) {
             velocity.z -= acc.z * timeInSeconds;
         }
-        if (this._input._keys.left) {
+        if (this._input.keys.left) {
             _A.set(0, 1, 0);
             _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
             _R.multiply(_Q);
         }
-        if (this._input._keys.right) {
+        if (this._input.keys.right) {
             _A.set(0, 1, 0);
             _Q.setFromAxisAngle(_A, 4.0 * -Math.PI * timeInSeconds * this._acceleration.y);
             _R.multiply(_Q);

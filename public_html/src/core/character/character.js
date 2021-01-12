@@ -9,7 +9,6 @@ class Character  {
       this.camera = camera;
       this.mixers = [];
       this.renderer = renderer;
-      this.previousRAF = null;
       this.loadAnimatedModel();
     }
 
@@ -27,12 +26,12 @@ class Character  {
         });
     }
 
-    update(timeElapsed, ycfa) {
+    update(timeElapsed) {
         if (this.mixers) {
             this.mixers.map(m => m.update(timeElapsed));
         }
         if (this.controls) {
-            this.controls.Update(timeElapsed, ycfa);
+            this.controls.Update(timeElapsed);
         }
         this.thirdPersonCamera.Update(timeElapsed);
     }

@@ -46,8 +46,8 @@ class WalkState extends State {
     }
 
     Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (input._keys.shift) {
+        if (input.keys.forward || input.keys.backward) {
+            if (input.keys.shift) {
                 this._parent.SetState('Run');
             }
             return;
@@ -94,8 +94,8 @@ class RunState extends State {
     }
 
     Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (!input._keys.shift) {
+        if (input.keys.forward || input.keys.backward) {
+            if (!input.keys.shift) {
                 this._parent.SetState('Walk');
             }
             return;
@@ -134,9 +134,9 @@ class IdleState extends State {
     }
 
     Update(_, input) {
-        if (input._keys.forward || input._keys.backward) {
+        if (input.keys.forward || input.keys.backward) {
             this._parent.SetState('Walk');
-        } else if (input._keys.space) {
+        } else if (input.keys.space) {
         }
     }
 }
@@ -167,9 +167,9 @@ class JumpState extends State {
     }
 
     Update(_, input) {
-        if (input._keys.forward || input._keys.backward) {
+        if (input.keys.forward || input.keys.backward) {
 
-        } else if (input._keys.space) {
+        } else if (input.keys.space) {
             this._parent.SetState('Jump');
         }
     }
