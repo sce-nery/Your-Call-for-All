@@ -31,7 +31,7 @@ class Environment {
 
         this.scene = this.owner.scene;
 
-        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 30);
+        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 2);
 
         // Other game objects
         this.objects = [];
@@ -68,7 +68,7 @@ class Environment {
         });
         // Creates a terrain object that will control terrain chunks.
         // terrain.loadChunks(position) will load 9 chunks around that position.
-        this.terrain = new Terrain(this, heightMap, {chunkSize: 30});
+        this.terrain = new Terrain(this, heightMap, {chunkSize: 100});
     }
 
     setupSky() {

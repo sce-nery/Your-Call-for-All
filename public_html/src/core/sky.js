@@ -33,7 +33,7 @@ class Sky extends GameObject {
 
         let inc = (this.time / dayCycle) % 1.0;
 
-        this.props.inclination = inc;
+        //this.props.inclination = inc;
 
 
         uniforms["turbidity"].value = this.props.turbidity;
