@@ -48,9 +48,6 @@ export const Assets = {
 
     glTF: {
         MoCapMan:   null,
-        PinkTree:   null,
-        WillowTree:   null,
-        PalmTree:   null,
         LowPolyTree:  null,
         PineTree:   null,
         DriedPine:null,
@@ -68,13 +65,10 @@ export const Assets = {
         Rock:  null,
         BrokenBottle: null,
         DeadTree: null,
-        //LowPolyTree: null,
         PinkTree: null,
         WillowTree: null,
         PalmTree: null,
         RealTree: null,
-        BrokenBottle: null,
-        LowPolyTree: null,
         Jackie: null,
     },
 
