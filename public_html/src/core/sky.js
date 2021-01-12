@@ -15,6 +15,7 @@ class Sky extends GameObject {
 
     }) {
         super();
+        this.environment = environment;
 
         this.skyDome = new ThreeSky();
         this.sunLight = new THREE.DirectionalLight(0xffffff);
@@ -28,7 +29,7 @@ class Sky extends GameObject {
         this.time += deltaTime;
         const uniforms = this.skyDome.material.uniforms;
 
-        let dayCycle = 120;
+        let dayCycle = 60;
 
         let inc = (this.time / dayCycle) % 1.0;
 
@@ -54,6 +55,9 @@ class Sky extends GameObject {
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
         this.sunLight.color.set(LinearInterpolator.color(0xffffff,  0xfdb55e, amount));
+
+        // Update fog:
+        this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
     }
 }
 

@@ -9,7 +9,6 @@ export const Assets = {
 
     URL: {
         glTF: {
-            MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
             WillowTree:   "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree:   "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
@@ -31,14 +30,19 @@ export const Assets = {
             TropicalPlant:   "/Your-Call-for-All/public_html/assets/models/grass-bush/tropical-plant/scene.gltf",
             Rock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
-
-            //LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
+            LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
+            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
         },
         OBJ: {},
         Texture: {
-            Ground1_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Color.png',
-            Ground1_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Ground1_512_Normal.png',
-            WaterNormals: '/Your-Call-for-All/public_html/assets/textures/water/waternormals.jpg',
+            Grass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Color.png',
+            Grass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Normal.png',
+            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Color.jpg',
+            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Normal.jpg',
+            Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_Color.jpg',
+            Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_Color.jpg',
+            Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_Color.jpg',
+            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/Water_Normal.jpg',
         }
     },
 
@@ -65,14 +69,26 @@ export const Assets = {
         BrokenBottle: null,
         DeadTree: null,
         //LowPolyTree: null,
+        PinkTree: null,
+        WillowTree: null,
+        PalmTree: null,
+        RealTree: null,
+        BrokenBottle: null,
+        LowPolyTree: null,
+        Jackie: null,
     },
 
 
  OBJ: {},
     Texture: {
-        Ground1_Color: null,
-        Ground1_Normal: null,
-        WaterNormals: null,
+        ShallowGrass_Color: null,
+        ShallowGrass_Normal: null,
+        Sand_Color: null,
+        Grass_Color: null,
+        Grass_Normal: null,
+        Snow_Color: null,
+        Rocks_Color: null,
+        Water_Normal: null,
     },
 
     load: function (onLoad) {
@@ -87,27 +103,36 @@ export const Assets = {
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
                 this.glTF[key] = gltf;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
                 this.OBJ[key] = obj;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
                 this.Texture[key] = texture;
+            }, null, function (e) {
+                console.error(`Failed to load: ${key}`);
+                console.error(e);
             });
         }
-
 
 
         loadingManager.onLoad = onLoad;
 
 
         const progressbarElem = document.querySelector('#progressbar');
+
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
         }

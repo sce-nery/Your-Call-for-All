@@ -1,12 +1,9 @@
 import {Terrain} from "./terrain.js";
-import {FractalBrownianMotionHeightMap, HybridMultifractalHeightMap} from "./heightmap.js";
+import {HybridMultifractalHeightMap} from "./heightmap.js";
 import {SimplexNoise} from "../../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {Sky} from "./sky.js";
 import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {Color} from "../../vendor/three-js/build/three.module.js";
-import {Assets} from "./assets.js";
-import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 import {AnimatedObject} from "./animatedObject.js";
 import {StaticObject} from "./bushes-rocks.js";
@@ -22,13 +19,19 @@ class Environment {
      * scene to create different random number that will be used for terrain generation and object scattering.
      */
     constructor(yourCallForAll, seed) {
+        this.props = {
+            healthFactor: 0.0,
+            drawDistance: 100,
+        }
+
         this.owner = yourCallForAll;
 
         this.seed = seed;
         this.setupPRNG();
 
         this.scene = this.owner.scene;
-        this.scene.fog = new THREE.Fog(0xa0afa0, 100, 200);
+
+        this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 30);
 
         // Other game objects
         this.objects = [];
@@ -38,11 +41,6 @@ class Environment {
         this.setupWater();
 
         this.lastPlayerPos = null;
-
-        this.props = {
-            healthFactor: 0.0,
-            drawDistance: 100,
-        }
     }
 
     /**
@@ -70,7 +68,7 @@ class Environment {
         });
         // Creates a terrain object that will control terrain chunks.
         // terrain.loadChunks(position) will load 9 chunks around that position.
-        this.terrain = new Terrain(this, heightMap, {chunkSize: 200});
+        this.terrain = new Terrain(this, heightMap, {chunkSize: 30});
     }
 
     setupSky() {

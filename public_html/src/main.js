@@ -1,19 +1,18 @@
 import {YourCallForAll} from "./core/your-call-for-all.js";
 import * as THREE from "../vendor/three-js/build/three.module.js";
-import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
-import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
-import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
-import {Character} from "./core/character/character.js";
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
+import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 
-window.onload = function () {
-    init();
+let settings = {
+    useGridHelper: false,
+    useBloom: false,
+    usePerformanceMonitor: false,
 }
-let controls;
+
 
 let yourCallForAll;
 let clock;
@@ -23,54 +22,50 @@ let stats;
 
 function init() {
 
-
     Assets.load(() => {
-        const loadingElem = document.querySelector('#loading');
-        loadingElem.style.display = 'none';
-
-        //document.querySelector('#main-menu').style.visibility = 'visible';
-
+        removeLoadingBar();
         clock = new THREE.Clock();
-
         initCamera();
         initListeners();
         initScene();
         initRenderer();
-
-        composer = new EffectComposer(renderer);
-        let renderPass = new RenderPass(scene, camera);
-        composer.addPass(renderPass);
-        //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
-
-
-
-        yourCallForAll = new YourCallForAll(scene, camera, renderer);
+        yourCallForAll = new YourCallForAll(scene, camera);
         clock.start();
+        applySettings();
         render();
     });
-
-    //stats = createPerformanceMonitor(document.body);
-
-
-    //controls = new OrbitControls(camera, renderer.domElement);
-    //controls.update();
 }
 
 
 function render() {
     let deltaTime = clock.getDelta();
-    //stats.update();
-    //controls.update();
+    if (stats) {stats.update();}
+
     yourCallForAll.update(deltaTime);
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
-
     composer.render();
-
-
     requestAnimationFrame(render);
 }
 
+function applySettings(){
+    if (settings.useBloom){
+        composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
+    }
+    if (settings.useGridHelper){
+        const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+        helper.position.y = 1;
+        scene.add(helper);
+    }
+    if (settings.usePerformanceMonitor){
+        stats = createPerformanceMonitor(document.body);
+    }
+}
 
+function removeLoadingBar(){
+    const loadingElem = document.querySelector('#loading');
+    loadingElem.style.display = 'none';
+    //document.querySelector('#main-menu').style.visibility = 'visible';
+}
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
@@ -88,20 +83,30 @@ function initRenderer() {
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // For some reason, these break the water color
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    //renderer.toneMappingExposure = 0.5;
+    //renderer.outputEncoding = THREE.sRGBEncoding;
+    //renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
     document.body.appendChild(renderer.domElement);
 }
 
 function initScene() {
     scene = new THREE.Scene();
-}
 
+}
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-
     renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+
+window.onload = function () {
+    init();
 }

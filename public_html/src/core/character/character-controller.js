@@ -1,126 +1,95 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
-import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
-import {BasicCharacterControllerInput} from "./character-controller-input.js";
-import {CharacterFSM} from "./finite-state-machines.js";
+import {CharacterControllerKeyboardInput} from "./character-controller-input.js";
+import {CharacterStateMachine} from "./finite-state-machines.js";
 
 
-class BasicCharacterController {
-    constructor(params) {
-        this._params = params;
-        this._decceleration = new THREE.Vector3(-0.0005, -0.0001, -5.0);
-        this._acceleration = new THREE.Vector3(1, 0.25, 50.0);
-        this._velocity = new THREE.Vector3(0, 0, 0);
-        this._position = new THREE.Vector3();
+class CharacterController {
+    constructor(character) {
+        this.character = character;
+        this.camera = character.camera;
+        this.scene = character.scene;
 
-        this._animations = {};
-        this._input = new BasicCharacterControllerInput();
-        this._stateMachine = new CharacterFSM(new BasicCharacterControllerProxy(this._animations));
-        this._LoadModels();
-    }
-
-    _LoadModels() {
-
-        const loader = new FBXLoader();
-        loader.setPath('./assets/models/characters/main_character/');
-        let charPath = 'jackie.fbx';
-
-        loader.load(charPath, (fbx) => {
-
-            fbx.position.x = -28;
-            fbx.scale.setScalar(0.01);
-            fbx.traverse(c => {
-                c.castShadow = true;
-            });
-
-            this._target = fbx;
-            this._params.scene.add(this._target);
-
-            this._mixer = new THREE.AnimationMixer(this._target);
-
-            this._manager = new THREE.LoadingManager();
-            this._manager.onLoad = () => {
-                this._stateMachine.SetState('idle');
-            };
-
-            const _OnLoad = (animName, anim) => {
-                const clip = anim.animations[0];
-                const action = this._mixer.clipAction(clip);
-
-                this._animations[animName] = {
-                    clip: clip,
-                    action: action,
-                };
-            };
-
-            const loader = new FBXLoader(this._manager);
-            loader.setPath('./assets/models/characters/main_character/');
-            loader.load('walk.fbx', (a) => { _OnLoad('walk', a); });
-            loader.load('run.fbx', (a) => { _OnLoad('run', a); });
-            loader.load('idle.fbx', (a) => { _OnLoad('idle', a); });
-        });
-
-
-    }
-
-    get Position() {
-        return this._position;
-    }
-
-    get Rotation() {
-        if (!this._target) {
-            return new THREE.Quaternion();
+        this.locomotion = {
+            deceleration: new THREE.Vector3(-0.0005, -0.0001, -5.0),
+            acceleration: new THREE.Vector3(1, 0.25, 50.0),
+            velocity: new THREE.Vector3(0, 0, 0),
+            rotation: new THREE.Quaternion(),
+            position: new THREE.Vector3(),
         }
-        return this._target.quaternion;
+
+        this.input = new CharacterControllerKeyboardInput();
+
+        this.fsm = new CharacterStateMachine(this.character.actionMap);
+        this.fsm.setState('Idle');
     }
 
-
-    Update(timeInSeconds) {
-        if (!this._target) {
+    update(deltaTime, ycfa) {
+        if (!this.character.model) {
             return;
         }
 
-        this._stateMachine.Update(timeInSeconds, this._input);
+        this.fsm.update(deltaTime, this.input);
 
-        const velocity = this._velocity;
-        const frameDecceleration = new THREE.Vector3(
-            velocity.x * this._decceleration.x,
-            velocity.y * this._decceleration.y,
-            velocity.z * this._decceleration.z
+        const velocity = this.locomotion.velocity;
+        const frameDeceleration = new THREE.Vector3(
+            velocity.x * this.locomotion.deceleration.x,
+            velocity.y * this.locomotion.deceleration.y,
+            velocity.z * this.locomotion.deceleration.z
         );
-        frameDecceleration.multiplyScalar(timeInSeconds);
-        frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
-            Math.abs(frameDecceleration.z), Math.abs(velocity.z));
+        frameDeceleration.multiplyScalar(deltaTime);
+        frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
-        velocity.add(frameDecceleration);
+        velocity.add(frameDeceleration);
 
-        const controlObject = this._target;
-        const _Q = new THREE.Quaternion();
-        const _A = new THREE.Vector3();
-        const _R = controlObject.quaternion.clone();
+        let raycaster = new THREE.Raycaster(this.character.model.position, new THREE.Vector3(0, -1, 0));
+        let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
-        const acc = this._acceleration.clone();
-        if (this._input._keys.shift) {
+        if (intersects[0] !== undefined) {
+            let distance = 1.25;
+            //new position is higher so you need to move you object upwards
+            if (distance > intersects[0].distance) {
+                this.character.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
+            }
+
+            //gravity and prevent falling through floor
+            if (distance >= intersects[0].distance && this.locomotion.velocity.y <= 0) {
+                this.locomotion.velocity.y = 0;
+            } else if (distance <= intersects[0].distance && this.locomotion.velocity.y === 0) {
+                this.locomotion.velocity.y -= 0.1;
+            }
+
+            this.character.model.translateY(this.locomotion.velocity.y);
+        }
+
+
+        const controlObject = this.character.model;
+        const Q = new THREE.Quaternion();
+        const A = new THREE.Vector3();
+        const R = controlObject.quaternion.clone();
+
+        const acc = this.locomotion.acceleration.clone();
+        if (this.input.keys.shift) {
             acc.multiplyScalar(2.0);
         }
 
-        if (this._input._keys.forward) {
-            velocity.z += acc.z * timeInSeconds;
+        if (this.input.keys.forward) {
+            velocity.z += acc.z * deltaTime;
         }
-        if (this._input._keys.backward) {
-            velocity.z -= acc.z * timeInSeconds;
+        if (this.input.keys.backward) {
+            velocity.z -= acc.z * deltaTime;
         }
-        if (this._input._keys.left) {
-            _A.set(0, 1, 0);
-            _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
-            _R.multiply(_Q);
+        if (this.input.keys.left) {
+            A.set(0, 1, 0);
+            Q.setFromAxisAngle(A, 4.0 * Math.PI * deltaTime * this.locomotion.acceleration.y);
+            R.multiply(Q);
         }
-        if (this._input._keys.right) {
-            _A.set(0, 1, 0);
-            _Q.setFromAxisAngle(_A, 4.0 * -Math.PI * timeInSeconds * this._acceleration.y);
-            _R.multiply(_Q);
+        if (this.input.keys.right) {
+            A.set(0, 1, 0);
+            Q.setFromAxisAngle(A, 4.0 * -Math.PI * deltaTime * this.locomotion.acceleration.y);
+            R.multiply(Q);
         }
 
-        controlObject.quaternion.copy(_R);
+        controlObject.quaternion.copy(R);
 
         const oldPosition = new THREE.Vector3();
         oldPosition.copy(controlObject.position);
@@ -133,28 +102,15 @@ class BasicCharacterController {
         sideways.applyQuaternion(controlObject.quaternion);
         sideways.normalize();
 
-        sideways.multiplyScalar(velocity.x * timeInSeconds);
-        forward.multiplyScalar(velocity.z * timeInSeconds);
+        sideways.multiplyScalar(velocity.x * deltaTime);
+        forward.multiplyScalar(velocity.z * deltaTime);
 
         controlObject.position.add(forward);
         controlObject.position.add(sideways);
 
-        this._position.copy(controlObject.position);
-
-        if (this._mixer) {
-            this._mixer.update(timeInSeconds);
-        }
+        this.locomotion.position.copy(controlObject.position);
+        this.locomotion.rotation.copy(controlObject.quaternion);
     }
 }
 
-class BasicCharacterControllerProxy {
-    constructor(animations) {
-        this._animations = animations;
-    }
-    get animations() {
-        return this._animations;
-    }
-}
-
-
-export {BasicCharacterController, BasicCharacterControllerProxy}
+export {CharacterController};

@@ -1,7 +1,7 @@
 # Your Call for All
 BBM412 Computer Graphics Course Term Project
 
-![alt text](game.png "Your Call for All")
+![alt text](https://user-images.githubusercontent.com/16795283/104253132-d6238380-5484-11eb-8e3e-c1ec3e205050.png "Your Call for All")
 
 ## Contributing
 

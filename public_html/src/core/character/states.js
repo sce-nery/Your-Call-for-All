@@ -1,32 +1,34 @@
-
-class State {
+class CharacterState {
     constructor(parent) {
-        this._parent = parent;
+        this.characterStateMachine = parent;
     }
 
-    Enter() {}
-    Exit() {}
-    Update() {}
+    enter() {
+    }
+
+    exit() {
+    }
+
+    update() {
+    }
 }
 
 
-class WalkState extends State {
+class WalkState extends CharacterState {
     constructor(parent) {
         super(parent);
+
+        this.name = "Walk";
     }
 
-    get Name() {
-        return 'walk';
-    }
-
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['walk'].action;
-        if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name].action;
+    enter(previousState) {
+        const curAction = this.characterStateMachine.actions['Walk'];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
 
             curAction.enabled = true;
 
-            if (prevState.Name === 'run') {
+            if (previousState.name === 'Run') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -42,39 +44,37 @@ class WalkState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (input._keys.shift) {
-                this._parent.SetState('run');
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            if (input.keys.shift) {
+                this.characterStateMachine.setState('Run');
             }
             return;
         }
 
-        this._parent.SetState('idle');
+        this.characterStateMachine.setState('Idle');
     }
 }
 
 
-class RunState extends State {
+class RunState extends CharacterState {
     constructor(parent) {
         super(parent);
+
+        this.name = "Run";
     }
 
-    get Name() {
-        return 'run';
-    }
-
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['run'].action;
-        if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name].action;
+    enter(previousState) {
+        const curAction = this.characterStateMachine.actions['Run'];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
 
             curAction.enabled = true;
 
-            if (prevState.Name === 'walk') {
+            if (previousState.name === 'Walk') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -90,35 +90,33 @@ class RunState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(timeElapsed, input) {
-        if (input._keys.forward || input._keys.backward) {
-            if (!input._keys.shift) {
-                this._parent.SetState('walk');
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            if (!input.keys.shift) {
+                this.characterStateMachine.setState('Walk');
             }
             return;
         }
 
-        this._parent.SetState('idle');
+        this.characterStateMachine.setState('Idle');
     }
 }
 
 
-class IdleState extends State {
+class IdleState extends CharacterState {
     constructor(parent) {
         super(parent);
+
+        this.name = "Idle";
     }
 
-    get Name() {
-        return 'idle';
-    }
-
-    Enter(prevState) {
-        const idleAction = this._parent._proxy._animations['idle'].action;
-        if (prevState) {
-            const prevAction = this._parent._proxy._animations[prevState.Name].action;
+    enter(previousState) {
+        const idleAction = this.characterStateMachine.actions['Idle'];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
             idleAction.time = 0.0;
             idleAction.enabled = true;
             idleAction.setEffectiveTimeScale(1.0);
@@ -130,17 +128,48 @@ class IdleState extends State {
         }
     }
 
-    Exit() {
+    exit() {
     }
 
-    Update(_, input) {
-        if (input._keys.forward || input._keys.backward) {
-            this._parent.SetState('walk');
-        } else if (input._keys.space) {
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+            this.characterStateMachine.setState('Walk');
+        } else if (input.keys.space) {
+        }
+    }
+}
+
+class JumpState extends CharacterState {
+    constructor(parent) {
+        super(parent);
+
+        this.name = "Jump";
+    }
+
+    enter(previousState) {
+        const jumpAction = this.characterStateMachine.actions['Jump'];
+        if (previousState.name === 'Walk') {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
+            const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
+            jumpAction.time = prevAction.time * ratio;
+        } else {
+            jumpAction.time = 0.0;
+            jumpAction.setEffectiveTimeScale(1.0);
+            jumpAction.setEffectiveWeight(1.0);
+        }
+    }
+
+    exit() {
+    }
+
+    update(deltaTime, input) {
+        if (input.keys.forward || input.keys.backward) {
+
+        } else if (input.keys.space) {
+            this.characterStateMachine.setState('Jump');
         }
     }
 }
 
 
-
-export {State, WalkState, RunState, IdleState};
+export {CharacterState, WalkState, RunState, IdleState, JumpState};
