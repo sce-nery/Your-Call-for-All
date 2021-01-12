@@ -77,7 +77,7 @@ class Environment {
             rayleigh: 1,
             mieCoefficient: 0.005,
             mieDirectionalG: 0.7,
-            inclination: 0.39,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+            inclination: 0.75,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
             azimuth: 0.25,     // Facing front,
             exposure: 0.5,
         });

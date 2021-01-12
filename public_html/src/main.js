@@ -6,6 +6,7 @@ import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {GameAudio} from "./core/audio.js";
+import {Character} from "./core/character/character.js";
 
 
 let settings = {
@@ -30,6 +31,7 @@ function addAudio(){
     audio = new GameAudio(scene, camera);
 }
 
+let spotLight, lightHelper;
 
 function init() {
     Assets.load(() => {
@@ -42,7 +44,29 @@ function init() {
         yourCallForAll = new YourCallForAll(scene, camera);
         clock.start();
         applySettings();
+
+
+        spotLight = new THREE.SpotLight( 0xffffff, 1 );
+
+        spotLight.position.set( -20, 5, 0 );
+        spotLight.angle = Math.PI / 8;
+        spotLight.penumbra = 0.1;
+        spotLight.decay = 1;
+        spotLight.distance = 200;
+
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 512;
+        spotLight.shadow.mapSize.height = 512;
+        spotLight.shadow.camera.near = 0.5;
+        spotLight.shadow.camera.far = 200000;
+        spotLight.shadow.focus = 1;
+        scene.add( spotLight );
+
+        lightHelper = new THREE.SpotLightHelper( spotLight );
+        scene.add( lightHelper );
+
         render();
+
     });
 }
 
@@ -53,6 +77,9 @@ function render() {
 
     yourCallForAll.update(deltaTime);
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
+
+    let a = yourCallForAll.character.model.position;
+    spotLight.position.set(a.x,a.y + 2,a.z);
     composer.render();
     requestAnimationFrame(render);
 }
