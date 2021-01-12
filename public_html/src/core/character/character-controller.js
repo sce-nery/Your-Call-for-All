@@ -19,7 +19,7 @@ class CharacterController {
 
         this.input = new CharacterControllerKeyboardInput();
 
-        this.fsm = new CharacterStateMachine(this.character.actionMap);
+        this.fsm = new CharacterStateMachine(new CharacterControllerProxy(this.character.actionMap));
         this.fsm.setState('Idle');
     }
 
@@ -113,4 +113,11 @@ class CharacterController {
     }
 }
 
-export {CharacterController};
+class CharacterControllerProxy {
+    constructor(actions) {
+        this.actions = actions;
+    }
+}
+
+
+export {CharacterController, CharacterControllerProxy};

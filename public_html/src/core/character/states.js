@@ -22,9 +22,9 @@ class WalkState extends CharacterState {
     }
 
     enter(previousState) {
-        const curAction = this.characterStateMachine.actions['Walk'];
+        const curAction = this.characterStateMachine.proxy.actions['Walk'];
         if (previousState) {
-            const prevAction = this.characterStateMachine.actions[previousState.name];
+            const prevAction = this.characterStateMachine.proxy.actions[previousState.name];
 
             curAction.enabled = true;
 
@@ -68,9 +68,9 @@ class RunState extends CharacterState {
     }
 
     enter(previousState) {
-        const curAction = this.characterStateMachine.actions['Run'];
+        const curAction = this.characterStateMachine.proxy.actions['Run'];
         if (previousState) {
-            const prevAction = this.characterStateMachine.actions[previousState.name];
+            const prevAction = this.characterStateMachine.proxy.actions[previousState.name];
 
             curAction.enabled = true;
 
@@ -114,9 +114,9 @@ class IdleState extends CharacterState {
     }
 
     enter(previousState) {
-        const idleAction = this.characterStateMachine.actions['Idle'];
+        const idleAction = this.characterStateMachine.proxy.actions['Idle'];
         if (previousState) {
-            const prevAction = this.characterStateMachine.actions[previousState.name];
+            const prevAction = this.characterStateMachine.proxy.actions[previousState.name];
             idleAction.time = 0.0;
             idleAction.enabled = true;
             idleAction.setEffectiveTimeScale(1.0);
@@ -147,9 +147,9 @@ class JumpState extends CharacterState {
     }
 
     enter(previousState) {
-        const jumpAction = this.characterStateMachine.actions['Jump'];
+        const jumpAction = this.characterStateMachine.proxy.actions['Jump'];
         if (previousState.name === 'Walk') {
-            const prevAction = this.characterStateMachine.actions[previousState.name];
+            const prevAction = this.characterStateMachine.proxy.actions[previousState.name];
             const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
             jumpAction.time = prevAction.time * ratio;
         } else {

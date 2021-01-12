@@ -1,18 +1,12 @@
 import {IdleState, RunState, WalkState} from "./states.js";
 
-
-class CharacterStateMachine {
-    constructor(actions) {
+class FiniteStateMachine{
+    constructor() {
         this.states = {};
         this.currentState = null;
 
-        this.actions = actions;
-
-        this.addState('Idle', IdleState);
-        this.addState('Walk', WalkState);
-        this.addState('Run', RunState);
-        // this.addState('Jump', JumpState);
     }
+
 
     addState(name, type) {
         this.states[name] = type;
@@ -38,6 +32,19 @@ class CharacterStateMachine {
         if (this.currentState) {
             this.currentState.update(deltaTime, input);
         }
+    }
+}
+
+
+class CharacterStateMachine extends FiniteStateMachine {
+    constructor(proxy) {
+        super();
+        this.proxy = proxy;
+
+        this.addState('Idle', IdleState);
+        this.addState('Walk', WalkState);
+        this.addState('Run', RunState);
+        // this.addState('Jump', JumpState);
     }
 }
 
