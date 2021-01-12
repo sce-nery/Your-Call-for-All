@@ -9,14 +9,13 @@ export const Assets = {
 
     URL: {
         glTF: {
-            MoCapMan: "/Your-Call-for-All/public_html/assets/models/characters/mocapman_dummy/mocapman.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
             RealTree: "/Your-Call-for-All/public_html/assets/models/trees/real-tree/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
-            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low_poly_tree_wind/scene.gltf",
-            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/main_character/jackie.glb"
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
+            Jackie:  "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb"
         },
         OBJ: {},
         Texture: {
