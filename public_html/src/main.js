@@ -1,11 +1,7 @@
 import {YourCallForAll} from "./core/your-call-for-all.js";
 import * as THREE from "../vendor/three-js/build/three.module.js";
-import {OrbitControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 import {EffectComposer} from "../vendor/three-js/examples/jsm/postprocessing/EffectComposer.js";
 import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderPass.js";
-import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
-import {GLTFLoader} from "../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
-import {Character} from "./core/character/character.js";
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 
@@ -13,7 +9,7 @@ import {createPerformanceMonitor} from "./util/debug.js";
 window.onload = function () {
     init();
 }
-let controls;
+
 
 let yourCallForAll;
 let clock;
@@ -21,26 +17,19 @@ let camera, scene, renderer, composer;
 let stats;
 
 
-
 function init() {
 
 
     Assets.load(() => {
-        const loadingElem = document.querySelector('#loading');
-        loadingElem.style.display = 'none';
-
-        //document.querySelector('#main-menu').style.visibility = 'visible';
-
+        removeLoadingBar();
         clock = new THREE.Clock();
-
         initCamera();
         initListeners();
         initScene();
         initRenderer();
 
         composer = new EffectComposer(renderer);
-        let renderPass = new RenderPass(scene, camera);
-        composer.addPass(renderPass);
+        composer.addPass(new RenderPass(scene, camera));
         //composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.3, 0.95));
 
 
@@ -48,25 +37,21 @@ function init() {
         clock.start();
         render();
 
-        const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
-        helper.position.y = 1;
-        scene.add(helper);
+        //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
+        //helper.position.y = 1;
+        //scene.add(helper);
 
 
     });
 
-    //stats = createPerformanceMonitor(document.body);
+    stats = createPerformanceMonitor(document.body);
 
-
-    //controls = new OrbitControls(camera, renderer.domElement);
-    //controls.update();
 }
 
 
 function render() {
     let deltaTime = clock.getDelta();
-    //stats.update();
-    //controls.update();
+    stats.update();
     yourCallForAll.update(deltaTime);
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
 
@@ -76,7 +61,11 @@ function render() {
     requestAnimationFrame(render);
 }
 
-
+function removeLoadingBar(){
+    const loadingElem = document.querySelector('#loading');
+    loadingElem.style.display = 'none';
+    //document.querySelector('#main-menu').style.visibility = 'visible';
+}
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
