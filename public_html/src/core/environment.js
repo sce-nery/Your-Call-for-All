@@ -1,12 +1,9 @@
 import {Terrain} from "./terrain.js";
-import {FractalBrownianMotionHeightMap, HybridMultifractalHeightMap} from "./heightmap.js";
+import {HybridMultifractalHeightMap} from "./heightmap.js";
 import {SimplexNoise} from "../../vendor/three-js/examples/jsm/math/SimplexNoise.js";
 import {Sky} from "./sky.js";
 import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {Color} from "../../vendor/three-js/build/three.module.js";
-import {Assets} from "./assets.js";
-import {LinearInterpolator} from "../math/math.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 
 class Environment {

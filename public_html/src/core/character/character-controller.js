@@ -1,8 +1,6 @@
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
-import {FBXLoader} from "../../../vendor/three-js/examples/jsm/loaders/FBXLoader.js";
 import {CharacterControllerKeyboardInput} from "./character-controller-input.js";
 import {CharacterStateMachine} from "./finite-state-machines.js";
-import {Assets} from "../assets.js";
 
 
 class CharacterController {
