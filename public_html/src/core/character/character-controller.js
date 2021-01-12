@@ -15,6 +15,8 @@ class CharacterController {
             deceleration: new THREE.Vector3(-0.0005, -0.0001, -5.0),
             acceleration: new THREE.Vector3(1, 0.25, 50.0),
             velocity: new THREE.Vector3(0, 0, 0),
+            rotation: new THREE.Quaternion(),
+            position: new THREE.Vector3(),
         }
 
         this.input = new CharacterControllerKeyboardInput();
@@ -41,7 +43,6 @@ class CharacterController {
 
         velocity.add(frameDeceleration);
 
-
         let raycaster = new THREE.Raycaster(this.character.model.position, new THREE.Vector3(0, -1, 0));
         let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
 
@@ -64,9 +65,9 @@ class CharacterController {
 
 
         const controlObject = this.character.model;
-        const q = new THREE.Quaternion();
-        const a = new THREE.Vector3();
-        const r = controlObject.quaternion.clone();
+        const Q = new THREE.Quaternion();
+        const A = new THREE.Vector3();
+        const R = controlObject.quaternion.clone();
 
         const acc = this.locomotion.acceleration.clone();
         if (this.input.keys.shift) {
@@ -80,17 +81,17 @@ class CharacterController {
             velocity.z -= acc.z * deltaTime;
         }
         if (this.input.keys.left) {
-            a.set(0, 1, 0);
-            q.setFromAxisAngle(a, 4.0 * Math.PI * deltaTime * this.locomotion.acceleration.y);
-            r.multiply(q);
+            A.set(0, 1, 0);
+            Q.setFromAxisAngle(A, 4.0 * Math.PI * deltaTime * this.locomotion.acceleration.y);
+            R.multiply(Q);
         }
         if (this.input.keys.right) {
-            a.set(0, 1, 0);
-            q.setFromAxisAngle(a, 4.0 * -Math.PI * deltaTime * this.locomotion.acceleration.y);
-            r.multiply(q);
+            A.set(0, 1, 0);
+            Q.setFromAxisAngle(A, 4.0 * -Math.PI * deltaTime * this.locomotion.acceleration.y);
+            R.multiply(Q);
         }
 
-        controlObject.quaternion.copy(r);
+        controlObject.quaternion.copy(R);
 
         const oldPosition = new THREE.Vector3();
         oldPosition.copy(controlObject.position);
@@ -109,6 +110,8 @@ class CharacterController {
         controlObject.position.add(forward);
         controlObject.position.add(sideways);
 
+        this.locomotion.position.copy(controlObject.position);
+        this.locomotion.rotation.copy(controlObject.quaternion);
     }
 }
 

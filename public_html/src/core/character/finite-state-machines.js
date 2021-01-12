@@ -11,7 +11,7 @@ class CharacterStateMachine {
         this.addState('Idle', IdleState);
         this.addState('Walk', WalkState);
         this.addState('Run', RunState);
-        this.addState('Jump', JumpState);
+        // this.addState('Jump', JumpState);
     }
 
     addState(name, type) {

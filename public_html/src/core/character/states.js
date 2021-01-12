@@ -21,14 +21,14 @@ class WalkState extends CharacterState {
         this.name = "Walk";
     }
 
-    enter(prevState) {
+    enter(previousState) {
         const curAction = this.characterStateMachine.actions['Walk'];
-        if (prevState) {
-            const prevAction = this.characterStateMachine.actions[prevState.name];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
 
             curAction.enabled = true;
 
-            if (prevState.name === 'Run') {
+            if (previousState.name === 'Run') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -67,14 +67,14 @@ class RunState extends CharacterState {
         this.name = "Run";
     }
 
-    enter(prevState) {
+    enter(previousState) {
         const curAction = this.characterStateMachine.actions['Run'];
-        if (prevState) {
-            const prevAction = this.characterStateMachine.actions[prevState.name];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
 
             curAction.enabled = true;
 
-            if (prevState.name === 'Walk') {
+            if (previousState.name === 'Walk') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
             } else {
@@ -113,10 +113,10 @@ class IdleState extends CharacterState {
         this.name = "Idle";
     }
 
-    enter(prevState) {
+    enter(previousState) {
         const idleAction = this.characterStateMachine.actions['Idle'];
-        if (prevState) {
-            const prevAction = this.characterStateMachine.actions[prevState.name];
+        if (previousState) {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
             idleAction.time = 0.0;
             idleAction.enabled = true;
             idleAction.setEffectiveTimeScale(1.0);
@@ -146,10 +146,10 @@ class JumpState extends CharacterState {
         this.name = "Jump";
     }
 
-    enter(prevState) {
+    enter(previousState) {
         const jumpAction = this.characterStateMachine.actions['Jump'];
-        if (prevState.name === 'Walk') {
-            const prevAction = this.characterStateMachine.actions[prevState.name];
+        if (previousState.name === 'Walk') {
+            const prevAction = this.characterStateMachine.actions[previousState.name];
             const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
             jumpAction.time = prevAction.time * ratio;
         } else {

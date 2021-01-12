@@ -17,6 +17,7 @@ class CharacterControllerKeyboardInput {
     }
 
     onInputReceived(event, state) {
+        console.debug(`Keyboard Input: ${event.key}, ${state}`)
         switch(event.key) {
             case "w":
                 this.keys.forward = state;

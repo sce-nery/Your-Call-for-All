@@ -30,9 +30,7 @@ class Character {
     }
 
     update(deltaTime, ycfa) {
-        if (this.controller) {
-            this.controller.update(deltaTime, ycfa);
-        }
+        this.controller.update(deltaTime, ycfa);
         this.cameraController.update(deltaTime);
 
         this.mixer.update(deltaTime);
