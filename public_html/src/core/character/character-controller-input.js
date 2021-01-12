@@ -1,5 +1,9 @@
 class CharacterControllerKeyboardInput {
     constructor() {
+        this.init();
+    }
+
+    init() {
         this.keys = {
             forward: false,
             backward: false,
@@ -12,30 +16,53 @@ class CharacterControllerKeyboardInput {
     }
 
     initializeListeners() {
-        document.addEventListener('keydown', (e) => this.onInputReceived(e, true));
-        document.addEventListener('keyup', (e) => this.onInputReceived(e, false));
+        document.addEventListener('keydown', (e) => this.onKeyDown(e), false);
+        document.addEventListener('keyup', (e) => this.onKeyUp(e), false);
     }
 
-    onInputReceived(event, state) {
-        console.debug(`Keyboard Input: ${event.key}, ${state}`)
-        switch(event.key) {
-            case "w":
-                this.keys.forward = state;
+
+    onKeyDown(event) {
+        switch (event.keyCode) {
+            case 87: // w
+                this.keys.forward = true;
                 break;
-            case "a":
-                this.keys.left = state;
+            case 65: // a
+                this.keys.left = true;
                 break;
-            case "s":
-                this.keys.backward = state;
+            case 83: // s
+                this.keys.backward = true;
                 break;
-            case "d":
-                this.keys.right = state;
+            case 68: // d
+                this.keys.right = true;
                 break;
-            case " ":
-                this.keys.space = state;
+            case 32: // SPACE
+                this.keys.space = true;
                 break;
-            case "Shift":
-                this.keys.shift = state;
+            case 16: // SHIFT
+                this.keys.shift = true;
+                break;
+        }
+    }
+
+    onKeyUp(event) {
+        switch(event.keyCode) {
+            case 87: // w
+                this.keys.forward = false;
+                break;
+            case 65: // a
+                this.keys.left = false;
+                break;
+            case 83: // s
+                this.keys.backward = false;
+                break;
+            case 68: // d
+                this.keys.right = false;
+                break;
+            case 32: // SPACE
+                this.keys.space = false;
+                break;
+            case 16: // SHIFT
+                this.keys.shift = false;
                 break;
         }
     }
