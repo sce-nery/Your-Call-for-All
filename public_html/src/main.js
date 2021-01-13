@@ -23,6 +23,9 @@ let stats;
 let audio;
 
 
+let music = document.getElementById("playmusic");
+music.addEventListener("click", addAudio );
+
 function init() {
     Assets.load(() => {
         removeLoadingBar();
@@ -34,7 +37,7 @@ function init() {
         yourCallForAll = new YourCallForAll(scene, camera);
         clock.start();
         applySettings();
-        addAudio();
+        //addAudio();
         render();
     });
 }
@@ -104,7 +107,11 @@ function initScene() {
 }
 
 function addAudio(){
-    audio = new GameAudio(scene, camera, settings.ambientSound);
+    if (!audio) {
+        audio = new GameAudio(scene, camera, settings.ambientSound);
+    }
+
+
 }
 
 
