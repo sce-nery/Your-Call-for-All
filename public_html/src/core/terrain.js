@@ -276,11 +276,11 @@ class TerrainChunk extends GameObject {
         let percent = this.environment.prng.random() * 100;
 
         if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
-            if (percent < 0.1) { // %0.1 of the time.
+            if (percent < 0.1) {
 
                 let frog = new AnimatedObject(Assets.glTF.FrogOnLeaf);
                 frog.model.position.set(candidatePosition.x, 0, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.3, 0.6, this.environment.prng.random());
+                let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
                 frog.model.scale.set(scale, scale, scale);
                 frog.setHealthRange(0.5, 1.0);
 
@@ -292,8 +292,8 @@ class TerrainChunk extends GameObject {
             }
         }
 
-        if (candidatePosition.y < -1) {
-            if (percent < 0.1) { // %0.1 of the time.
+        if (candidatePosition.y < -2) {
+            if (percent < 0.1) {
 
                 let shark = new AnimatedObject(Assets.glTF.Shark);
                 shark.model.position.set(candidatePosition.x, -0.5, candidatePosition.z);
@@ -303,21 +303,23 @@ class TerrainChunk extends GameObject {
 
                 // Sets the wind animation for play.
                 shark.playActionByIndex(0);
+                shark.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
 
                 this.environment.objects.push(shark);
 
             }
         }
 
-        if (candidatePosition.y > 0 && candidatePosition.y < 25) {
-            if (percent < 0.2) { // %0.1 of the time.
+        if (candidatePosition.y > 0 && candidatePosition.y < 20) {
+            if (percent < 0.15) {
 
                 let butterfly = new AnimatedObject(Assets.glTF.Butterfly);
                 butterfly.model.position.set(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.01, 0.02, this.environment.prng.random());
+                let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
                 butterfly.model.scale.set(scale, scale, scale);
 
                 butterfly.setHealthRange(0.5, 1.0);
+                butterfly.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
 
                 // Sets the wind animation for play.
                 butterfly.playActionByIndex(0);
@@ -390,8 +392,7 @@ class TerrainChunk extends GameObject {
         if (candidatePosition.y > 1 && candidatePosition.y < 10) {
             let percent = this.environment.prng.random() * 100;
 
-            if (percent < 2) // %3 of the time
-            {
+            if (percent < 1) {
                 let grass = new StaticObject(Assets.glTF.LowPolyGrass);
                 grass.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
                 let scale = LinearInterpolator.real(0.015, 0.022, this.environment.prng.random());

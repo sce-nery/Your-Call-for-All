@@ -9,6 +9,7 @@ export const Assets = {
 
     URL: {
         glTF: {
+            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
             PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
             WillowTree: "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
             PalmTree: "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
@@ -31,7 +32,6 @@ export const Assets = {
             Rock: "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
             LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
-            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
         },
         OBJ: {},
         Texture: {
