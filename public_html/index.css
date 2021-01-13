@@ -1,4 +1,6 @@
 
+
+
 #exit {
     height:30px;
     width:30px;
@@ -68,11 +70,15 @@
     border-right:300px solid transparent;
     border-top: 400px solid transparent;
     border-radius: 0px;
-    position:relative;
-    margin:auto;
-    top:5px;
-    left:2px;
+    position:absolute;
+    margin: auto;
+    top: 100px;
+    left:350px;
 
+
+}
+#main-menu{
+    z-index: 10;
 }
 
 #single {
@@ -107,7 +113,7 @@
 }
 
 #start:hover {
-    background:#7A0000;
+    background: #131313;
     color:white;
 
     -webkit-transform:rotate(-2deg);
@@ -117,7 +123,7 @@
 }
 
 #credits:hover {
-    background:#7A0000;
+    background: #131313;
     color:white;
     -webkit-transform:rotate(-2deg);
     transform:rotate(-2deg);
@@ -125,7 +131,7 @@
 }
 
 #options:hover {
-    background:#7A0000;
+    background: #131313;
     color:white;
     -webkit-transform:rotate(-2deg);
     transform:rotate(-2deg);
@@ -144,17 +150,18 @@
     width:300px;
     right:150px;
 
-    background:#006680;
+    background: #494c4c;
     position:relative;
     bottom:345px;
 
     font-size:30px;
     text-align:center;
     font-family:"Arial Rounded MT Bold";
-    color:orange;
+    color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
+    opacity: 0.6;
 
 }
 #start p {
@@ -168,17 +175,18 @@
 
     height:50px;
     width:300px;
-    background:#006680;
+    background: #494c4c;
     position:relative;
     bottom:360px;
     right:150px;
     font-size:30px;
     text-align:center;
     font-family:shadows into light;
-    color:orange;
+    color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
+    opacity: 0.6;
 
 }
 
@@ -194,16 +202,17 @@
     width:300px;
     right:150px;
     position:relative;
-    background:#006680;
+    background: #494c4c;
     bottom:375px;
     font-size:30px;
 
     text-align:center;
     font-family:shadows into light;
-    color:orange;
+    color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
+    opacity: 0.6;
 
 }
 
@@ -214,8 +223,11 @@
 }
 
 body { margin: 0; }
-canvas { display: block; background-color: #c2ccd1}
+canvas { display: block; background-color: #0b5b83
+}
+
 #loading {
+
     position: absolute;
     left: 0;
     top: 0;
@@ -227,34 +239,58 @@ canvas { display: block; background-color: #c2ccd1}
     text-align: center;
     font-size: xx-large;
     font-family: sans-serif;
+    background-image: url("girişresmi1.png");
+
+
 }
+
+
 #loading>div>div {
+
+    border-radius: 25px;
     padding: 2px;
 }
 .progress {
+
     width: 50vw;
-    border: 1px solid black;
+    border: 1px solid #000000;
+
+}
+.percentage {
+    align-items: center;
+    font-size: smaller;
+    font-family: "Times New Roman";
+
+}
+
+.percentage p{
+    font-size: smaller;
+    font-family: "Times New Roman";
+
+}
+.loading-message{
+
+    font-size: smaller;
+    font-family: "Times New Roman";
+
+}
+.loading-bar{
+    padding-top: 300px;
 }
 #progressbar {
+    border-radius: 25px;
     width: 0;
     transition: width ease-out .5s;
     height: 1em;
-    background-color: #888;
-    background-image: linear-gradient(
-            -45deg,
-            rgba(255, 255, 255, .5) 25%,
-            transparent 25%,
-            transparent 50%,
-            rgba(255, 255, 255, .5) 50%,
-            rgba(255, 255, 255, .5) 75%,
-            transparent 75%,
-            transparent
-    );
+    background-color: #00000000;
+    background-image: url("low-poly-tree.png");
     background-size: 50px 50px;
     animation: progressanim 2s linear infinite;
 }
 
+
 @keyframes progressanim {
+
     0% {
         background-position: 50px 50px;
     }
