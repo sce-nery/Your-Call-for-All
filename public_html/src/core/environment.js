@@ -5,6 +5,7 @@ import {Sky} from "./sky.js";
 import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
+import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 
 class Environment {
     /**
@@ -136,6 +137,7 @@ class Environment {
             }
 
         }
+
     }
 
     isObjectWithinDrawDistance(object, playerPosition) {
@@ -159,6 +161,10 @@ class Environment {
         object.isInScene = true;
     }
 
+    regenerateOctree (groundMesh) {
+        this.owner.worldOctree = new Octree();
+        this.owner.worldOctree.fromGraphNode(groundMesh);
+    }
 }
 
 
