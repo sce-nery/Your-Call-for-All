@@ -129,11 +129,11 @@ export const Assets = {
 
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
-            console.log(progressbarElem.style.width);
+            //console.log(progressbarElem.style.width);
             document.getElementById("percentage").innerHTML = progressbarElem.style.width;
             if (parseInt(progressbarElem.style.width) > 65) {
                 document.getElementById("l-message").innerHTML = "Look at the color of the ocean. It's your call!";
-                document.getElementById("loading").style.backgroundImage = "url('girişresmi2.png')";
+                //document.getElementById("loading").style.backgroundImage = "url('./assets/images/start-screen-img2.png')";
             }
         }
 

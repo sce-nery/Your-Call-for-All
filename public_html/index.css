@@ -1,6 +1,4 @@
 
-
-
 #exit {
     height:30px;
     width:30px;
@@ -95,8 +93,7 @@
     -webkit-transition:0.5s;
     transition:0.5s;
     color:orange;
-    font-family:shadows into light;
-
+    font-family: shadows into light, serif;
     cursor:pointer;
 
 
@@ -156,7 +153,7 @@
 
     font-size:30px;
     text-align:center;
-    font-family:"Arial Rounded MT Bold";
+    font-family: "Arial Rounded MT Bold", serif;
     color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
@@ -181,7 +178,7 @@
     right:150px;
     font-size:30px;
     text-align:center;
-    font-family:shadows into light;
+    font-family: shadows into light, serif;
     color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
@@ -207,7 +204,7 @@
     font-size:30px;
 
     text-align:center;
-    font-family:shadows into light;
+    font-family: shadows into light, serif;
     color: #ffffff;
     -webkit-transition:0.5s;
     transition:0.5s;
@@ -239,9 +236,7 @@ canvas { display: block; background-color: #0b5b83
     text-align: center;
     font-size: xx-large;
     font-family: sans-serif;
-    background-image: url("girişresmi1.png");
-
-
+    background-image: url("assets/images/start-screen-img1.png");
 }
 
 
@@ -259,19 +254,19 @@ canvas { display: block; background-color: #0b5b83
 .percentage {
     align-items: center;
     font-size: smaller;
-    font-family: "Times New Roman";
+    font-family: "Times New Roman", serif;
 
 }
 
 .percentage p{
     font-size: smaller;
-    font-family: "Times New Roman";
+    font-family: "Times New Roman", serif;
 
 }
 .loading-message{
 
     font-size: smaller;
-    font-family: "Times New Roman";
+    font-family: "Times New Roman", serif;
 
 }
 .loading-bar{
@@ -283,7 +278,7 @@ canvas { display: block; background-color: #0b5b83
     transition: width ease-out .5s;
     height: 1em;
     background-color: #00000000;
-    background-image: url("low-poly-tree.png");
+    background-image: url("assets/images/low-poly-tree.png");
     background-size: 50px 50px;
     animation: progressanim 2s linear infinite;
 }
