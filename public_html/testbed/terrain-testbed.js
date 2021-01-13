@@ -221,39 +221,11 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }
 
-// let velocity = new THREE.Vector3();
 
 function render() {
     let deltaTime = clock.getDelta();
 
-    // let physicsDemoMeshVelocity = new THREE.Vector3();
-    // physicsDemoMeshVelocity.x = basicControls.horizontalMove * 0.5;
-    // physicsDemoMeshVelocity.z = basicControls.verticalMove * 0.5;
-
-    // physicsDemoMesh.position.x += physicsDemoMeshVelocity.x;
-    // physicsDemoMesh.position.z += physicsDemoMeshVelocity.z;
-
-    // let raycaster = new THREE.Raycaster(physicsDemoMesh.position, new THREE.Vector3(0, -1, 0));
-    // let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
-
-    // if (intersects[0] !== undefined) {
-    //     let distance = 1.75;
-    //     //new position is higher so you need to move you object upwards
-    //     if (distance > intersects[0].distance) {
-    //         physicsDemoMesh.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
-    //     }
-
-    //     //gravity and prevent falling through floor
-    //     if (distance >= intersects[0].distance && velocity.y <= 0) {
-    //         velocity.y = 0;
-    //     } else if (distance <= intersects[0].distance && velocity.y === 0) {
-    //         velocity.y -= 0.1;
-    //     }
-
-    //     physicsDemoMesh.translateY(velocity.y);
-    // }
-
-    ycfa.update(deltaTime, physicsDemoMesh.position);
+    ycfa.update(deltaTime);
 
     composer.render();
 

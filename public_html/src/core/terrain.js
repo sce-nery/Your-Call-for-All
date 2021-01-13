@@ -80,6 +80,7 @@ class Terrain {
 
         this.makeAllChunksInactive();
 
+        let previousCenterChunk = this.centerChunk;
         this.centerChunk = this.createChunk(chunkOffsets[0]);
         for (let i = 1; i < chunkOffsets.length; i++) {
             this.createChunk(chunkOffsets[i]);
@@ -87,6 +88,10 @@ class Terrain {
 
         this.removeInactiveChunksFromScene();
         this.addActiveChunksToScene();
+
+        if ((!previousCenterChunk) || previousCenterChunk.mesh.uuid !== this.centerChunk.mesh.uuid) {
+            this.environment.owner.worldOctree.fromGraphNode(this.centerChunk.mesh);
+        }
     }
 
     makeAllChunksInactive() {
@@ -217,7 +222,7 @@ class TerrainChunk extends GameObject {
     }
 
     setupChunkGeometry() {
-        this.geometry = new THREE.PlaneGeometry(
+        this.geometry = new THREE.PlaneBufferGeometry(
             this.chunkSize,
             this.chunkSize,
             this.chunkSize,
@@ -229,15 +234,17 @@ class TerrainChunk extends GameObject {
         for (let i = 0; i <= this.chunkSize; i++) {
             for (let j = 0; j <= this.chunkSize; j++) {
                 let data = heightMatrix[i][j];
-                const vertex = this.geometry.vertices[i * (this.chunkSize + 1) + j];
+
+                let index = (i * (this.chunkSize + 1) + j) * 3;
+
                 // Because we are directly setting vertices, transformations will be based
                 // on the global origin instead of the mesh itself, so be careful.
-                vertex.x = data.x;
-                vertex.y = data.y;
+                this.geometry.attributes.position.array[index] = data.x;
+                this.geometry.attributes.position.array[index+1] = data.y;
 
                 // Set height
                 // This is normally the Y component but we are going to rotate the terrain along z-axis by -90 degrees
-                vertex.z = data.height;
+                this.geometry.attributes.position.array[index+2] = data.height;
 
                 let candidatePosition = new THREE.Vector3();
                 candidatePosition.x = data.x;
@@ -534,7 +541,7 @@ class TerrainChunk extends GameObject {
     }
 
     setupChunkMesh() {
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
+        this.mesh = new THREE.Mesh(  this.geometry , this.material);
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;

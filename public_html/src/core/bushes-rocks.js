@@ -1,5 +1,4 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {GLTFLoader} from "../../vendor/three-js/examples/jsm/loaders/GLTFLoader.js";
 import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUtils.js";
 import {GameObject} from "./objects.js";
 import {Assets} from "./assets.js";
