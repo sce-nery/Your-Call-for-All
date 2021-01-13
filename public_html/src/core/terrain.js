@@ -296,7 +296,7 @@ class TerrainChunk extends GameObject {
             if (percent < 0.1) {
 
                 let shark = new AnimatedObject(Assets.glTF.Shark);
-                shark.model.position.set(candidatePosition.x, -0.5, candidatePosition.z);
+                shark.model.position.set(candidatePosition.x, -0.75, candidatePosition.z);
                 let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
                 shark.model.scale.set(scale, scale, scale);
                 shark.setHealthRange(0.5, 1.0);
