@@ -11,25 +11,29 @@
 <body>
 <script src="vendor/jquery-3.5.1.min.js"></script>
 <script src="vendor/logger.js"></script>
+<div id="our-canvas">
 
-<!--
-<div id="main-menu" style="visibility: hidden; background: #00000000">
-    <div id="left"></div>
-    <div id="start"><p>START</p></div>
-    <div id="options"><p>OPTIONS</p></div>
-    <div id="credits"><p>CREDITS</p></div>
-    <div id="right"></div>
-</div>
+    <div id="main-menu" style="visibility: hidden; background: #00000000">
+        <div id="left"></div>
+        <div id="start"><p>START</p></div>
+        <div id="options"><p>OPTIONS</p></div>
+        <div id="credits"><p>CREDITS</p></div>
+        <div id="right"></div>
+    </div>
 
--->
+
+
+
 <div id="loading">
-    <div>
-        <div>World is being generated...</div>
-        <div class="progress"><div id="progressbar"></div></div>
+    <div class="loading-bar">
+        <div class="loading-message" style="color: #000000">World is being generated...</div>
+        <div class="progress"><div id="progressbar"><div class="percentage" id="percentage"><p>0%</p></div></div>
+        </div>
+        <div class="loading-message" id="l-message" >If you see butterflies you are on the right way.</div>
 
     </div>
 </div>
-
+</div>
 
 <!-- Your Call for All: Entry point. -->
 <script src="src/main.js" type="module"></script>
