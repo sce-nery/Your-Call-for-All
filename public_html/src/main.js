@@ -64,7 +64,7 @@ function applySettings(){
 function removeLoadingBar(){
     const loadingElem = document.querySelector('#loading');
     loadingElem.style.display = 'none';
-    //document.querySelector('#main-menu').style.visibility = 'visible';
+    document.querySelector('#main-menu').style.visibility = 'visible';
 }
 
 function initCamera() {
@@ -92,7 +92,7 @@ function initRenderer() {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
 
-    document.body.appendChild(renderer.domElement);
+    document.querySelector("#our-canvas").appendChild(renderer.domElement);
 }
 
 function initScene() {
