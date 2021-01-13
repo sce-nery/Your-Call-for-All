@@ -2,8 +2,7 @@ import {CharacterController} from "./character-controller.js";
 import {ThirdPersonCameraController} from "./third-person-camera-controller.js";
 import {Assets} from "../assets.js";
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
-import {CSS2DObject} from "../../../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
-import {CSS2DRenderer} from "../../../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
+
 
 
 class Character {
@@ -22,9 +21,7 @@ class Character {
 
         this.setupActions();
         this.setupShadows();
-
         this.setupControllers();
-
 
         //const moonDiv = document.createElement( 'div' );
         //moonDiv.className = 'label';

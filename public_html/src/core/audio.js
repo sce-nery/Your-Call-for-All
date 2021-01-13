@@ -3,9 +3,10 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 
 class GameAudio {
-    constructor(scene, camera) {
+    constructor(scene, camera, ambientAudioSoundName) {
         this.scene = scene;
         this.camera = camera;
+        this.ambientAudioSoundName = ambientAudioSoundName;
 
         this.setupAudioListener();
         this.ambientAudio();
@@ -20,7 +21,7 @@ class GameAudio {
         const sound = new THREE.Audio( this.listener );
         // load a sound and set it as the Audio object's buffer
         const audioLoader = new THREE.AudioLoader();
-        audioLoader.load( './assets/sounds/song3.mp3', function( buffer ) {
+        audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
             sound.setBuffer( buffer );
             sound.setLoop( true );
             sound.setVolume( 0.5 );

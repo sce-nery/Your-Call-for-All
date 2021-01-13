@@ -12,6 +12,7 @@ let settings = {
     useGridHelper: false,
     useBloom: false,
     usePerformanceMonitor: false,
+    ambientSound: './assets/sounds/song3.mp3',
 }
 
 
@@ -19,16 +20,7 @@ let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
 let stats;
-let audio, ambientLight;
-
-
-const startButton = document.getElementById( 'overlay' );
-startButton.addEventListener( 'click', addAudio );
-
-
-function addAudio(){
-    audio = new GameAudio(scene, camera);
-}
+let audio;
 
 
 function init() {
@@ -42,10 +34,8 @@ function init() {
         yourCallForAll = new YourCallForAll(scene, camera);
         clock.start();
         applySettings();
-        ambientLight = new THREE.AmbientLight(0x404040);
-        scene.add(ambientLight);
+        addAudio();
         render();
-
     });
 }
 
@@ -112,6 +102,12 @@ function initScene() {
     scene = new THREE.Scene();
 
 }
+
+function addAudio(){
+    audio = new GameAudio(scene, camera, settings.ambientSound);
+}
+
+
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
