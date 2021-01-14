@@ -98,7 +98,7 @@ function initRenderer() {
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
 
-    document.querySelector("#our-canvas").appendChild(renderer.domElement);
+    document.querySelector("#render-target").appendChild(renderer.domElement);
 }
 
 function initScene() {

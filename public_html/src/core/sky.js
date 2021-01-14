@@ -22,7 +22,7 @@ class Sky extends GameObject {
         this.sunLight.castShadow = true;
         this.time = 0;
         this.props = props;
-        this.skyDome.scale.setScalar(450000);
+        this.skyDome.scale.setScalar(10000);
     }
 
     update(deltaTime) {
@@ -54,10 +54,14 @@ class Sky extends GameObject {
 
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
-        this.sunLight.color.set(LinearInterpolator.color(0xffffff,  0xfdb55e, amount));
+        this.sunLight.color.set(LinearInterpolator.color(0xffffff, 0xfdb55e, amount));
+        this.sunLight.intensity = ((inclination / 2) + 0.25) % 1.0;
 
         // Update fog:
-        this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
+        if (this.environment.scene.fog) {
+            this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
+        }
+
     }
 }
 

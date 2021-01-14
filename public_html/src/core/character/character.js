@@ -2,6 +2,7 @@ import {CharacterController} from "./character-controller.js";
 import {ThirdPersonCameraController} from "./third-person-camera-controller.js";
 import {Assets} from "../assets.js";
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
+import {Capsule} from "../../../vendor/three-js/examples/jsm/math/Capsule.js";
 
 
 
@@ -15,7 +16,7 @@ class Character {
         this.model = this.gltf.scene;
         this.animations = this.gltf.animations;
 
-        this.scene.add(this.model);
+        this.collider = new Capsule(new THREE.Vector3(0, 0.0, 0), new THREE.Vector3(0, 1.60, 0), 0.35);
 
         this.mixer = new THREE.AnimationMixer(this.model);
 
@@ -43,15 +44,6 @@ class Character {
         this.cameraController = new ThirdPersonCameraController(this);
     }
 
-    update(deltaTime, ycfa) {
-        //this.labelRenderer.render( this.scene, this.camera );
-        this.controller.update(deltaTime, ycfa);
-        this.cameraController.update(deltaTime);
-
-        this.mixer.update(deltaTime);
-    }
-
-
     setupActions() {
         const animations = this.animations;
         let actionList = [];
@@ -76,6 +68,13 @@ class Character {
                 object.receiveShadow = true;
             }
         });
+    }
+
+    update(deltaTime, ycfa) {
+        this.controller.update(deltaTime, ycfa);
+        this.cameraController.update(deltaTime);
+
+        this.mixer.update(deltaTime);
     }
 
 }

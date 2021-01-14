@@ -3,8 +3,16 @@
 <head>
     <title>Terrain - Your Call for All</title>
     <meta charset="utf-8">
-
-    <link rel="stylesheet" href="../index.css">
+    <style>
+        body {
+            margin: 0;
+        }
+        canvas {
+            display: block;
+            background-color: #0b5b83
+        }
+    </style>
+    <link rel="stylesheet" href="./terrain_testbed.css">
 </head>
 <body>
 <script src="../vendor/jquery-3.5.1.min.js"></script>
@@ -14,7 +22,9 @@
 <div id="loading">
     <div>
         <div>World is being generated...</div>
-        <div class="progress"><div id="progressbar"></div></div>
+        <div class="progress">
+            <div id="progressbar"></div>
+        </div>
 
     </div>
 </div>

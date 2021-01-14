@@ -23,6 +23,28 @@ class CharacterController {
         this.fsm.setState('Idle');
     }
 
+    handleCollisions(ycfa) {
+
+        const result = ycfa.worldOctree.capsuleIntersect(this.character.collider);
+
+        this.playerOnFloor = false;
+
+        if (result) {
+
+            this.playerOnFloor = result.normal.y > 0;
+
+            if (!this.playerOnFloor) {
+
+                this.locomotion.velocity.addScaledVector(result.normal, -result.normal.dot(this.locomotion.velocity));
+
+            }
+
+            this.character.collider.translate(result.normal.multiplyScalar(result.depth));
+
+        }
+
+    }
+
     update(deltaTime, ycfa) {
         if (!this.character.model) {
             return;
@@ -41,42 +63,21 @@ class CharacterController {
 
         velocity.add(frameDeceleration);
 
-        let raycaster = new THREE.Raycaster(this.character.model.position, new THREE.Vector3(0, -1, 0));
-        let intersects = raycaster.intersectObject(ycfa.environment.terrain.centerChunk.mesh); //use intersectObjects() to check the intersection on multiple
-
-        if (intersects[0] !== undefined) {
-            let distance = 1.05;
-            //new position is higher so you need to move you object upwards
-            if (distance > intersects[0].distance) {
-                this.character.model.position.y += (distance - intersects[0].distance) - 1; // the -1 is a fix for a shake effect I had
-            }
-
-            //gravity and prevent falling through floor
-            if (distance >= intersects[0].distance && this.locomotion.velocity.y <= 0) {
-                this.locomotion.velocity.y = 0;
-            } else if (distance <= intersects[0].distance && this.locomotion.velocity.y === 0) {
-                this.locomotion.velocity.y -= 0.1;
-            }
-
-            this.character.model.translateY(this.locomotion.velocity.y);
-        }
-
-
         const controlObject = this.character.model;
         const Q = new THREE.Quaternion();
         const A = new THREE.Vector3();
         const R = controlObject.quaternion.clone();
 
-        const acc = this.locomotion.acceleration.clone();
+        const acceleration = this.locomotion.acceleration.clone();
         if (this.input.keys.shift) {
-            acc.multiplyScalar(3.0);
+            acceleration.multiplyScalar(3.0);
         }
 
         if (this.input.keys.forward) {
-            velocity.z += acc.z * deltaTime;
+            velocity.z += acceleration.z * deltaTime;
         }
         if (this.input.keys.backward) {
-            velocity.z -= acc.z * deltaTime;
+            velocity.z -= acceleration.z * deltaTime;
         }
         if (this.input.keys.left) {
             A.set(0, 1, 0);
@@ -87,6 +88,17 @@ class CharacterController {
             A.set(0, 1, 0);
             Q.setFromAxisAngle(A, 4.0 * -Math.PI * deltaTime * this.locomotion.acceleration.y);
             R.multiply(Q);
+        }
+
+        // Gravity
+        if (this.playerOnFloor) {
+
+           const damping = Math.exp(-3 * deltaTime) - 1;
+           this.locomotion.velocity.y += this.locomotion.velocity.y * damping;
+
+        } else {
+            let GRAVITY = -9.8;
+            this.locomotion.velocity.y += GRAVITY * deltaTime;
         }
 
         controlObject.quaternion.copy(R);
@@ -102,11 +114,21 @@ class CharacterController {
         sideways.applyQuaternion(controlObject.quaternion);
         sideways.normalize();
 
+        const up = new THREE.Vector3(0, 1, 0);
+
         sideways.multiplyScalar(velocity.x * deltaTime);
         forward.multiplyScalar(velocity.z * deltaTime);
+        up.multiplyScalar(velocity.y * deltaTime);
 
-        controlObject.position.add(forward);
-        controlObject.position.add(sideways);
+        this.character.collider.translate(forward);
+        this.character.collider.translate(sideways);
+        this.character.collider.translate(up);
+
+        this.handleCollisions(ycfa);
+
+        controlObject.position.copy(this.character.collider.start);
+        // Correction for ground touch;
+        controlObject.position.y -= 0.35;
 
         this.locomotion.position.copy(controlObject.position);
         this.locomotion.rotation.copy(controlObject.quaternion);

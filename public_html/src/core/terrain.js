@@ -1,11 +1,9 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
-import {AnimatedObject} from "./animatedObject.js";
 import {BrokenBottle} from "./decision-points.js";
-import {GameObject} from "./objects.js";
-
-import {StaticObject} from "./bushes-rocks.js";
+import {GameObject, AnimatedObject, StaticObject} from "./objects.js";
+import {LinearInterpolator} from "../math/math.js";
 
 class Terrain {
 
@@ -80,6 +78,7 @@ class Terrain {
 
         this.makeAllChunksInactive();
 
+        let previousCenterChunk = this.centerChunk;
         this.centerChunk = this.createChunk(chunkOffsets[0]);
         for (let i = 1; i < chunkOffsets.length; i++) {
             this.createChunk(chunkOffsets[i]);
@@ -87,6 +86,10 @@ class Terrain {
 
         this.removeInactiveChunksFromScene();
         this.addActiveChunksToScene();
+
+        if ((!previousCenterChunk) || previousCenterChunk.mesh.uuid !== this.centerChunk.mesh.uuid) {
+            this.environment.regenerateOctree(this.centerChunk.mesh);
+        }
     }
 
     makeAllChunksInactive() {
@@ -196,10 +199,10 @@ class TerrainChunk extends GameObject {
         let t3 = Assets.Texture.Rocks_Color;
         let t4 = Assets.Texture.Snow_Color;
 
-        TextureUtils.makeRepeating(t1, this.chunkSize/2, this.chunkSize/2);
-        TextureUtils.makeRepeating(t2, this.chunkSize/2, this.chunkSize/2);
-        TextureUtils.makeRepeating(t3, this.chunkSize/2, this.chunkSize/2);
-        TextureUtils.makeRepeating(t4, this.chunkSize/2, this.chunkSize/2);
+        TextureUtils.makeRepeating(t1, this.chunkSize / 2, this.chunkSize / 2);
+        TextureUtils.makeRepeating(t2, this.chunkSize / 2, this.chunkSize / 2);
+        TextureUtils.makeRepeating(t3, this.chunkSize / 2, this.chunkSize / 2);
+        TextureUtils.makeRepeating(t4, this.chunkSize / 2, this.chunkSize / 2);
 
         this.material = TextureUtils.generateBlendedMaterial([
             // The first texture is the base; other textures are blended in on top.
@@ -209,15 +212,21 @@ class TerrainChunk extends GameObject {
             {texture: t3, levels: [10, 20, 22, 25]},
             {texture: t4, levels: [22, 25, 2000, 3000]},
             // How quickly this texture is blended in depends on its x-position.
-            {texture: t4, glsl: '1.0 - smoothstep(65.0 + smoothstep(-256.0, 256.0, vPosition.x) * 10.0, 80.0, vPosition.z)'},
+            {
+                texture: t4,
+                glsl: '1.0 - smoothstep(65.0 + smoothstep(-256.0, 256.0, vPosition.x) * 10.0, 80.0, vPosition.z)'
+            },
             // Use this texture if the slope is between 27 and 45 degrees
-            {texture: t3, glsl: 'slope > 0.7853981633974483 ? 0.2 : 1.0 - smoothstep(0.47123889803846897, 0.7853981633974483, slope) + 0.2'},
+            {
+                texture: t3,
+                glsl: 'slope > 0.7853981633974483 ? 0.2 : 1.0 - smoothstep(0.47123889803846897, 0.7853981633974483, slope) + 0.2'
+            },
         ]);
 
     }
 
     setupChunkGeometry() {
-        this.geometry = new THREE.PlaneGeometry(
+        this.geometry = new THREE.PlaneBufferGeometry(
             this.chunkSize,
             this.chunkSize,
             this.chunkSize,
@@ -229,15 +238,17 @@ class TerrainChunk extends GameObject {
         for (let i = 0; i <= this.chunkSize; i++) {
             for (let j = 0; j <= this.chunkSize; j++) {
                 let data = heightMatrix[i][j];
-                const vertex = this.geometry.vertices[i * (this.chunkSize + 1) + j];
+
+                let index = (i * (this.chunkSize + 1) + j) * 3;
+
                 // Because we are directly setting vertices, transformations will be based
                 // on the global origin instead of the mesh itself, so be careful.
-                vertex.x = data.x;
-                vertex.y = data.y;
+                this.geometry.attributes.position.array[index] = data.x;
+                this.geometry.attributes.position.array[index + 1] = data.y;
 
                 // Set height
                 // This is normally the Y component but we are going to rotate the terrain along z-axis by -90 degrees
-                vertex.z = data.height;
+                this.geometry.attributes.position.array[index + 2] = data.height;
 
                 let candidatePosition = new THREE.Vector3();
                 candidatePosition.x = data.x;
@@ -248,6 +259,7 @@ class TerrainChunk extends GameObject {
                 this.scatterTrees(candidatePosition);
                 this.scatterRocks(candidatePosition);
                 this.scatterBushes(candidatePosition);
+                this.scatterAnimals(candidatePosition);
 
                 // Decision points:
                 this.scatterDecisionPoints(candidatePosition);
@@ -260,251 +272,111 @@ class TerrainChunk extends GameObject {
         this.geometry.computeVertexNormals();
     }
 
-    scatterTrees(candidatePosition) {
-        function getRandomArbitrary(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+    scatterAnimals(candidatePosition) {
+        let percent = this.environment.prng.random() * 100;
 
-        let random = this.environment.prng.random();
         if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
-            if (random * 100 < 0.1) { // %0.1 of the time.
+            if (percent < 0.1) {
 
-                let tree = new AnimatedObject(Assets.glTF.FrogOnLeaf);
-                tree.model.position.set(candidatePosition.x, 0, candidatePosition.z);
-                let scale = getRandomArbitrary(0.3,0,6);
-                tree.model.scale.set(scale, scale, scale);
-                tree.healthFactor=1.0;
-
-                // Sets the wind animation for play.
-                tree.playActionByIndex(0);
-
-                this.environment.objects.push(tree);
-
-            } else if (random * 100 > 1.7 && random * 100 < 1.8) { // %0.1 of the time.
-
-                let tree = new AnimatedObject(Assets.glTF.Shark);
-                tree.model.position.set(candidatePosition.x, -0.5, candidatePosition.z);
-                let scale = getRandomArbitrary(0.7,0,9);
-                tree.model.scale.set(scale, scale, scale);
-                tree.healthFactor=1.0;
+                let frog = new AnimatedObject(Assets.glTF.FrogOnLeaf);
+                frog.model.position.set(candidatePosition.x, 0, candidatePosition.z);
+                let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
+                frog.model.scale.set(scale, scale, scale);
+                frog.setHealthRange(0.5, 1.0);
 
                 // Sets the wind animation for play.
-                tree.playActionByIndex(0);
+                frog.playActionByIndex(0);
 
-                this.environment.objects.push(tree);
+                this.environment.objects.push(frog);
 
             }
-
-
         }
-        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
-            /*
-                        if (random * 100 < 0.1) { // %0.1 of the time.
 
-                                let tree = new Tree(Assets.glTF.PinkTree);
-                                tree.model.position.set(position.x, position.y, position.z);
+        if (candidatePosition.y < -2) {
+            if (percent < 0.1) {
 
-                                tree.model.scale.set(0.3, 0.3, 0.3);
+                let shark = new AnimatedObject(Assets.glTF.Shark);
+                shark.model.position.set(candidatePosition.x, -0.75, candidatePosition.z);
+                let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
+                shark.model.scale.set(scale, scale, scale);
+                shark.setHealthRange(0.5, 1.0);
 
-                                // Sets the wind animation for play.
-                                tree.playActionByIndex(0);
-
-            if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
-                                this.trees.push(tree);
-
-                        }*/
-            /*else*/
-            /*if (random * 100 > 0.1 && random * 100 < 0.2) { // %0.1 of the time.
-
-                let tree = new Tree(Assets.glTF.TwoTrees);
-                tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                tree.model.scale.set(0.03, 0.03, 0.03);
-                tree.healthFactor = 1.0;
                 // Sets the wind animation for play.
-                tree.playActionByIndex(0);
+                shark.playActionByIndex(0);
+                shark.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
 
-                this.environment.objects.push(tree);
+                this.environment.objects.push(shark);
 
+            }
+        }
 
-            }*/
-            if (random * 100 > 1.7 && random * 100 < 1.8) { // %0.1 of the time.
+        if (candidatePosition.y > 0 && candidatePosition.y < 20) {
+            if (percent < 0.15) {
 
-                let tree = new AnimatedObject(Assets.glTF.Butterfly);
-                tree.model.position.set(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
-                let scale = getRandomArbitrary(0.01,0.02);
-                tree.model.scale.set(scale, scale, scale);
-                tree.healthFactor=1.0;
+                let butterfly = new AnimatedObject(Assets.glTF.Butterfly);
+                butterfly.model.position.set(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
+                let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
+                butterfly.model.scale.set(scale, scale, scale);
+
+                butterfly.setHealthRange(0.5, 1.0);
+                butterfly.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
+
                 // Sets the wind animation for play.
-                tree.playActionByIndex(0);
+                butterfly.playActionByIndex(0);
 
-                this.environment.objects.push(tree);
+                this.environment.objects.push(butterfly);
 
 
             }
+        }
+
+    }
+
+    scatterTrees(candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
+            let percent = this.environment.prng.random() * 100;
+
+            let treeType = Math.ceil(this.environment.prng.random() * 2);
+
+            if (percent < 0.3) { // %0.3 of the time.
+
+                if (treeType === 1) {
+                    let simpleTree = new StaticObject(Assets.glTF.SimpleTree);
+                    simpleTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                    let scale = LinearInterpolator.real(1.8, 2.2, this.environment.prng.random());
+                    simpleTree.model.scale.set(scale, scale, scale);
+                    simpleTree.setHealthRange(0.5, 1.0);
+                    this.environment.objects.push(simpleTree);
+
+                    let deadTree = new StaticObject(Assets.glTF.DeadTree);
+                    deadTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                    scale = scale / 500.0;
+                    deadTree.model.scale.set(scale, scale, scale);
+                    deadTree.setHealthRange(0.0, 0.5);
+                    this.environment.objects.push(deadTree);
+                } else if (treeType === 2) {
+
+                    let pineTree = new StaticObject(Assets.glTF.PineTree);
+                    pineTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                    let scale = LinearInterpolator.real(0.008, 0.013, this.environment.prng.random());
+                    pineTree.model.scale.set(scale, scale, scale);
+                    pineTree.setHealthRange(0.5, 1.0);
+                    this.environment.objects.push(pineTree);
 
 
-
-
-               /* if (random * 100 > 0.3 && random * 100 < 0.6) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.Grass);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.015, 0.015, 0.015);
-
-
-                    this.environment.objects.push(bush);
-
-                } /*else if (random * 100 > 0.6 && random * 100 < 0.7) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.PlantShrub);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.005, 0.005, 0.005);
-
-
-                    this.environment.objects.push(bush);
-
-                } else if (random * 100 > 0.7 && random * 100 < 0.9) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.Lavender);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.005, 0.005, 0.005);
-
-
-                    this.environment.objects.push(bush);
-
-                } else if (random * 100 > 0.9 && random * 100 < 1.0) { // %0.1 of the time.
-
-                    let tree = new Tree(Assets.glTF.YardGrass);
-                    tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    tree.model.scale.set(0.08, 0.08, 0.08);
-
+                    let driedPine = new AnimatedObject(Assets.glTF.DriedPine);
+                    driedPine.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                    scale = scale / 2.5;
+                    driedPine.model.scale.set(scale, scale, scale);
+                    driedPine.setHealthRange(0.0, 0.5);
                     // Sets the wind animation for play.
-                    tree.playActionByIndex(0);
+                    driedPine.playActionByIndex(0);
 
-                    this.environment.objects.push(tree);
-
-                } else if (random * 100 > 1.0 && random * 100 < 1.2) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.WoodenBlock);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.005, 0.005, 0.005);
-
-
-                    this.environment.objects.push(bush);
-
-                } */
-                /*else*/
-                /*if (random * 100 > 1.2 && random * 100 < 1.4) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.PineTree);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.01, 0.01, 0.01);
-                    bush.healtFactor=1.0;
-
-                    this.environment.objects.push(bush);
-
-                }/* else if (random * 100 > 1.4 && random * 100 < 1.6) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.TropicalPlant);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.9, 0.9, 0.9);
-
-
-                    this.environment.objects.push(bush);
-
-                } else if (random * 100 > 1.6 && random * 100 < 1.7) { // %0.1 of the time.
-
-                    let bush = new Bushes(Assets.glTF.Rock);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    bush.model.scale.set(0.006, 0.006, 0.006);
-
-                    this.environment.objects.push(bush);
-
-                } *//*else*/
-            if (random * 100 > 0.1 && random * 100 < 0.31) { // %0.1 of the time.
-
- /*                   let tree = new Tree(Assets.glTF.LowPolyTree);
-                    tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-
-                    tree.model.scale.set(2.0, 2.0, 2.0);
-                    tree.healthFactor=1.0;
-
-
-                    tree.playActionByIndex(0);
-
-
-                    this.environment.objects.push(tree);
-
-
-*/
-                   let bush = new StaticObject(Assets.glTF.SimpleTree);
-                    bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                    let scale = getRandomArbitrary(1.8,2.2);
-                    bush.model.scale.set(scale, scale, scale);
-                    bush.healthFactor=1.0;
-                    this.environment.objects.push(bush);
-
-                let deadBush = new StaticObject(Assets.glTF.DeadTree);
-                deadBush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                scale = scale/500.0;
-                deadBush.model.scale.set(scale, scale, scale);
-                deadBush.healthFactor=0.0;
-                this.environment.objects.push(deadBush);
-
-
-
-
+                    this.environment.objects.push(driedPine);
                 }
 
-            else if(random * 100 > 2.6 && random * 100 < 2.82){
-
-                let bush = new StaticObject(Assets.glTF.PineTree);
-                bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                let scale = getRandomArbitrary(0.008,0.013);
-                bush.model.scale.set(scale, scale, scale);
-                bush.healthFactor=1.0;
-                this.environment.objects.push(bush);
-
-
-                let bad_tree = new AnimatedObject(Assets.glTF.DriedPine);
-                bad_tree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                scale= scale/2.5;
-                bad_tree.model.scale.set(scale, scale, scale);
-                bad_tree.healthFactor=0.0;
-                // Sets the wind animation for play.
-                bad_tree.playActionByIndex(0);
-
-                this.environment.objects.push(bad_tree);
-
             }
-            else if(random * 100 > 5.9 && random * 100 < 6.2){
-
-                let bush = new StaticObject(Assets.glTF.LowPolyGrass);
-                bush.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                let scale = getRandomArbitrary(0.015,0.022);
-                bush.model.scale.set(0.02, 0.02, 0.02);
-                bush.healthFactor=1.0;
-                this.environment.objects.push(bush);
-
-
-            }
-
-
-
-
-
-
-
-
 
 
         }
@@ -513,11 +385,24 @@ class TerrainChunk extends GameObject {
     }
 
     scatterRocks(candidatePosition) {
-        // Todo
     }
 
     scatterBushes(candidatePosition) {
-        // Todo
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) {
+            let percent = this.environment.prng.random() * 100;
+
+            if (percent < 1) {
+                let grass = new StaticObject(Assets.glTF.LowPolyGrass);
+                grass.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                let scale = LinearInterpolator.real(0.01, 0.022, this.environment.prng.random());
+                grass.model.scale.set(scale, scale, scale);
+
+                grass.setHealthRange(0.5, 1.0);
+
+                this.environment.objects.push(grass);
+            }
+
+        }
     }
 
     scatterDecisionPoints(candidatePosition) {

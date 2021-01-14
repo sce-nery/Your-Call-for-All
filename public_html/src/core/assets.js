@@ -9,29 +9,29 @@ export const Assets = {
 
     URL: {
         glTF: {
-            PinkTree: "/Your-Call-for-All/public_html/assets/models/trees/pink-tree/scene.gltf",
-            WillowTree:   "/Your-Call-for-All/public_html/assets/models/trees/willow-tree/scene.gltf",
-            PalmTree:   "/Your-Call-for-All/public_html/assets/models/trees/palm-tree/scene.gltf",
-            LowPolyTree:   "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree/scene.gltf",
-            SimpleTree:   "/Your-Call-for-All/public_html/assets/models/trees/simple-tree/scene.gltf",
-            PineTree:   "/Your-Call-for-All/public_html/assets/models/trees/pine-tree/scene.gltf",
-            DriedPine:   "/Your-Call-for-All/public_html/assets/models/trees/dried-pine/scene.gltf",
-            DeadTree:   "/Your-Call-for-All/public_html/assets/models/trees/dead-tree/scene.gltf",
-            TwoTrees:   "/Your-Call-for-All/public_html/assets/models/trees/two-trees/scene.gltf",
-            Butterfly:   "/Your-Call-for-All/public_html/assets/models/trees/butterfly/scene.gltf",
-            FrogOnLeaf:   "/Your-Call-for-All/public_html/assets/models/trees/frog-on-leaf/scene.gltf",
-            Shark:   "/Your-Call-for-All/public_html/assets/models/trees/shark/scene.gltf",
-            YardGrass:   "/Your-Call-for-All/public_html/assets/models/grass-bush/yard-grass/scene.gltf",
-            PlantShrub:   "/Your-Call-for-All/public_html/assets/models/grass-bush/plant-shrub/scene.gltf",
-            Grass:   "/Your-Call-for-All/public_html/assets/models/grass-bush/grass/scene.gltf",
-            LowPolyGrass:   "/Your-Call-for-All/public_html/assets/models/grass-bush/low-poly-grass/scene.gltf",
-            Lavender:   "/Your-Call-for-All/public_html/assets/models/grass-bush/lavender/scene.gltf",
-            WoodenBlock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/wooden-block/scene.gltf",
-            TropicalPlant:   "/Your-Call-for-All/public_html/assets/models/grass-bush/tropical-plant/scene.gltf",
-            Rock:   "/Your-Call-for-All/public_html/assets/models/grass-bush/rock/scene.gltf",
-            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/broken-bottle/scene.gltf",
-            LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/trees/low-poly-tree-wind/scene.gltf",
             Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
+            PinkTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pink-tree/scene.gltf",
+            WillowTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/willow-tree/scene.gltf",
+            PalmTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/palm-tree/scene.gltf",
+            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree/scene.gltf",
+            SimpleTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/simple-tree/scene.gltf",
+            PineTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pine-tree/scene.gltf",
+            DriedPine: "/Your-Call-for-All/public_html/assets/models/objects/trees/dried-pine/scene.gltf",
+            DeadTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/dead-tree/scene.gltf",
+            TwoTrees: "/Your-Call-for-All/public_html/assets/models/objects/trees/two-trees/scene.gltf",
+            Butterfly: "/Your-Call-for-All/public_html/assets/models/objects/trees/butterfly/scene.gltf",
+            FrogOnLeaf: "/Your-Call-for-All/public_html/assets/models/objects/trees/frog-on-leaf/scene.gltf",
+            Shark: "/Your-Call-for-All/public_html/assets/models/objects/trees/shark/scene.gltf",
+            YardGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/yard-grass/scene.gltf",
+            PlantShrub: "/Your-Call-for-All/public_html/assets/models/objects/foliage/plant-shrub/scene.gltf",
+            Grass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/grass/scene.gltf",
+            LowPolyGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/low-poly-grass/scene.gltf",
+            Lavender: "/Your-Call-for-All/public_html/assets/models/objects/foliage/lavender/scene.gltf",
+            WoodenBlock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/wooden-block/scene.gltf",
+            TropicalPlant: "/Your-Call-for-All/public_html/assets/models/objects/foliage/tropical-plant/scene.gltf",
+            Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
+            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/decision-points/broken-bottle/scene.gltf",
+            LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree-wind/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -47,22 +47,21 @@ export const Assets = {
     },
 
     glTF: {
-        MoCapMan:   null,
-        LowPolyTree:  null,
-        PineTree:   null,
-        DriedPine:null,
-        TwoTrees:  null,
+        LowPolyTree: null,
+        PineTree: null,
+        DriedPine: null,
+        TwoTrees: null,
         Butterfly: null,
         FrogOnLeaf: null,
-        Shark:  null,
-        YardGrass:   null,
-        PlantShrub:  null,
-        Grass:   null,
+        Shark: null,
+        YardGrass: null,
+        PlantShrub: null,
+        Grass: null,
         LowPolyGrass: null,
-        Lavender:  null,
-        WoodenBlock:  null,
-        TropicalPlant:  null,
-        Rock:  null,
+        Lavender: null,
+        WoodenBlock: null,
+        TropicalPlant: null,
+        Rock: null,
         BrokenBottle: null,
         DeadTree: null,
         PinkTree: null,
@@ -73,7 +72,7 @@ export const Assets = {
     },
 
 
- OBJ: {},
+    OBJ: {},
     Texture: {
         ShallowGrass_Color: null,
         ShallowGrass_Normal: null,
@@ -130,13 +129,15 @@ export const Assets = {
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
             //console.log(progressbarElem.style.width);
-            document.getElementById("percentage").innerHTML = progressbarElem.style.width;
-            if (parseInt(progressbarElem.style.width) > 65) {
-                document.getElementById("l-message").innerHTML = "Look at the color of the ocean. It's your call!";
-                //document.getElementById("loading").style.backgroundImage = "url('./assets/images/start-screen-img2.png')";
+            let percentage = document.getElementById("percentage");
+            if (percentage) {
+                percentage.innerHTML = progressbarElem.style.width;
+                if (parseInt(progressbarElem.style.width) > 65) {
+                    document.getElementById("l-message").innerHTML = "Look at the color of the ocean. It's your call!";
+                    //document.getElementById("loading").style.backgroundImage = "url('./assets/images/start-screen-img2.png')";
+                }
             }
         }
-
 
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console

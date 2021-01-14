@@ -5,8 +5,7 @@ import {Sky} from "./sky.js";
 import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
-import {AnimatedObject} from "./animatedObject.js";
-import {StaticObject} from "./bushes-rocks.js";
+import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 
 class Environment {
     /**
@@ -33,6 +32,9 @@ class Environment {
 
         this.scene.fog = new THREE.Fog(0xa0afa0, 0, this.props.drawDistance * 2);
 
+        const light = new THREE.AmbientLight(0x404040); // soft white light
+        this.scene.add(light);
+
         // Other game objects
         this.objects = [];
 
@@ -41,6 +43,10 @@ class Environment {
         this.setupWater();
 
         this.lastPlayerPos = null;
+    }
+
+    getHealth() {
+        return this.props.healthFactor;
     }
 
     /**
@@ -83,8 +89,9 @@ class Environment {
         });
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
+        //const helper = new THREE.DirectionalLightHelper( sky.sunLight, 5 );
+        //this.scene.add( helper );
         this.sky = sky;
-        //sky.update();
     }
 
     setupWater() {
@@ -104,74 +111,59 @@ class Environment {
         if (this.lastPlayerPos === null || !this.lastPlayerPos.equals(playerPosition)) {
             console.debug(`Player moved to: (${playerPosition.x},${playerPosition.y},${playerPosition.z})`)
             this.terrain.loadChunks(playerPosition);
-            this.addObjectsWithinRangeToScene(playerPosition);
-            this.removeObjectsOutOfRangeFromScene(playerPosition);
             this.lastPlayerPos = playerPosition.clone();
         }
 
-        this.updateObjectsWithinRange(deltaTime, playerPosition);
+        this.updateObjects(deltaTime, playerPosition);
     }
 
-    updateObjectsWithinRange(deltaTime, playerPosition) {
+    updateObjects(deltaTime, playerPosition) {
+
         for (let i = 0; i < this.objects.length; i++) {
             const object = this.objects[i];
+
+            if (object.isInScene) {
+                if (!this.isObjectWithinDrawDistance(object, playerPosition) || !this.isEnvironmentHealthWithinObjectRange(object)) {
+                    this.removeObjectFromScene(object);
+                }
+            } else {
+                if (this.isObjectWithinDrawDistance(object, playerPosition) && this.isEnvironmentHealthWithinObjectRange(object)) {
+                    this.addObjectToScene(object);
+                }
+            }
+
             if (object.isInScene && object.mixer !== undefined) {
                 object.mixer.update(deltaTime);
             }
+
         }
+
     }
 
-    addObjectsWithinRangeToScene(playerPosition) {
-        console.debug("Adding chunk objects to scene...");
-        for (let i = 0; i < this.objects.length; i++) {
-            const object = this.objects[i];
-
-            if (object instanceof AnimatedObject || object instanceof StaticObject) {
-                if (this.props.healthFactor >= 0.5 && object.healthFactor>0.5) {
-                    this.scene.add(object.model);
-                    object.isInScene = true;
-                }
-                else if (this.props.healthFactor < 0.5 && object.healthFactor<0.5) {
-                    this.scene.add(object.model);
-                    object.isInScene = true;
-                }
-
-            }
-
-            if (!object.isInScene && object.model.position.distanceTo(playerPosition) <= this.props.drawDistance) {
-                this.scene.add(object.model);
-                object.isInScene = true;
-            }
-        }
+    isObjectWithinDrawDistance(object, playerPosition) {
+        return object.model.position.distanceTo(playerPosition) <= this.props.drawDistance;
     }
 
-    removeObjectsOutOfRangeFromScene(playerPosition) {
-        console.debug("Removing chunk objects from scene...");
-        for (let i = 0; i < this.objects.length; i++) {
-            const object = this.objects[i];
+    isEnvironmentHealthWithinObjectRange(object) {
+        if (!object.healthRange) return true;
+        const environmentHealth = this.getHealth()
+        return environmentHealth >= object.healthRange.min && environmentHealth <= object.healthRange.max;
+    }
 
-            if (object instanceof AnimatedObject|| object instanceof StaticObject) {
-                if (this.props.healthFactor >= 0.5 && object.healthFactor<0.5) {
+    removeObjectFromScene(object) {
+        this.scene.remove(object.model);
+        object.isInScene = false;
+    }
 
-                    this.scene.remove(object.model);
-                    object.isInScene = false;
 
-                }
-                else if (this.props.healthFactor < 0.5 && object.healthFactor>0.5) {
+    addObjectToScene(object) {
+        this.scene.add(object.model);
+        object.isInScene = true;
+    }
 
-                    this.scene.remove(object.model);
-                    object.isInScene = false;
-                }
-
-            }
-            if (object.isInScene && object.model.position.distanceTo(playerPosition) > this.props.drawDistance) {
-
-                this.scene.remove(object.model);
-                object.isInScene = false;
-            }
-
-        }
-
+    regenerateOctree (groundMesh) {
+        this.owner.worldOctree = new Octree();
+        this.owner.worldOctree.fromGraphNode(groundMesh);
     }
 }
 
