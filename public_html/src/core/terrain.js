@@ -385,7 +385,6 @@ class TerrainChunk extends GameObject {
     }
 
     scatterRocks(candidatePosition) {
-        // Todo
     }
 
     scatterBushes(candidatePosition) {
