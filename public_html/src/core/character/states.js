@@ -31,7 +31,8 @@ class WalkState extends CharacterState {
             if (previousState.name === 'Run') {
                 const ratio = curAction.getClip().duration / prevAction.getClip().duration;
                 curAction.time = prevAction.time * ratio;
-            } else {
+            }
+            else {
                 curAction.time = 0.0;
                 curAction.setEffectiveTimeScale(1.0);
                 curAction.setEffectiveWeight(1.0);
@@ -135,6 +136,7 @@ class IdleState extends CharacterState {
         if (input.keys.forward || input.keys.backward) {
             this.characterStateMachine.setState('Walk');
         } else if (input.keys.space) {
+            this.characterStateMachine.setState('Jump');
         }
     }
 }
@@ -147,27 +149,40 @@ class JumpState extends CharacterState {
     }
 
     enter(previousState) {
-        const jumpAction = this.characterStateMachine.actions['Jump'];
-        if (previousState.name === 'Walk') {
+        const curAction = this.characterStateMachine.actions['Jump'];
+        if (previousState) {
             const prevAction = this.characterStateMachine.actions[previousState.name];
-            const ratio = jumpAction.getClip().duration / jumpAction.getClip().duration;
-            jumpAction.time = prevAction.time * ratio;
+
+            curAction.enabled = true;
+
+            if (previousState.name === 'Run') {
+                const ratio = curAction.getClip().duration / prevAction.getClip().duration;
+                curAction.time = prevAction.time * ratio;
+            } else {
+                curAction.time = 0.0;
+                curAction.setEffectiveTimeScale(1.0);
+                curAction.setEffectiveWeight(1.0);
+            }
+
+            curAction.crossFadeFrom(prevAction, 0.1, true);
+            curAction.play();
         } else {
-            jumpAction.time = 0.0;
-            jumpAction.setEffectiveTimeScale(1.0);
-            jumpAction.setEffectiveWeight(1.0);
+            curAction.play();
         }
+
     }
 
     exit() {
     }
 
     update(deltaTime, input) {
-        if (input.keys.forward || input.keys.backward) {
-
-        } else if (input.keys.space) {
+        if (input.keys.space) {
             this.characterStateMachine.setState('Jump');
+            console.log("Inside setState(Jump)");
+            return;
         }
+
+        this.characterStateMachine.setState('Idle');
     }
 }
 
