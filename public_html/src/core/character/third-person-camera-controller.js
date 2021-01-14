@@ -18,7 +18,7 @@ class ThirdPersonCameraController {
     }
 
     calculateIdealLookAt() {
-        const idealLookAt = new THREE.Vector3(0, 8, 50);
+        const idealLookAt = new THREE.Vector3(0, 8, 70);
         idealLookAt.applyQuaternion(this.character.controller.locomotion.rotation);
         idealLookAt.add(this.character.controller.locomotion.position);
         return idealLookAt;
