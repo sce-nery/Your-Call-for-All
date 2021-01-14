@@ -393,7 +393,8 @@ class TerrainChunk extends GameObject {
 
             if (percent < 1) {
                 let grass = new StaticObject(Assets.glTF.LowPolyGrass);
-                grass.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+                const heightOffset = LinearInterpolator.real(0.1, 0.2, this.environment.prng.random());
+                grass.model.position.set(candidatePosition.x, candidatePosition.y - heightOffset, candidatePosition.z);
                 let scale = LinearInterpolator.real(0.01, 0.022, this.environment.prng.random());
                 grass.model.scale.set(scale, scale, scale);
 
