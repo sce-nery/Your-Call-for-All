@@ -20,8 +20,8 @@ class YourCallForAll {
 
 
     update(deltaTime) {
-        this.character.update(deltaTime, this);
         this.environment.update(deltaTime, this.character.model.position);
+        this.character.update(deltaTime, this);
     }
 }
 
