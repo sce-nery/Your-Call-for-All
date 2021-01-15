@@ -8,9 +8,10 @@ import {Capsule} from "../../../vendor/three-js/examples/jsm/math/Capsule.js";
 
 class Character {
 
-    constructor(scene, camera) {
-        this.scene = scene;
-        this.camera = camera;
+    constructor(ycfa) {
+        this.owner = ycfa;
+        this.scene = ycfa.scene;
+        this.camera = ycfa.camera;
 
         this.gltf = Assets.glTF.Jackie;
         this.model = this.gltf.scene;

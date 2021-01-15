@@ -4,13 +4,15 @@ import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 
 class YourCallForAll {
 
-    constructor(scene, camera) {
+    constructor(scene, camera, renderer) {
         this.scene = scene;
+        this.camera = camera;
+        this.renderer = renderer;
 
         this.worldOctree = new Octree();
 
         this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
-        this.character = new Character(scene, camera);
+        this.character = new Character(this);
 
         this.character.model.position.set(-26, 0, -4);
         this.character.collider.translate(this.character.model.position);

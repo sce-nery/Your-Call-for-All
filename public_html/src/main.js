@@ -34,7 +34,7 @@ function init() {
         initListeners();
         initScene();
         initRenderer();
-        yourCallForAll = new YourCallForAll(scene, camera);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer);
         clock.start();
         applySettings();
         //addAudio();

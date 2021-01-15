@@ -8,6 +8,33 @@ class ThirdPersonCameraController {
 
         this.currentPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
+
+        this.mouseMovement = new THREE.Vector2();
+
+        this.initializeListeners();
+    }
+
+    initializeListeners() {
+        const self = this;
+        this.mouseMoved = function (event) {
+            const sensitivity = 0.1;
+            self.mouseMovement.x += sensitivity * event.movementX;
+            self.mouseMovement.y -= sensitivity * event.movementY;
+        }
+
+        document.addEventListener("pointerlockchange", function (event) {
+            if (document.pointerLockElement === self.character.owner.renderer.domElement ) {
+                console.log('The pointer lock status is now locked');
+                document.addEventListener("mousemove", self.mouseMoved, false);
+            } else {
+                console.log('The pointer lock status is now unlocked');
+                document.removeEventListener("mousemove", self.mouseMoved, false);
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+           self.enterPointerLock();
+        });
     }
 
     calculateIdealOffset() {
@@ -19,9 +46,15 @@ class ThirdPersonCameraController {
 
     calculateIdealLookAt() {
         const idealLookAt = new THREE.Vector3(0, 8, 70);
+        idealLookAt.x += this.mouseMovement.x;
+        idealLookAt.y += this.mouseMovement.y;
         idealLookAt.applyQuaternion(this.character.controller.locomotion.rotation);
         idealLookAt.add(this.character.controller.locomotion.position);
         return idealLookAt;
+    }
+
+    enterPointerLock() {
+        this.character.owner.renderer.domElement.requestPointerLock();
     }
 
     update(deltaTime) {

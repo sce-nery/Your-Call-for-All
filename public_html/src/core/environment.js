@@ -108,7 +108,7 @@ class Environment {
         this.sky.update(deltaTime);
         this.terrain.update(deltaTime, playerPosition);
 
-        if (this.lastPlayerPos === null || !this.lastPlayerPos.equals(playerPosition)) {
+        if (this.lastPlayerPos === null || this.lastPlayerPos.distanceTo(playerPosition) > 0.5) {
             console.debug(`Player moved to: (${playerPosition.x},${playerPosition.y},${playerPosition.z})`)
             this.terrain.loadChunks(playerPosition);
             this.lastPlayerPos = playerPosition.clone();

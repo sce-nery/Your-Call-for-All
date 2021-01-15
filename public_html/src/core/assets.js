@@ -27,7 +27,7 @@ export const Assets = {
             Grass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/grass/scene.gltf",
             LowPolyGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/low-poly-grass/scene.gltf",
             Lavender: "/Your-Call-for-All/public_html/assets/models/objects/foliage/lavender/scene.gltf",
-            WoodenBlock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/wooden-block/scene.gltf",
+            WoodenBlock: "/Your-Call-for-All/public_html/assets/models/objects/trees/wooden-block/scene.gltf",
             TropicalPlant: "/Your-Call-for-All/public_html/assets/models/objects/foliage/tropical-plant/scene.gltf",
             Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/decision-points/broken-bottle/scene.gltf",

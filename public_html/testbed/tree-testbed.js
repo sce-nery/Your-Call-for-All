@@ -41,7 +41,7 @@ function init() {
     // scene.add(helper);
 
     Assets.load(function () {
-        yourCallForAll = new YourCallForAll(scene);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer);
         yourCallForAll.environment.props.healthFactor = 1.0;
         // let tree1 = new Tree(Assets.glTF.PinkTree);
         // scene.add(tree1.model);
