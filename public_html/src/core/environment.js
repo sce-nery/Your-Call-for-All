@@ -165,6 +165,17 @@ class Environment {
         this.owner.worldOctree = new Octree();
         this.owner.worldOctree.fromGraphNode(groundMesh);
     }
+
+    regenerate() {
+        for (let i = 0; i < this.objects.length; i++) {
+            this.scene.remove(this.objects[i].model);
+        }
+        this.objects = [];
+
+        this.terrain.makeAllChunksInactive();
+        this.terrain.removeInactiveChunksFromScene();
+        this.setupTerrain();
+    }
 }
 
 
