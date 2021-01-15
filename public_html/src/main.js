@@ -22,10 +22,15 @@ let stats;
 let flag = -1;
 
 function init() {
+
+
     const loadingElem = document.querySelector('#button');
     loadingElem.addEventListener("click", () => {
         flag *= -1;
 
+        $('#menu')
+            .transition('horizontal flip')
+        ;
         const menuEl = document.querySelector('#menu');
 
         if (flag === -1){
