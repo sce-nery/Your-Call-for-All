@@ -9,7 +9,11 @@ class ThirdPersonCameraController {
         this.currentCameraPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
 
-        this.mouseMovement = new THREE.Vector2();
+        this.spherical = new THREE.Spherical(1,
+            THREE.Math.degToRad(45),
+            THREE.Math.degToRad(0),
+            );
+
 
         this.initializeListeners();
     }
@@ -18,20 +22,13 @@ class ThirdPersonCameraController {
         const self = this;
         this.mouseMoved = function (event) {
             const sensitivity = 0.01;
-            self.mouseMovement.x += sensitivity * event.movementX;
-            self.mouseMovement.y += sensitivity * event.movementY;
-            if (THREE.Math.radToDeg(self.mouseMovement.x) > 85) {
-                self.mouseMovement.x = THREE.Math.degToRad(85);
-            }
-            if (THREE.Math.radToDeg(self.mouseMovement.y) > 85) {
-                self.mouseMovement.y = THREE.Math.degToRad(85);
-            }
-            if (THREE.Math.radToDeg(self.mouseMovement.x) < -85) {
-                self.mouseMovement.x = THREE.Math.degToRad(-85);
-            }
-            if (THREE.Math.radToDeg(self.mouseMovement.y) < -85) {
-                self.mouseMovement.y = THREE.Math.degToRad(-85);
-            }
+            self.spherical.theta -= sensitivity * event.movementX;
+            self.spherical.phi -= sensitivity * event.movementY;
+
+            const maxPolarAngle = THREE.Math.degToRad(135);
+            const minPolarAngle = THREE.Math.degToRad(45);
+            self.spherical.phi = Math.max(minPolarAngle, Math.min(maxPolarAngle, self.spherical.phi));
+
         }
 
         document.addEventListener("pointerlockchange", function (event) {
@@ -70,9 +67,9 @@ class ThirdPersonCameraController {
     lookAround(eyePos, target) {
         let targetToEye = eyePos.clone().sub(target);
 
-        let rotation = new THREE.Quaternion();
-        rotation.setFromEuler(new THREE.Euler(this.mouseMovement.y, -this.mouseMovement.x, 0), true);
-        targetToEye.applyQuaternion(rotation);
+        this.spherical.radius = targetToEye.length();
+        targetToEye.setFromSpherical(this.spherical);
+
 
         eyePos.copy(targetToEye.clone().add(target));
     }
