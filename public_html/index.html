@@ -14,20 +14,45 @@
 <link rel="stylesheet" type="text/css" href="vendor/semantic-ui/semantic.min.css">
 <script src="vendor/semantic-ui/semantic.min.js"></script>
 
-<div id="render-target">
 
-    <button class="ui toggle button"   id="button">Vote</button>
+<button class="circular ui icon button" id="button">
+    <i class="icon settings"></i>
+</button>
 
 
+<div class="ui secondary vertical menu" id="menu" style="visibility: hidden">
 
-    <div class="ui indicating progress" data-value="1" data-total="20" id="example4">
-        <div class="bar">
-            <div class="progress"></div>
+    <a class="active item" >
+        Resume
+    </a>
+    <button class="ui button" id="abc">
+        Follow
+    </button>
+    <a class="item">
+        Settings
+    </a>
+    <div class="ui dropdown item">
+        <i class="dropdown icon"></i>
+        Display Options
+        <div class="menu">
+            <div class="header">Text Size</div>
+            <a class="item">Small</a>
+            <a class="item">Medium</a>
+            <a class="item">Large</a>
         </div>
-        <div class="label">World is being created...</div>
     </div>
+</div>
 
 
+
+<div class="ui indicating progress" data-value="1" data-total="20" id="example4">
+    <div class="bar">
+        <div class="progress"></div>
+    </div>
+    <div class="label">World is being created...</div>
+</div>
+
+<div id="render-target">
 </div>
 
 
