@@ -105,7 +105,7 @@ function init() {
         let playerCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 20000);
         playerCamera.position.set(10, 10, 100);
 
-        ycfa = new YourCallForAll(scene, camera);
+        ycfa = new YourCallForAll(scene, camera, renderer);
         ycfa.pmremGenerator = pmremGenerator;
         ycfa.environment.props.healthFactor = 1.0;
         initGUI();
