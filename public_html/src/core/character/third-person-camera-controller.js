@@ -19,7 +19,14 @@ class ThirdPersonCameraController {
             minPolarAngle: THREE.Math.degToRad(45)
         }
 
+        this.initializeRaycasters();
+
         this.initializeListeners();
+    }
+
+    initializeRaycasters() {
+        const down = new THREE.Vector3(0, -1, 0);
+        this.terrainRaycaster = new THREE.Raycaster(this.camera.position, down, 0.001, 5);
     }
 
     initializeListeners() {
@@ -86,22 +93,39 @@ class ThirdPersonCameraController {
     }
 
     update(deltaTime) {
-        const eyePosition = this.calculateCameraPosition();
+        const cameraPosition = this.calculateCameraPosition();
         const focus = this.calculateFocus();
 
-        this.lookAround(eyePosition, focus);
+        this.lookAround(cameraPosition, focus);
 
         const t = 1.0 - Math.pow(0.001, deltaTime);
 
-        this.currentCameraPosition.lerp(eyePosition, t);
+        this.currentCameraPosition.lerp(cameraPosition, t);
         this.currentLookAt.lerp(focus, t);
+
+        this.applyTerrainSurfaceBoundary(this.currentCameraPosition);
 
         this.camera.position.copy(this.currentCameraPosition);
         this.camera.lookAt(this.currentLookAt);
     }
 
-    boundaryCheck() {
+    applyTerrainSurfaceBoundary(position) {
+
+        let intersects = this.terrainRaycaster.intersectObject(this.character.owner.environment.terrain.centerChunk.mesh);
+
+        if (intersects.length > 0) {
+
+            if (intersects[0].distance < 0.5) {
+
+                position.y = intersects[0].point.y + 0.5;
+
+            }
+
+        }
+
     }
+
+
 }
 
 
