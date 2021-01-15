@@ -22,6 +22,7 @@ let stats;
 
 function init() {
 
+
     Assets.load(() => {
         removeLoadingBar();
         clock = new THREE.Clock();
@@ -62,9 +63,9 @@ function applySettings(){
 }
 
 function removeLoadingBar(){
-    const loadingElem = document.querySelector('#loading');
+    const loadingElem = document.querySelector('#example4');
     loadingElem.style.display = 'none';
-    document.querySelector('#main-menu').style.visibility = 'visible';
+    //document.querySelector('#main-menu').style.visibility = 'visible';
 }
 
 function initCamera() {
