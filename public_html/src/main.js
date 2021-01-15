@@ -29,7 +29,7 @@ function init() {
         flag *= -1;
 
         $('#menu')
-            .transition('horizontal flip')
+            .transition('pulse')
         ;
         const menuEl = document.querySelector('#menu');
 
