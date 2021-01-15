@@ -19,9 +19,13 @@ let clock;
 let camera, scene, renderer, composer;
 let stats;
 
+let flag = -1;
 
 function init() {
-
+    const loadingElem = document.querySelector('#button');
+    loadingElem.addEventListener("click", () => {
+        flag *= -1;
+    });
 
     Assets.load(() => {
         removeLoadingBar();
@@ -42,7 +46,10 @@ function render() {
     let deltaTime = clock.getDelta();
     if (stats) {stats.update();}
 
-    yourCallForAll.update(deltaTime);
+    if(flag === -1)  {
+        yourCallForAll.update(deltaTime);
+    }
+
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
     requestAnimationFrame(render);
