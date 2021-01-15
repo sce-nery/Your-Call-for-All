@@ -21,7 +21,7 @@ class ThirdPersonCameraController {
     initializeListeners() {
         const self = this;
         this.mouseMoved = function (event) {
-            const sensitivity = 0.01;
+            const sensitivity = 0.005;
             self.spherical.theta -= sensitivity * event.movementX;
             self.spherical.phi -= sensitivity * event.movementY;
 
@@ -54,7 +54,7 @@ class ThirdPersonCameraController {
     }
 
     calculateIdealLookAt() {
-        const idealLookAt = new THREE.Vector3(-1, 1.0, 0);
+        const idealLookAt = new THREE.Vector3(-0.5, 1.0, 0);
         idealLookAt.applyQuaternion(this.character.controller.locomotion.rotation);
         idealLookAt.add(this.character.controller.locomotion.position);
         return idealLookAt;
@@ -69,7 +69,6 @@ class ThirdPersonCameraController {
 
         this.spherical.radius = targetToEye.length();
         targetToEye.setFromSpherical(this.spherical);
-
 
         eyePos.copy(targetToEye.clone().add(target));
     }
