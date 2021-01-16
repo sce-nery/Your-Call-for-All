@@ -6,13 +6,18 @@ class GameUiController {
         this.ycfa = ycfa;
         this.renderer = renderer;
         this.initDocumentElements();
-        //this.showRenderTarget();
+        this.showRenderTarget();
+        this.showGameSettings();
+    }
 
+    update(deltaTime){
+        this.ycfa.update(deltaTime);
     }
 
     initDocumentElements(){
         this.progressBar = document.querySelector('#progress-bar');
         this.renderTarget = document.querySelector("#render-target");
+        this.settings = document.querySelector("#settings");
     }
 
     showRenderTarget(){
@@ -27,45 +32,9 @@ class GameUiController {
         this.progressBar.style.display = 'none';
     }
 
-
     showGameSettings(){
-        /*
-        let flag  = -1;
-        const loadingElem = document.querySelector('#button');
-        loadingElem.addEventListener("click", () => {
-            flag *= -1;
 
-            $('#menu')
-                .transition('pulse')
-            ;
-            const menuEl = document.querySelector('#menu');
-
-            if (flag === -1){
-                menuEl.style.visibility = 'hidden';
-                //abc.style.visibility = 'hidden';
-            }
-            else {
-                menuEl.style.visibility = 'visible';
-                //abc.style.visibility = 'visible';
-            }
-
-        });
-
-        const resume = document.querySelector('#abc');
-        resume.addEventListener("click",()=>{
-            const menuEl = document.querySelector('#menu');
-            flag *= -1;
-            if (flag === -1){
-                menuEl.style.visibility = 'hidden';
-                //abc.style.visibility = 'hidden';
-            }
-            else {
-                menuEl.style.visibility = 'visible';
-                //abc.style.visibility = 'visible';
-            }
-        })
-
-         */
+        this.settings.style.visibility = "visible";
     }
 
 

@@ -43,11 +43,8 @@ function init() {
 function render() {
     let deltaTime = clock.getDelta();
     if (stats) {stats.update();}
-    yourCallForAll.update(deltaTime);
-
-    //if(flag === -1)  {
-    //    yourCallForAll.update(deltaTime);
-    //}
+    //yourCallForAll.update(deltaTime);
+    gameUiController.update(deltaTime); 
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
