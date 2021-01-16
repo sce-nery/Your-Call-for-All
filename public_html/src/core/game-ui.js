@@ -17,11 +17,6 @@ class GameUiController {
         this.hideLoadingBar();
     }
 
-    update(deltaTime){
-
-        this.ycfa.update(deltaTime);
-    }
-
     addListeners(){
         this.settingsButton.addEventListener("click", ()=> {
             this.inSettingsPage  = !this.inSettingsPage;

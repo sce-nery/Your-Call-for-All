@@ -34,7 +34,6 @@ function init() {
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         gameUiController = new GameUiController(yourCallForAll, renderer);
-        gameUiController.hideLoadingBar();
         audio = new GameAudio(scene, camera, hyperParameters.ambientSound, gameUiController);
         applyHyperParams();
         clock.start();
@@ -48,7 +47,8 @@ function render() {
     if (stats) {
         stats.update();
     }
-    gameUiController.update(deltaTime); //yourCallForAll.update(deltaTime);
+
+    yourCallForAll.update(deltaTime);
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();

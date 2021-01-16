@@ -24,20 +24,6 @@ class Character {
         this.setupActions();
         this.setupShadows();
         this.setupControllers();
-
-        //const moonDiv = document.createElement( 'div' );
-        //moonDiv.className = 'label';
-        ////moonDiv.style.marginTop = '-1em';
-        //const moonLabel = new CSS2DObject( moonDiv );
-        //moonLabel.position.set( 0, this.model.position.y + 1.5, 0 );
-        //this.model.add( moonLabel );
-
-        //this.labelRenderer = new CSS2DRenderer();
-        //this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
-        //this.labelRenderer.domElement.style.position = 'absolute';
-        //this.labelRenderer.domElement.style.top = '0px';
-        //document.body.appendChild( this.labelRenderer.domElement );
-        //this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
     }
 
     setupControllers() {
