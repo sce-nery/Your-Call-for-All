@@ -27,7 +27,20 @@ class GameUiController {
                 this.ycfa.registerPlayerControlListeners();
             }
 
-        })
+        });
+
+        this.resumeGameButton.addEventListener("click", ()=> {
+            this.inSettingsPage  = !this.inSettingsPage;
+
+            if(this.inSettingsPage){
+                this.showGameSettings();
+                this.ycfa.unregisterPlayerControlListeners();
+            }else {
+                this.hideGameSettings();
+                this.ycfa.registerPlayerControlListeners();
+            }
+
+        });
     }
 
     initDocumentElements(){
@@ -35,6 +48,9 @@ class GameUiController {
         this.renderTarget = document.querySelector("#render-target");
         this.settingsMenu = document.querySelector("#settings-menu");
         this.settingsButton = document.querySelector("#settings-button-id");
+
+        // Settings page elements
+        this.resumeGameButton = document.querySelector("#resume-game-button-id");
     }
 
     showRenderTarget(){
