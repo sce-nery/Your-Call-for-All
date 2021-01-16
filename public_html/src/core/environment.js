@@ -6,6 +6,7 @@ import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
+import {KdTree} from "../../vendor/kdTree.module.js";
 
 class Environment {
     /**
@@ -35,8 +36,10 @@ class Environment {
         const light = new THREE.AmbientLight(0x404040); // soft white light
         this.scene.add(light);
 
-        // Other game objects
+        // All game objects
         this.objects = [];
+
+        this.setupDecisionPointsKdTree();
 
         this.setupTerrain();
         this.setupSky();
@@ -89,8 +92,7 @@ class Environment {
         });
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
-        //const helper = new THREE.DirectionalLightHelper( sky.sunLight, 5 );
-        //this.scene.add( helper );
+
         this.sky = sky;
     }
 
@@ -101,6 +103,25 @@ class Environment {
 
         this.water = water;
 
+    }
+
+    setupDecisionPointsKdTree() {
+        const distanceSquared = function (a, b) {
+            return (a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z)
+        };
+
+        this.decisionPointsKdTree = new KdTree(
+            [],
+            distanceSquared,
+            ["x", "z"]
+        );
+    }
+
+
+    getNearestDecisionPoint(position, diameter) {
+        let queryResults = this.decisionPointsKdTree.nearest(position, 1, diameter * diameter);
+        if (queryResults.length > 0) return queryResults[0][0];
+        else return null;
     }
 
     update(deltaTime, playerPosition) {
@@ -132,8 +153,8 @@ class Environment {
                 }
             }
 
-            if (object.isInScene && object.mixer !== undefined) {
-                object.mixer.update(deltaTime);
+            if (object.isInScene && object.update !== undefined) {
+                object.update(deltaTime);
             }
 
         }
@@ -155,15 +176,30 @@ class Environment {
         object.isInScene = false;
     }
 
-
     addObjectToScene(object) {
         this.scene.add(object.model);
         object.isInScene = true;
     }
 
-    regenerateOctree (groundMesh) {
+    insertDecisionPointToKdTree(decisionPoint) {
+        decisionPoint.model.position.decisionPoint = decisionPoint;
+        this.decisionPointsKdTree.insert(decisionPoint.model.position);
+    }
+
+    regenerateOctree(groundMesh) {
         this.owner.worldOctree = new Octree();
         this.owner.worldOctree.fromGraphNode(groundMesh);
+    }
+
+    regenerate() {
+        for (let i = 0; i < this.objects.length; i++) {
+            this.scene.remove(this.objects[i].model);
+        }
+        this.objects = [];
+
+        this.terrain.makeAllChunksInactive();
+        this.terrain.removeInactiveChunksFromScene();
+        this.setupTerrain();
     }
 }
 

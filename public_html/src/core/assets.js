@@ -85,6 +85,8 @@ export const Assets = {
     },
 
     load: function (onLoad) {
+
+
         const gltfLoader = new GLTFLoader(loadingManager);
         const objLoader = new OBJLoader(loadingManager);
         const textureLoader = new THREE.TextureLoader(loadingManager);
@@ -95,6 +97,11 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
+
+                $('#progress-bar')
+                    .progress('increment')
+                ;
+
                 this.glTF[key] = gltf;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -104,6 +111,9 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
+                $('#progress-bar')
+                    .progress('increment')
+                ;
                 this.OBJ[key] = obj;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -113,6 +123,9 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
+                $('#progress-bar')
+                    .progress('increment')
+                ;
                 this.Texture[key] = texture;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -124,6 +137,11 @@ export const Assets = {
         loadingManager.onLoad = onLoad;
 
 
+
+
+
+
+        /*
         const progressbarElem = document.querySelector('#progressbar');
 
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
@@ -139,6 +157,8 @@ export const Assets = {
             }
         }
 
+
+         */
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
         // loadingManager.onError = function (e) {

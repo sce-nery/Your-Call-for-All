@@ -6,6 +6,7 @@ import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {GameAudio} from "./core/audio.js";
+import {GameUiController} from "./core/game-ui.js";
 
 
 let settings = {
@@ -19,7 +20,7 @@ let settings = {
 let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
-let stats;
+let stats, gameUiController;
 let audio;
 
 
@@ -28,13 +29,15 @@ music.addEventListener("click", addAudio );
 
 function init() {
     Assets.load(() => {
-        removeLoadingBar();
+
         clock = new THREE.Clock();
         initCamera();
         initListeners();
         initScene();
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
+        gameUiController  = new GameUiController(yourCallForAll, renderer);
+        gameUiController.hideLoadingBar();
         clock.start();
         applySettings();
         //addAudio();
@@ -46,8 +49,9 @@ function init() {
 function render() {
     let deltaTime = clock.getDelta();
     if (stats) {stats.update();}
+    //yourCallForAll.update(deltaTime);
+    gameUiController.update(deltaTime); 
 
-    yourCallForAll.update(deltaTime);
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
     requestAnimationFrame(render);
@@ -67,11 +71,6 @@ function applySettings(){
     }
 }
 
-function removeLoadingBar(){
-    const loadingElem = document.querySelector('#loading');
-    loadingElem.style.display = 'none';
-    document.querySelector('#main-menu').style.visibility = 'visible';
-}
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);

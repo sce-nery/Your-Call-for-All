@@ -12,14 +12,16 @@ class CharacterControllerKeyboardInput {
             space: false,
             shift: false,
         };
-        this.initializeListeners();
     }
 
-    initializeListeners() {
-        document.addEventListener('keydown', (e) => this.onKeyDown(e), false);
-        document.addEventListener('keyup', (e) => this.onKeyUp(e), false);
+    resetKeys(){
+        this.keys.forward=false;
+        this.keys.backward= false;
+        this.keys.left= false;
+        this.keys.right= false;
+        this.keys.space= false;
+        this.keys.shift= false;
     }
-
 
     onKeyDown(event) {
         switch (event.keyCode) {
