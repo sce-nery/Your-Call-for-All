@@ -107,7 +107,7 @@ class FrogOnLeaf extends AnimatedObject {
     }
 
     update(deltaTime) {
-
+        this.mixer.update(deltaTime);
     }
 }
 
@@ -131,7 +131,7 @@ class Shark extends AnimatedObject {
     }
 
     update(deltaTime) {
-
+        this.mixer.update(deltaTime);
     }
 }
 
