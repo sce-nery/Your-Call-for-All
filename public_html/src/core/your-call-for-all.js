@@ -36,14 +36,23 @@ class YourCallForAll {
             onMouseDown: function (e) {
                 switch (e.button) {
                     case 2:
-                        console.log("Focus start on nearest decision point object")
+
+                        let nearestDecisionPoint = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
+
+                        self.character.cameraController.focusPoint = nearestDecisionPoint;
+
+                        console.debug(`Focus to: ${nearestDecisionPoint}`)
+                        console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+
+
                         break;
                 }
             },
             onMouseUp: function (e) {
                 switch (e.button) {
                     case 2:
-                        console.log("Focus end on nearest decision point object")
+                        self.character.cameraController.focusPoint = null;
+                        console.debug("Focus end")
                         break;
                 }
             },
@@ -57,7 +66,6 @@ class YourCallForAll {
         this.environment.update(deltaTime, this.character.model.position);
         this.character.update(deltaTime, this);
     }
-
 
     // Must be called when the game starts.
     registerPlayerControlListeners() {
