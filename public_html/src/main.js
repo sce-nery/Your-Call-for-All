@@ -17,25 +17,11 @@ let settings = {
     ambientSound: './assets/sounds/song3.mp3',
 }
 
-
 let yourCallForAll;
 let clock;
 let camera, scene, renderer, labelRenderer, composer;
 let stats, gameUiController;
 let audio;
-
-
-let music  = document.getElementById("start-screen-menu-id");
-music.addEventListener("click", addAudio );
-
-
-let music2  = document.getElementById("stop-music");
-music2.addEventListener("click", s );
-
-function s() {
-    if(audio)
-        audio.stopMusic();
-}
 
 function init() {
     Assets.load(() => {
@@ -47,9 +33,10 @@ function init() {
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         gameUiController = new GameUiController(yourCallForAll, renderer);
-        gameUiController.hideLoadingBar();
-        clock.start();
+        audio = new GameAudio(scene, camera, settings.ambientSound, gameUiController);
+
         applySettings();
+        clock.start();
         render();
     });
 }
@@ -60,8 +47,7 @@ function render() {
     if (stats) {
         stats.update();
     }
-    //yourCallForAll.update(deltaTime);
-    gameUiController.update(deltaTime);
+    gameUiController.update(deltaTime); //yourCallForAll.update(deltaTime);
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
@@ -124,13 +110,6 @@ function initScene() {
     scene = new THREE.Scene();
 
 }
-
-function addAudio(){
-    audio = new GameAudio(scene, camera, settings.ambientSound);
-    gameUiController.hideStartScreenMenu();
-    gameUiController.ycfa.registerPlayerControlListeners();
-}
-
 
 
 function onWindowResize() {

@@ -3,19 +3,24 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 
 class GameAudio {
-    constructor(scene, camera, ambientAudioSoundName) {
+    constructor(scene, camera, ambientAudioSoundName, gameUiController) {
         this.scene = scene;
         this.camera = camera;
         this.ambientAudioSoundName = ambientAudioSoundName;
-
+        this.gameUiController = gameUiController;
 
         this.setupAudioListener();
         this.ambientAudio();
+
 
     }
 
     stopMusic() {
         this.ambientSound.stop();
+    }
+
+    playMusic(){
+        this.ambientSound.play();
     }
 
     setupAudioListener(){
@@ -28,13 +33,14 @@ class GameAudio {
         // load a sound and set it as the Audio object's buffer
         const audioLoader = new THREE.AudioLoader();
         audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setLoop( true );
-            sound.setVolume( 0.5 );
-            sound.play();
+            //sound.setBuffer( buffer );
+           //sound.setLoop( true );
+            //sound.setVolume( 0.5 );
+            //sound.play();
         });
 
         this.ambientSound = sound;
+
     }
     
     positionalAudio( ){

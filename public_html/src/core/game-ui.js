@@ -14,9 +14,11 @@ class GameUiController {
 
 
         this.addListeners();
+        this.hideLoadingBar();
     }
 
     update(deltaTime){
+
         this.ycfa.update(deltaTime);
     }
 
@@ -44,8 +46,13 @@ class GameUiController {
                 this.hideGameSettings();
                 this.ycfa.registerPlayerControlListeners();
             }
-
         });
+
+        this.startScreenMenu.addEventListener("click", ()=> {
+            this.hideStartScreenMenu();
+            this.ycfa.registerPlayerControlListeners();
+        } );
+
     }
 
     initDocumentElements(){
