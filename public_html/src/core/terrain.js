@@ -2,8 +2,9 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {BrokenBottle} from "./decision-points.js";
-import {GameObject, AnimatedObject, StaticObject} from "./objects.js";
+import {GameObject, AnimatedObject, StaticObject, Butterfly} from "./objects.js";
 import {LinearInterpolator} from "../math/math.js";
+import {FrogOnLeaf, Shark} from "./objects.js";
 
 class Terrain {
 
@@ -278,15 +279,7 @@ class TerrainChunk extends GameObject {
         if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
             if (percent < 0.1) {
 
-                let frog = new AnimatedObject(Assets.glTF.FrogOnLeaf);
-                frog.model.name = "Frog";
-                frog.model.position.set(candidatePosition.x, 0, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
-                frog.model.scale.set(scale, scale, scale);
-                frog.setHealthRange(0.5, 1.0);
-
-                // Sets the wind animation for play.
-                frog.playActionByIndex(0);
+                let frog = new FrogOnLeaf(this.environment, new THREE.Vector3(candidatePosition.x, 0, candidatePosition.z));
 
                 this.environment.objects.push(frog);
 
@@ -296,16 +289,7 @@ class TerrainChunk extends GameObject {
         if (candidatePosition.y < -2) {
             if (percent < 0.1) {
 
-                let shark = new AnimatedObject(Assets.glTF.Shark);
-                shark.model.name = "Shark";
-                shark.model.position.set(candidatePosition.x, -0.75, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
-                shark.model.scale.set(scale, scale, scale);
-                shark.setHealthRange(0.5, 1.0);
-
-                // Sets the wind animation for play.
-                shark.playActionByIndex(0);
-                shark.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
+                let shark = new Shark(this.environment, new THREE.Vector3(candidatePosition.x, -0.75, candidatePosition.z));
 
                 this.environment.objects.push(shark);
 
@@ -314,22 +298,10 @@ class TerrainChunk extends GameObject {
 
         if (candidatePosition.y > 0 && candidatePosition.y < 20) {
             if (percent < 0.15) {
-
-                let butterfly = new AnimatedObject(Assets.glTF.Butterfly);
-                butterfly.model.name = "Butterfly";
-                butterfly.model.position.set(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
-                butterfly.model.scale.set(scale, scale, scale);
-
-                butterfly.setHealthRange(0.5, 1.0);
-                butterfly.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
-
-                // Sets the wind animation for play.
-                butterfly.playActionByIndex(0);
+                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
+                let butterfly = new Butterfly(this.environment, position);
 
                 this.environment.objects.push(butterfly);
-
-
             }
         }
 

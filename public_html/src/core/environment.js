@@ -6,6 +6,7 @@ import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
+import {AnimatedObject} from "./objects.js";
 
 class Environment {
     /**
@@ -132,8 +133,8 @@ class Environment {
                 }
             }
 
-            if (object.isInScene && object.mixer !== undefined) {
-                object.mixer.update(deltaTime);
+            if (object.isInScene && object.update !== undefined) {
+                object.update(deltaTime);
             }
 
         }

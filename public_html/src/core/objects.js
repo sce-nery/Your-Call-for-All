@@ -1,5 +1,6 @@
 import {Assets} from "./assets.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {LinearInterpolator} from "../math/math.js";
 
 
 class GameObject {
@@ -87,6 +88,81 @@ class StaticObject extends GameObject {
 
 
 }
+
+class FrogOnLeaf extends AnimatedObject {
+    constructor(environment, position) {
+        super(Assets.glTF.FrogOnLeaf);
+        this.environment = environment;
+
+        this.model.name = "Frog";
+        this.model.position.set(position.x, position.y, position.z);
+
+        let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
+        this.model.scale.set(scale, scale, scale);
+
+        this.setHealthRange(0.5, 1.0);
+
+        // Sets the wind animation for play.
+        this.playActionByIndex(0);
+    }
+
+    update(deltaTime) {
+
+    }
+}
+
+class Shark extends AnimatedObject {
+    constructor(environment, position) {
+        super(Assets.glTF.Shark);
+        this.environment = environment;
+
+        this.model.name = "Shark";
+        this.model.position.set(position.x, position.y, position.z);
+
+        let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
+        this.model.scale.set(scale, scale, scale);
+
+        this.setHealthRange(0.5, 1.0);
+
+        // Sets the wind animation for play.
+        this.playActionByIndex(0);
+        this.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
+
+    }
+
+    update(deltaTime) {
+
+    }
+}
+
+class Butterfly extends AnimatedObject {
+    constructor(environment, position) {
+        super(Assets.glTF.Butterfly);
+        this.environment = environment;
+
+        this.model.name = "Butterfly";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
+        this.model.scale.set(scale, scale, scale);
+
+        this.setHealthRange(0.5, 1.0);
+
+        this.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
+
+        // Sets the wind animation for play.
+        this.playActionByIndex(0);
+    }
+
+
+    update(deltaTime) {
+        this.mixer.update(deltaTime);
+    }
+}
+
+export {FrogOnLeaf};
+export {Shark};
+export {Butterfly};
 
 export {StaticObject};
 export {AnimatedObject};
