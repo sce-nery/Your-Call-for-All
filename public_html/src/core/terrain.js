@@ -337,7 +337,6 @@ class TerrainChunk extends GameObject {
                     let pineTree = new PineTree(this.environment, candidatePosition);
                     this.environment.objects.push(pineTree);
 
-
                     let driedPine = new DriedPine(this.environment, candidatePosition);
                     driedPine.model.scale.copy(pineTree.model.scale.clone().multiplyScalar(1 / 2.5));
 

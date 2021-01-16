@@ -51,10 +51,6 @@ class ThirdPersonCameraController {
                 document.removeEventListener("mousemove", self.mouseMoved, false);
             }
         });
-
-        document.addEventListener("click", function (e) {
-            self.enterPointerLock();
-        });
     }
 
     calculateCameraPosition() {
@@ -91,6 +87,8 @@ class ThirdPersonCameraController {
 
         cameraPos.copy(targetToCamera.clone().add(target));
     }
+
+
 
     update(deltaTime) {
         const cameraPosition = this.calculateCameraPosition();
