@@ -32,7 +32,7 @@ class BrokenBottle extends DecisionPoint {
         const text = document.createTextNode("Broken Bottle");
 
         const iconDiv = document.createElement("i");
-        iconDiv.className = "question icon";
+        iconDiv.className = "exclamation icon";
 
         labelDiv.appendChild(iconDiv);
         labelDiv.appendChild(text);
