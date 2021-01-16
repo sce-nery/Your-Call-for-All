@@ -11,10 +11,17 @@
     background-blend-mode: lighten;
 }
 
-.settings {
+.settings-menu {
     position: absolute;
     left: 25%;
     top: 25%;
+    z-index: 1;
+}
+
+.settings-button {
+    position: absolute;
+    left: 2px;
+    top: 2px;
     z-index: 1;
 }
 

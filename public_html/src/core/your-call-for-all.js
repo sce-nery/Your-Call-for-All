@@ -64,11 +64,10 @@ class YourCallForAll {
             },
             onKeyUp: function (e) {
                 self.character.controller.input.onKeyUp(e);
+            },
+            resetKeys: function (e){
+                self.character.controller.input.resetKeys();
             }
-
-                //document.addEventListener('keydown', (e) => this.onKeyDown(e), false);
-                //document.addEventListener('keyup', (e) => this.onKeyUp(e), false);
-
         };
     }
 
@@ -94,6 +93,7 @@ class YourCallForAll {
         document.removeEventListener("click", this.playerControl.onMouseClick);
         document.removeEventListener('keydown', this.playerControl.onKeyDown, false);
         document.removeEventListener('keyup', this.playerControl.onKeyUp, false);
+        this.playerControl.resetKeys();
     }
 }
 

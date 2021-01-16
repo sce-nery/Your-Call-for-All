@@ -14,7 +14,14 @@ class CharacterControllerKeyboardInput {
         };
     }
 
-
+    resetKeys(){
+        this.keys.forward=false;
+        this.keys.backward= false;
+        this.keys.left= false;
+        this.keys.right= false;
+        this.keys.space= false;
+        this.keys.shift= false;
+    }
 
     onKeyDown(event) {
         switch (event.keyCode) {

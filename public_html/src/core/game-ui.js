@@ -5,19 +5,36 @@ class GameUiController {
     constructor(ycfa, renderer) {
         this.ycfa = ycfa;
         this.renderer = renderer;
+        this.inSettingsPage =  false;
         this.initDocumentElements();
         this.showRenderTarget();
-        this.showGameSettings();
+        this.addListeners();
     }
 
     update(deltaTime){
         this.ycfa.update(deltaTime);
     }
 
+    addListeners(){
+        this.settingsButton.addEventListener("click", ()=> {
+            this.inSettingsPage  = !this.inSettingsPage;
+
+            if(this.inSettingsPage){
+                this.showGameSettings();
+                this.ycfa.unregisterPlayerControlListeners();
+            }else {
+                this.hideGameSettings();
+                this.ycfa.registerPlayerControlListeners();
+            }
+
+        })
+    }
+
     initDocumentElements(){
         this.progressBar = document.querySelector('#progress-bar');
         this.renderTarget = document.querySelector("#render-target");
-        this.settings = document.querySelector("#settings");
+        this.settingsMenu = document.querySelector("#settings-menu");
+        this.settingsButton = document.querySelector("#settings-button-id");
     }
 
     showRenderTarget(){
@@ -33,8 +50,11 @@ class GameUiController {
     }
 
     showGameSettings(){
-        this.settings.style.visibility = "visible";
-        //this.ycfa.unregisterPlayerControlListeners();
+        this.settingsMenu.style.visibility = "visible";
+    }
+
+    hideGameSettings(){
+        this.settingsMenu.style.visibility = "hidden";
     }
 
 
