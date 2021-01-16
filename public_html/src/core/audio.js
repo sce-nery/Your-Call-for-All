@@ -23,7 +23,7 @@ class GameAudio {
     }
 
     setupAudioListener(){
-        this.listenewr = new THREE.AudioListener();
+        this.listener = new THREE.AudioListener();
         this.camera.add(this.listener);
     }
 
