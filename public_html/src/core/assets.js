@@ -137,28 +137,6 @@ export const Assets = {
         loadingManager.onLoad = onLoad;
 
 
-
-
-
-
-        /*
-        const progressbarElem = document.querySelector('#progressbar');
-
-        loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
-            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
-            //console.log(progressbarElem.style.width);
-            let percentage = document.getElementById("percentage");
-            if (percentage) {
-                percentage.innerHTML = progressbarElem.style.width;
-                if (parseInt(progressbarElem.style.width) > 65) {
-                    document.getElementById("l-message").innerHTML = "Look at the color of the ocean. It's your call!";
-                    //document.getElementById("loading").style.backgroundImage = "url('./assets/images/start-screen-img2.png')";
-                }
-            }
-        }
-
-
-         */
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
         // loadingManager.onError = function (e) {
