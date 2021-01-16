@@ -68,7 +68,7 @@ class ThirdPersonCameraController {
 
     calculateIdealCameraTarget() {
         // Look at point relative to character.
-        if (this.focusPoint !== null) {
+        if (this.isFocusingOnAnObject()) {
             return this.focusPoint;
         }
 
@@ -79,6 +79,10 @@ class ThirdPersonCameraController {
         target.add(this.character.controller.locomotion.position);
 
         return target;
+    }
+
+    isFocusingOnAnObject() {
+        return this.focusPoint !== null;
     }
 
     enterPointerLock() {
@@ -98,7 +102,7 @@ class ThirdPersonCameraController {
         const cameraPosition = this.calculateIdealCameraPosition();
         const cameraTarget = this.calculateIdealCameraTarget();
 
-        if (this.focusPoint === null) {
+        if (!this.isFocusingOnAnObject()) {
             this.lookAround(cameraPosition, cameraTarget);
         }
 
