@@ -8,11 +8,10 @@ class GameAudio {
         this.camera = camera;
         this.ambientAudioSoundName = ambientAudioSoundName;
         this.gameUiController = gameUiController;
+        this.audioLoader = new THREE.AudioLoader();
 
-        this.setupAudioListener();
-        this.ambientAudio();
-
-
+        //this.setupAudioListener();
+        //this.ambientAudio();
     }
 
     stopMusic() {
@@ -24,25 +23,33 @@ class GameAudio {
     }
 
     setupAudioListener(){
-        this.listener = new THREE.AudioListener();
+        this.listenewr = new THREE.AudioListener();
         this.camera.add(this.listener);
     }
 
     ambientAudio(){
+
         let sound = new THREE.Audio( this.listener );
-        // load a sound and set it as the Audio object's buffer
-        const audioLoader = new THREE.AudioLoader();
-        audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
-            //sound.setBuffer( buffer );
-           //sound.setLoop( true );
-            //sound.setVolume( 0.5 );
-            //sound.play();
-        });
+
+        sound.setBuffer( this.loadAudio() );
+        sound.setLoop( true );
+        sound.setVolume( 0.5 );
+        sound.play();
 
         this.ambientSound = sound;
 
     }
-    
+    loadAudio( ){
+        this.audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
+            //sound.setBuffer( buffer );
+            //sound.setLoop( true );
+            //sound.setVolume( 0.5 );
+            //sound.play();
+            return buffer;
+        });
+    }
+
+
     positionalAudio( ){
 
         let material1;
