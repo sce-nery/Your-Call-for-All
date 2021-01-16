@@ -12,14 +12,13 @@
 </head>
 
 
-<body>
+<body class="body-background">
+
+    <div id="render-target" style="visibility: hidden; background-color: #0d71bb"></div>
 
 
-    <div id="render-target" style="visibility: hidden"></div>
-
-
-    <div class="ui indicating progress" data-value="1" data-total="30" id="progress-bar">
-        <div class="bar" >
+    <div class="ui indicating progress" data-value="1" data-total="30" id="progress-bar" >
+        <div class="bar progress-bar-css" >
             <div class="progress"></div>
         </div>
         <div class="label">World is being created...</div>

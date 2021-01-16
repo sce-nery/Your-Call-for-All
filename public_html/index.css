@@ -1,6 +1,10 @@
-.center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
+.progress-bar-css {
+    margin-top: 25%;
+}
+
+.body-background  {
+    background-image: url('assets/images/start-screen-img1.png');
+    background-size: cover;
+    background-color: rgba(255,255,255,0.6);  /* 0.6 determine background img transparency*/
+    background-blend-mode: lighten;
 }
