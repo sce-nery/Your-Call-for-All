@@ -36,14 +36,13 @@ class YourCallForAll {
             onMouseDown: function (e) {
                 switch (e.button) {
                     case 2:
-                        console.log("Focus start on nearest decision point object")
 
-                        let queryResults = self.environment.decisionPointsKdTree
-                            .nearest(self.character.model.position, 1, 100 * 100);
+                        let nearestDecisionPoint = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
 
-                        // TODO
+                        self.character.cameraController.focusPoint = nearestDecisionPoint;
 
-                        console.log(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+                        console.debug(`Focus to: ${nearestDecisionPoint}`)
+                        console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
 
 
                         break;
@@ -52,7 +51,8 @@ class YourCallForAll {
             onMouseUp: function (e) {
                 switch (e.button) {
                     case 2:
-                        console.log("Focus end on nearest decision point object")
+                        self.character.cameraController.focusPoint = null;
+                        console.debug("Focus end")
                         break;
                 }
             },

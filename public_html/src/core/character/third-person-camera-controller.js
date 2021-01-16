@@ -6,6 +6,8 @@ class ThirdPersonCameraController {
         this.character = character;
         this.camera = this.character.camera;
 
+        this.focusPoint = null;
+
         this.currentCameraPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
 
@@ -66,6 +68,10 @@ class ThirdPersonCameraController {
 
     calculateIdealCameraTarget() {
         // Look at point relative to character.
+        if (this.focusPoint !== null) {
+            return this.focusPoint;
+        }
+
         const target = new THREE.Vector3(-0.5, 1.0, 0);
 
         // Apply character's rotation and position to get world-space coords
@@ -92,7 +98,9 @@ class ThirdPersonCameraController {
         const cameraPosition = this.calculateIdealCameraPosition();
         const cameraTarget = this.calculateIdealCameraTarget();
 
-        this.lookAround(cameraPosition, cameraTarget);
+        if (this.focusPoint === null) {
+            this.lookAround(cameraPosition, cameraTarget);
+        }
 
         const t = 1.0 - Math.pow(0.001, deltaTime);
 

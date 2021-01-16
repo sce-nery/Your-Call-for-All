@@ -117,6 +117,13 @@ class Environment {
         );
     }
 
+
+    getNearestDecisionPoint(position, diameter) {
+        let queryResults = this.decisionPointsKdTree.nearest(position, 1, diameter * diameter);
+        if (queryResults.length > 0) return queryResults[0][0];
+        else return null;
+    }
+
     update(deltaTime, playerPosition) {
         this.water.update(deltaTime);
         this.sky.update(deltaTime);
@@ -168,7 +175,6 @@ class Environment {
         this.scene.remove(object.model);
         object.isInScene = false;
     }
-
 
     addObjectToScene(object) {
         this.scene.add(object.model);
