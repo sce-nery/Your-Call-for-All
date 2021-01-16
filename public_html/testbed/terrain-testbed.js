@@ -119,11 +119,8 @@ function initGUI() {
     const gui = new GUI({width: 310});
 
     let seedChanged = function () {
-        ycfa.environment.terrain.makeAllChunksInactive();
-        ycfa.environment.terrain.removeInactiveChunksFromScene();
         ycfa.environment.setupPRNG();
-        ycfa.environment.terrain.heightMap.noiseProvider = new SimplexNoise(ycfa.environment.prng);
-        ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
+        ycfa.environment.regenerate();
     }
     gui.add(ycfa.environment, "seed", 1, 10000, 1).onFinishChange(seedChanged);
 
@@ -140,9 +137,7 @@ function initGUI() {
     let button = {
         regenerate: function () {
             console.log("Regenerating...")
-            ycfa.environment.terrain.makeAllChunksInactive();
-            ycfa.environment.terrain.removeInactiveChunksFromScene();
-            ycfa.environment.terrain.loadChunks(physicsDemoMesh.position, true);
+            ycfa.environment.regenerate();
         }
     };
     terrainFolder.add(button, 'regenerate');

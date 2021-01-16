@@ -6,6 +6,7 @@ import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
+import {AnimatedObject} from "./objects.js";
 
 class Environment {
     /**
@@ -89,8 +90,7 @@ class Environment {
         });
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
-        //const helper = new THREE.DirectionalLightHelper( sky.sunLight, 5 );
-        //this.scene.add( helper );
+
         this.sky = sky;
     }
 
@@ -132,8 +132,8 @@ class Environment {
                 }
             }
 
-            if (object.isInScene && object.mixer !== undefined) {
-                object.mixer.update(deltaTime);
+            if (object.isInScene && object.update !== undefined) {
+                object.update(deltaTime);
             }
 
         }
@@ -164,6 +164,17 @@ class Environment {
     regenerateOctree (groundMesh) {
         this.owner.worldOctree = new Octree();
         this.owner.worldOctree.fromGraphNode(groundMesh);
+    }
+
+    regenerate() {
+        for (let i = 0; i < this.objects.length; i++) {
+            this.scene.remove(this.objects[i].model);
+        }
+        this.objects = [];
+
+        this.terrain.makeAllChunksInactive();
+        this.terrain.removeInactiveChunksFromScene();
+        this.setupTerrain();
     }
 }
 
