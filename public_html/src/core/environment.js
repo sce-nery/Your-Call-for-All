@@ -6,7 +6,8 @@ import {Water} from "./water.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {MersenneTwisterPRNG} from "../math/random.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
-import {KdTree} from "../../vendor/kdTree.module.js";
+import {KdTree} from "../datastructures/k-d-tree.js";
+import {DecisionPoint} from "./decision-points.js";
 
 class Environment {
     /**
@@ -102,7 +103,6 @@ class Environment {
         this.scene.add(water.mesh);
 
         this.water = water;
-
     }
 
     setupDecisionPointsKdTree() {
@@ -110,11 +110,7 @@ class Environment {
             return (a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z)
         };
 
-        this.decisionPointsKdTree = new KdTree(
-            [],
-            distanceSquared,
-            ["x", "z"]
-        );
+        this.decisionPointsKdTree = new KdTree([], distanceSquared, ["x", "z"]);
     }
 
 
@@ -153,8 +149,13 @@ class Environment {
                 }
             }
 
-            if (object.isInScene && object.update !== undefined) {
-                object.update(deltaTime);
+
+            if (object.isInScene) {
+                if (object instanceof DecisionPoint) {
+                    object.update(deltaTime, playerPosition);
+                } else if (object.update !== undefined) {
+                    object.update(deltaTime);
+                }
             }
 
         }

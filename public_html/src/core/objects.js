@@ -77,7 +77,6 @@ class StaticObject extends GameObject {
     }
 
     setupShadows() {
-        Logger.debug("Setting up shadows for this Bushes model.")
         this.model.traverse(function (object) {
             if (object.isMesh) {
                 object.castShadow = true;
@@ -107,7 +106,7 @@ class FrogOnLeaf extends AnimatedObject {
     }
 
     update(deltaTime) {
-
+        this.mixer.update(deltaTime);
     }
 }
 
@@ -131,7 +130,7 @@ class Shark extends AnimatedObject {
     }
 
     update(deltaTime) {
-
+        this.mixer.update(deltaTime);
     }
 }
 

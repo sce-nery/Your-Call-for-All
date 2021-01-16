@@ -20,10 +20,12 @@ import {YourCallForAll} from "../src/core/your-call-for-all.js";
 import {Assets} from "../src/core/assets.js";
 import {PointerLockControls} from "../vendor/three-js/examples/jsm/controls/PointerLockControls.js";
 import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
+import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 
 let clock;
 
 let camera, scene, renderer, controls;
+let labelRenderer;
 
 let ycfa;
 
@@ -45,22 +47,29 @@ function setupRenderer() {
     renderer.setPixelRatio(1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // These somehow break the water colour
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.5;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // renderer.toneMappingExposure = 0.5;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap; // default THREE.PCFShadowMap
 
     pmremGenerator = new THREE.PMREMGenerator(renderer);
 
     document.body.appendChild(renderer.domElement);
+
+    labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0px';
+    document.body.appendChild(labelRenderer.domElement);
+
 }
 
 function setupScene() {
 
     scene = new THREE.Scene();
 
-    scene.background = new THREE.Color( 0xa0a0a0 );
+    scene.background = new THREE.Color(0xa0a0a0);
 
     //const helper = new THREE.GridHelper(1000, 1000, 0xffffff, 0xffffff);
     //helper.position.y = 1;
@@ -96,6 +105,7 @@ function init() {
 
         composer = new EffectComposer(renderer);
         let renderPass = new RenderPass(scene, camera);
+
         composer.addPass(renderPass);
 
         bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 1.0, 0.2);
@@ -173,6 +183,7 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
 }
 
 
@@ -181,9 +192,8 @@ function render() {
 
     ycfa.update(deltaTime);
 
-
-
     composer.render();
+    labelRenderer.render(scene, camera);
 
 
     stats.update();
