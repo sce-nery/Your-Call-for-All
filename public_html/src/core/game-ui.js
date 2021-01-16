@@ -8,6 +8,11 @@ class GameUiController {
         this.inSettingsPage =  false;
         this.initDocumentElements();
         this.showRenderTarget();
+
+        this.ycfa.unregisterPlayerControlListeners();
+        this.showStartScreenMenu();
+
+
         this.addListeners();
     }
 
@@ -48,9 +53,17 @@ class GameUiController {
         this.renderTarget = document.querySelector("#render-target");
         this.settingsMenu = document.querySelector("#settings-menu");
         this.settingsButton = document.querySelector("#settings-button-id");
+        this.startScreenMenu = document.querySelector("#start-screen-menu-id");
 
         // Settings page elements
         this.resumeGameButton = document.querySelector("#resume-game-button-id");
+    }
+
+    showStartScreenMenu(){
+        this.startScreenMenu.style.visibility = "visible";
+    }
+    hideStartScreenMenu(){
+        this.startScreenMenu.style.visibility = "hidden";
     }
 
     showRenderTarget(){

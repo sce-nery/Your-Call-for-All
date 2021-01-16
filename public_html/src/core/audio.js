@@ -8,8 +8,14 @@ class GameAudio {
         this.camera = camera;
         this.ambientAudioSoundName = ambientAudioSoundName;
 
+
         this.setupAudioListener();
         this.ambientAudio();
+
+    }
+
+    stopMusic() {
+ 
     }
 
     setupAudioListener(){
@@ -18,7 +24,7 @@ class GameAudio {
     }
 
     ambientAudio(){
-        const sound = new THREE.Audio( this.listener );
+        let sound = new THREE.Audio( this.listener );
         // load a sound and set it as the Audio object's buffer
         const audioLoader = new THREE.AudioLoader();
         audioLoader.load( this.ambientAudioSoundName, function( buffer ) {

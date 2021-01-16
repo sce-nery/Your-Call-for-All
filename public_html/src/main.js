@@ -24,8 +24,9 @@ let stats, gameUiController;
 let audio;
 
 
-let music = document.getElementById("playmusic");
+let music  = document.getElementById("start-screen-menu-id");
 music.addEventListener("click", addAudio );
+
 
 function init() {
     Assets.load(() => {
@@ -40,7 +41,6 @@ function init() {
         gameUiController.hideLoadingBar();
         clock.start();
         applySettings();
-        //addAudio();
         render();
     });
 }
@@ -106,10 +106,9 @@ function initScene() {
 }
 
 function addAudio(){
-    if (!audio) {
-        audio = new GameAudio(scene, camera, settings.ambientSound);
-    }
-
+    audio = new GameAudio(scene, camera, settings.ambientSound);
+    gameUiController.hideStartScreenMenu();
+    gameUiController.ycfa.registerPlayerControlListeners();
 
 }
 
