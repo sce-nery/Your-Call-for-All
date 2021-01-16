@@ -19,12 +19,12 @@ class ThirdPersonCameraController {
             minPolarAngle: THREE.Math.degToRad(45)
         }
 
-        this.initializeRaycasters();
+        this.initializeRayCasters();
 
         this.initializeListeners();
     }
 
-    initializeRaycasters() {
+    initializeRayCasters() {
         const down = new THREE.Vector3(0, -1, 0);
         this.terrainRaycaster = new THREE.Raycaster(this.camera.position, down, 0.001, 5);
     }
@@ -53,7 +53,7 @@ class ThirdPersonCameraController {
         });
     }
 
-    calculateCameraPosition() {
+    calculateIdealCameraPosition() {
         // Camera position relative to character.
         const cameraPosition = new THREE.Vector3(-0.5, 1.75, -4);
 
@@ -64,15 +64,15 @@ class ThirdPersonCameraController {
         return cameraPosition;
     }
 
-    calculateFocus() {
+    calculateIdealCameraTarget() {
         // Look at point relative to character.
-        const focus = new THREE.Vector3(-0.5, 1.0, 0);
+        const target = new THREE.Vector3(-0.5, 1.0, 0);
 
         // Apply character's rotation and position to get world-space coords
-        focus.applyQuaternion(this.character.controller.locomotion.rotation);
-        focus.add(this.character.controller.locomotion.position);
+        target.applyQuaternion(this.character.controller.locomotion.rotation);
+        target.add(this.character.controller.locomotion.position);
 
-        return focus;
+        return target;
     }
 
     enterPointerLock() {
@@ -88,18 +88,16 @@ class ThirdPersonCameraController {
         cameraPos.copy(targetToCamera.clone().add(target));
     }
 
-
-
     update(deltaTime) {
-        const cameraPosition = this.calculateCameraPosition();
-        const focus = this.calculateFocus();
+        const cameraPosition = this.calculateIdealCameraPosition();
+        const cameraTarget = this.calculateIdealCameraTarget();
 
-        this.lookAround(cameraPosition, focus);
+        this.lookAround(cameraPosition, cameraTarget);
 
         const t = 1.0 - Math.pow(0.001, deltaTime);
 
         this.currentCameraPosition.lerp(cameraPosition, t);
-        this.currentLookAt.lerp(focus, t);
+        this.currentLookAt.lerp(cameraTarget, t);
 
         this.applyTerrainSurfaceBoundary(this.currentCameraPosition);
 
