@@ -10,28 +10,28 @@ export const Assets = {
     URL: {
         glTF: {
             Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
-            PinkTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pink-tree/scene.gltf",
-            WillowTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/willow-tree/scene.gltf",
-            PalmTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/palm-tree/scene.gltf",
+            //PinkTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pink-tree/scene.gltf",
+            //WillowTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/willow-tree/scene.gltf",
+            //PalmTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/palm-tree/scene.gltf",
             LowPolyTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree/scene.gltf",
             SimpleTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/simple-tree/scene.gltf",
             PineTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pine-tree/scene.gltf",
             DriedPine: "/Your-Call-for-All/public_html/assets/models/objects/trees/dried-pine/scene.gltf",
             DeadTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/dead-tree/scene.gltf",
-            TwoTrees: "/Your-Call-for-All/public_html/assets/models/objects/trees/two-trees/scene.gltf",
+            //TwoTrees: "/Your-Call-for-All/public_html/assets/models/objects/trees/two-trees/scene.gltf",
             Butterfly: "/Your-Call-for-All/public_html/assets/models/objects/trees/butterfly/scene.gltf",
             FrogOnLeaf: "/Your-Call-for-All/public_html/assets/models/objects/trees/frog-on-leaf/scene.gltf",
             Shark: "/Your-Call-for-All/public_html/assets/models/objects/trees/shark/scene.gltf",
-            YardGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/yard-grass/scene.gltf",
-            PlantShrub: "/Your-Call-for-All/public_html/assets/models/objects/foliage/plant-shrub/scene.gltf",
-            Grass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/grass/scene.gltf",
+            //YardGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/yard-grass/scene.gltf",
+            //PlantShrub: "/Your-Call-for-All/public_html/assets/models/objects/foliage/plant-shrub/scene.gltf",
+            //Grass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/grass/scene.gltf",
             LowPolyGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/low-poly-grass/scene.gltf",
             Lavender: "/Your-Call-for-All/public_html/assets/models/objects/foliage/lavender/scene.gltf",
             WoodenBlock: "/Your-Call-for-All/public_html/assets/models/objects/trees/wooden-block/scene.gltf",
-            TropicalPlant: "/Your-Call-for-All/public_html/assets/models/objects/foliage/tropical-plant/scene.gltf",
-            Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
+            //TropicalPlant: "/Your-Call-for-All/public_html/assets/models/objects/foliage/tropical-plant/scene.gltf",
+            //Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/decision-points/broken-bottle/scene.gltf",
-            LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree-wind/scene.gltf",
+            //LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree-wind/scene.gltf",
         },
         OBJ: {},
         Texture: {
@@ -97,11 +97,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
-
-                $('#progress-bar')
-                    .progress('increment')
-                ;
-
                 this.glTF[key] = gltf;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -111,9 +106,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
-                $('#progress-bar')
-                    .progress('increment')
-                ;
                 this.OBJ[key] = obj;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -123,9 +115,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
-                $('#progress-bar')
-                    .progress('increment')
-                ;
                 this.Texture[key] = texture;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -135,6 +124,16 @@ export const Assets = {
 
 
         loadingManager.onLoad = onLoad;
+        loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
+            $('#progress-bar')
+                .progress({
+                    percent: (itemsLoaded / itemsTotal) * 100,
+                    text: {
+                        active: 'If you see butterflies you are on the right way.',
+                        success: 'Assets are loaded! Generating the world...'
+                    }
+                });
+        };
 
 
         // Comment this if error is unrelated to asset loading,
