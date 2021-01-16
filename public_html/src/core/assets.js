@@ -98,7 +98,7 @@ export const Assets = {
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
 
-                $('#example4')
+                $('#progress-bar')
                     .progress('increment')
                 ;
 
@@ -111,6 +111,9 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
+                $('#progress-bar')
+                    .progress('increment')
+                ;
                 this.OBJ[key] = obj;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -120,6 +123,9 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
+                $('#progress-bar')
+                    .progress('increment')
+                ;
                 this.Texture[key] = texture;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
