@@ -58,7 +58,17 @@ class YourCallForAll {
             },
             onMouseClick: function (e) {
                 self.character.cameraController.enterPointerLock();
+            },
+            onKeyDown: function (e) {
+                self.character.controller.input.onKeyDown(e);
+            },
+            onKeyUp: function (e) {
+                self.character.controller.input.onKeyUp(e);
             }
+
+                //document.addEventListener('keydown', (e) => this.onKeyDown(e), false);
+                //document.addEventListener('keyup', (e) => this.onKeyUp(e), false);
+
         };
     }
 
@@ -72,6 +82,9 @@ class YourCallForAll {
         document.addEventListener("mousedown", this.playerControl.onMouseDown);
         document.addEventListener("mouseup", this.playerControl.onMouseUp);
         document.addEventListener("click", this.playerControl.onMouseClick);
+        document.addEventListener('keydown', this.playerControl.onKeyDown, false);
+        document.addEventListener('keyup', this.playerControl.onKeyUp, false);
+
     }
 
     // Call when game is paused
@@ -79,6 +92,8 @@ class YourCallForAll {
         document.removeEventListener("mousedown", this.playerControl.onMouseDown);
         document.removeEventListener("mouseup", this.playerControl.onMouseUp);
         document.removeEventListener("click", this.playerControl.onMouseClick);
+        document.removeEventListener('keydown', this.playerControl.onKeyDown, false);
+        document.removeEventListener('keyup', this.playerControl.onKeyUp, false);
     }
 }
 
