@@ -15,7 +15,7 @@ class GameAudio {
     }
 
     stopMusic() {
- 
+        this.ambientSound.stop();
     }
 
     setupAudioListener(){
@@ -33,6 +33,8 @@ class GameAudio {
             sound.setVolume( 0.5 );
             sound.play();
         });
+
+        this.ambientSound = sound;
     }
     
     positionalAudio( ){

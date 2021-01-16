@@ -29,6 +29,14 @@ let music  = document.getElementById("start-screen-menu-id");
 music.addEventListener("click", addAudio );
 
 
+let music2  = document.getElementById("stop-music");
+music2.addEventListener("click", s );
+
+function s() {
+    if(audio)
+        audio.stopMusic();
+}
+
 function init() {
     Assets.load(() => {
 
@@ -121,7 +129,6 @@ function addAudio(){
     audio = new GameAudio(scene, camera, settings.ambientSound);
     gameUiController.hideStartScreenMenu();
     gameUiController.ycfa.registerPlayerControlListeners();
-
 }
 
 
