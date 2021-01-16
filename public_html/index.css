@@ -20,8 +20,8 @@
 
 .settings-button {
     position: absolute;
-    left: 2px;
-    top: 2px;
+    top: 8px;
+    left: 8px;
     z-index: 1;
 }
 

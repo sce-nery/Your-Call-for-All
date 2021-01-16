@@ -16,7 +16,7 @@ class DecisionPoint extends GameObject {
         const labelDiv = document.createElement('div');
         labelDiv.className = 'ui pointing below yellow label';
 
-        const text = document.createTextNode(name);
+        const text = document.createTextNode(this.name);
 
         const iconDiv = document.createElement("i");
         iconDiv.className = "exclamation icon";

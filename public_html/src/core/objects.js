@@ -77,7 +77,6 @@ class StaticObject extends GameObject {
     }
 
     setupShadows() {
-        Logger.debug("Setting up shadows for this Bushes model.")
         this.model.traverse(function (object) {
             if (object.isMesh) {
                 object.castShadow = true;

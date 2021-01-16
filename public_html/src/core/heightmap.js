@@ -10,7 +10,7 @@ class HeightMap {
 
     sample(width, height, xOffset, yOffset) {
         if (width % 2 !== 0 || height % 2 !== 0) {
-            Logger.warn("Width and height values must be divisible by 2");
+            console.warn("Width and height values must be divisible by 2");
             width += width % 2;
             height += height % 2;
         }
@@ -56,7 +56,7 @@ class FractalBrownianMotionHeightMap {
 
     sample(width, height, xOffset, yOffset) {
         if (width % 2 !== 0 || height % 2 !== 0) {
-            Logger.warn("Width and height values must be divisible by 2");
+            console.warn("Width and height values must be divisible by 2");
             width += width % 2;
             height += height % 2;
         }
@@ -142,7 +142,7 @@ class HybridMultifractalHeightMap {
      */
     sample(width, height, xOffset, yOffset) {
         if (width % 2 !== 0 || height % 2 !== 0) {
-            Logger.warn("Width and height values must be divisible by 2");
+            console.warn("Width and height values must be divisible by 2");
             width += width % 2;
             height += height % 2;
         }
