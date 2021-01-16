@@ -1,11 +1,16 @@
 
-.start-screen-menu {
+.menu-container {
     position: absolute;
-    display: flex;
-    flex-direction: column;
+    left: 25%;
+    top: 25%;
     z-index: 1;
-    padding-left: 50%;
-    padding-top: 25%;
+}
+
+.info-container {
+    position: absolute;
+    right: 1.5%;
+    bottom: 1.75%;
+    z-index: 1;
 }
 
 .progress-bar-css {
@@ -14,18 +19,11 @@
     margin-right: 25%;
 }
 
-.body-background  {
+.body-background {
     background-image: url('assets/images/start-screen-img1.png');
     background-size: cover;
-    background-color: rgba(255,255,255,0.6);  /* 0.6 determine background img transparency*/
+    background-color: rgba(255, 255, 255, 0.6); /* 0.6 determine background img transparency*/
     background-blend-mode: lighten;
-}
-
-.settings-menu {
-    position: absolute;
-    left: 25%;
-    top: 25%;
-    z-index: 1;
 }
 
 .settings-button {

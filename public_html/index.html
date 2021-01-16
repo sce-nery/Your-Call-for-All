@@ -11,47 +11,71 @@
 </head>
 
 
-
 <body class="body-background">
-   <div class="start-screen-menu" id="start-screen-menu-id" style="visibility: hidden">
-        <div> <button class="ui button"> Start Game </button> </div>
+<div class="menu-container" id="menu-container" style="visibility: hidden; margin-top: 100px;">
+    <div class="ui inverted segment">
+        <div class="ui inverted large header">Your Call For All</div>
+
+
+        <div class="ui inverted large vertical labeled centered menu ">
+            <a class="item" id="play-button">
+                Play
+                <i class="play icon"></i>
+            </a>
+            <a class="item" id="settings-button">
+                Settings
+                <i class="settings icon"></i>
+            </a>
+        </div>
+
+
     </div>
+</div>
 
-    <button id="settings-button-id" class="ui icon basic inverted green button settings-button">
-        <i class="icon pause"></i>
-    </button>
-
-
-    <div id="render-target" style="visibility: hidden; background-color: #0d71bb;"></div>
-
-
-    <div class="settings-menu" id="settings-menu"  style="visibility: hidden; margin-top: 100px;">
-        <div class="ui inverted segment" >
-            <div class="ui inverted secondary menu">
-                <button id="resume-game-button-id" class="ui button">
-                    Play
-                </button>
-                <button id="stop-music" class="ui button">
-                    Stop Music
-                </button>
-                <a class="item">
-                    Settings
-                </a>
-                <a class="item">
-                    Credits
-                </a>
+<div class="info-container" id="info-container" style="visibility: hidden; opacity: 1.0">
+    <div class="ui segment inverted">
+        <div class="ui inverted tiny horizontal centered list ">
+            <div class="item">
+                <img class="ui mini circular image"
+                     src="https://i.pinimg.com/originals/f3/a0/9b/f3a09b3f785bdd84f801a9194df2b66b.png">
+                <div class="content">
+                    <div class="ui tiny header">BBM412 Computer Graphics</div>
+                    Fall 2020 Term Project
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="https://avatars3.githubusercontent.com/u/45719739?s=64&v=4">
+                <div class="content">
+                    <div class="header">Çağatay</div>
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="https://avatars1.githubusercontent.com/u/72816869?s=64&v=4">
+                <div class="content">
+                    <div class="header">Ecem</div>
+                </div>
+            </div>
+            <div class="item">
+                <img class="ui avatar image" src="https://avatars1.githubusercontent.com/u/16795283?s=64&v=4">
+                <div class="content">
+                    <div class="header">Şamil</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="progress-bar-css" >
-        <div class="ui indicating progress" data-value="1" data-total="30" id="progress-bar" >
-            <div class="bar" >
-                <div class="progress"></div>
-            </div>
-            <div class="label">If you see butterflies you are on the right way.</div>
+</div>
+
+<div id="render-target" style="visibility: hidden; background-color: #0d71bb;"></div>
+
+<div class="progress-bar-css">
+    <div class="ui indicating progress" id="progress-bar">
+        <div class="bar">
+            <div class="progress"></div>
         </div>
+        <div class="label">If you see butterflies you are on the right way.</div>
     </div>
+</div>
 
 </body>
 
