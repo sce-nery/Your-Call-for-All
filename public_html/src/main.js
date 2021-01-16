@@ -5,6 +5,7 @@ import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderP
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
+import {GameAudio} from "./core/audio.js";
 import {GameUiController} from "./core/game-ui.js";
 import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 
@@ -13,17 +14,16 @@ let settings = {
     useGridHelper: false,
     useBloom: false,
     usePerformanceMonitor: false,
+    ambientSound: './assets/sounds/song3.mp3',
 }
-
 
 let yourCallForAll;
 let clock;
 let camera, scene, renderer, labelRenderer, composer;
 let stats, gameUiController;
-
+let audio;
 
 function init() {
-
     Assets.load(() => {
 
         clock = new THREE.Clock();
@@ -33,9 +33,10 @@ function init() {
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
         gameUiController = new GameUiController(yourCallForAll, renderer);
-        gameUiController.hideLoadingBar();
-        clock.start();
+        audio = new GameAudio(scene, camera, settings.ambientSound, gameUiController);
+
         applySettings();
+        clock.start();
         render();
     });
 }
@@ -46,8 +47,7 @@ function render() {
     if (stats) {
         stats.update();
     }
-    //yourCallForAll.update(deltaTime);
-    gameUiController.update(deltaTime);
+    gameUiController.update(deltaTime); //yourCallForAll.update(deltaTime);
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
@@ -110,6 +110,7 @@ function initScene() {
     scene = new THREE.Scene();
 
 }
+
 
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
