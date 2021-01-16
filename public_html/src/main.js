@@ -5,6 +5,7 @@ import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderP
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
+import {GameUiController} from "./core/game-ui.js";
 
 
 let settings = {
@@ -17,55 +18,21 @@ let settings = {
 let yourCallForAll;
 let clock;
 let camera, scene, renderer, composer;
-let stats;
+let stats, gameUiController;
 
-let flag = -1;
 
 function init() {
 
-
-    const loadingElem = document.querySelector('#button');
-    loadingElem.addEventListener("click", () => {
-        flag *= -1;
-
-        $('#menu')
-            .transition('pulse')
-        ;
-        const menuEl = document.querySelector('#menu');
-
-        if (flag === -1){
-            menuEl.style.visibility = 'hidden';
-            //abc.style.visibility = 'hidden';
-        }
-        else {
-            menuEl.style.visibility = 'visible';
-            //abc.style.visibility = 'visible';
-        }
-
-    });
-
-    const resume = document.querySelector('#abc');
-    resume.addEventListener("click",()=>{
-        const menuEl = document.querySelector('#menu');
-        flag *= -1;
-        if (flag === -1){
-            menuEl.style.visibility = 'hidden';
-            //abc.style.visibility = 'hidden';
-        }
-        else {
-            menuEl.style.visibility = 'visible';
-            //abc.style.visibility = 'visible';
-        }
-    })
-
     Assets.load(() => {
-        removeLoadingBar();
+
         clock = new THREE.Clock();
         initCamera();
         initListeners();
         initScene();
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
+        gameUiController  = new GameUiController(yourCallForAll, renderer);
+        gameUiController.hideLoadingBar();
         clock.start();
         applySettings();
         render();
@@ -76,10 +43,11 @@ function init() {
 function render() {
     let deltaTime = clock.getDelta();
     if (stats) {stats.update();}
+    yourCallForAll.update(deltaTime);
 
-    if(flag === -1)  {
-        yourCallForAll.update(deltaTime);
-    }
+    //if(flag === -1)  {
+    //    yourCallForAll.update(deltaTime);
+    //}
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
     composer.render();
@@ -100,11 +68,6 @@ function applySettings(){
     }
 }
 
-function removeLoadingBar(){
-    const loadingElem = document.querySelector('#example4');
-    loadingElem.style.display = 'none';
-    //document.querySelector('#main-menu').style.visibility = 'visible';
-}
 
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
