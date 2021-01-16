@@ -12,8 +12,7 @@ class YourCallForAll {
         this.initializeEnvironment();
         this.initializeCharacter();
 
-        // Call when the game starts
-        this.registerPlayerControlListeners();
+
     }
 
     initializeEnvironment() {
@@ -57,7 +56,6 @@ class YourCallForAll {
                 }
             },
             onMouseClick: function (e) {
-                self.character.cameraController.enterPointerLock();
             },
             onKeyDown: function (e) {
                 self.character.controller.input.onKeyDown(e);
@@ -65,9 +63,6 @@ class YourCallForAll {
             onKeyUp: function (e) {
                 self.character.controller.input.onKeyUp(e);
             },
-            resetKeys: function (e){
-                self.character.controller.input.resetKeys();
-            }
         };
     }
 
@@ -93,7 +88,7 @@ class YourCallForAll {
         document.removeEventListener("click", this.playerControl.onMouseClick);
         document.removeEventListener('keydown', this.playerControl.onKeyDown, false);
         document.removeEventListener('keyup', this.playerControl.onKeyUp, false);
-        this.playerControl.resetKeys();
+        this.character.controller.input.resetKeys();
     }
 }
 

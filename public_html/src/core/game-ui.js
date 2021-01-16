@@ -1,95 +1,97 @@
-
-
 class GameUiController {
 
     constructor(ycfa, renderer) {
         this.ycfa = ycfa;
         this.renderer = renderer;
-        this.inSettingsPage =  false;
-        this.initDocumentElements();
+        this.inSettingsPage = false;
+        this.introductionMade = false;
+        this.initializeDocumentElements();
         this.showRenderTarget();
 
         this.ycfa.unregisterPlayerControlListeners();
-        this.showStartScreenMenu();
+        this.showMainMenu();
 
 
-        this.addListeners();
+        this.initializeListeners();
         this.hideLoadingBar();
     }
 
-    addListeners(){
-        this.settingsButton.addEventListener("click", ()=> {
-            this.inSettingsPage  = !this.inSettingsPage;
-
-            if(this.inSettingsPage){
-                this.showGameSettings();
+    initializeListeners() {
+        document.addEventListener("keyup", (e) => {
+            console.debug(`Keyup: ${e.key}`);
+            if (e.key === "Escape") {
                 this.ycfa.unregisterPlayerControlListeners();
-            }else {
-                this.hideGameSettings();
-                this.ycfa.registerPlayerControlListeners();
-            }
-
-        });
-
-        this.resumeGameButton.addEventListener("click", ()=> {
-            this.inSettingsPage  = !this.inSettingsPage;
-
-            if(this.inSettingsPage){
-                this.showGameSettings();
-                this.ycfa.unregisterPlayerControlListeners();
-            }else {
-                this.hideGameSettings();
-                this.ycfa.registerPlayerControlListeners();
+                this.showMainMenu();
             }
         });
 
-        this.startScreenMenu.addEventListener("click", ()=> {
-            this.hideStartScreenMenu();
+        document.addEventListener("pointerlockchange",  (event) => {
+            if (document.pointerLockElement !== this.ycfa.character.owner.renderer.domElement) {
+                console.log('Showing menu');
+                this.ycfa.unregisterPlayerControlListeners();
+                this.showMainMenu();
+            }
+        });
+
+        this.playButton.onclick = () => {
+            if (!this.introductionMade) {
+                console.debug("TODO: Show messages!");
+                // TODO: If the first time, show series of messages to user.
+
+                this.introductionMade = true;
+            }
+
             this.ycfa.registerPlayerControlListeners();
-        } );
+            this.hideMainMenu();
 
+            let buttonTextNode = this.playButton.childNodes.item(0);
+            buttonTextNode.textContent = "Resume";
+
+            this.ycfa.character.cameraController.enterPointerLock();
+        }
     }
 
-    initDocumentElements(){
+    initializeDocumentElements() {
         this.progressBar = document.querySelector('#progress-bar');
         this.renderTarget = document.querySelector("#render-target");
-        this.settingsMenu = document.querySelector("#settings-menu");
-        this.settingsButton = document.querySelector("#settings-button-id");
-        this.startScreenMenu = document.querySelector("#start-screen-menu-id");
 
-        // Settings page elements
-        this.resumeGameButton = document.querySelector("#resume-game-button-id");
+        this.menu = document.querySelector("#menu-container");
+
+        this.info = document.querySelector("#info-container");
+
+        this.playButton = document.querySelector("#play-button");
+        this.settingsButton = document.querySelector("#settings-button");
     }
 
-    showStartScreenMenu(){
-        this.startScreenMenu.style.visibility = "visible";
-    }
-    hideStartScreenMenu(){
-        this.startScreenMenu.style.visibility = "hidden";
+    showMainMenu() {
+        this.menu.style.visibility = "visible";
+        this.info.style.visibility = "visible";
     }
 
-    showRenderTarget(){
-        this.renderTarget.style  = "visible";
+    hideMainMenu() {
+        this.menu.style.visibility = "hidden";
+        this.info.style.visibility = "hidden";
     }
 
-    hideRenderTarget(){
-        this.renderTarget.style  = "hidden";
+    showRenderTarget() {
+        this.renderTarget.style = "visible";
     }
 
-    hideLoadingBar(){
+    hideRenderTarget() {
+        this.renderTarget.style = "hidden";
+    }
+
+    hideLoadingBar() {
         this.progressBar.style.display = 'none';
     }
 
-    showGameSettings(){
+    showGameSettings() {
         this.settingsMenu.style.visibility = "visible";
     }
 
-    hideGameSettings(){
+    hideGameSettings() {
         this.settingsMenu.style.visibility = "hidden";
     }
-
-
-
 
 
 }
