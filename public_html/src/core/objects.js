@@ -98,7 +98,7 @@ class FrogOnLeaf extends AnimatedObject {
         this.model.position.set(position.x, position.y, position.z);
 
         let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
-        this.model.scale.set(scale, scale, scale);
+        this.model.scale.setScalar(scale);
 
         this.setHealthRange(0.5, 1.0);
 
@@ -120,7 +120,7 @@ class Shark extends AnimatedObject {
         this.model.position.set(position.x, position.y, position.z);
 
         let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
-        this.model.scale.set(scale, scale, scale);
+        this.model.scale.setScalar(scale);
 
         this.setHealthRange(0.5, 1.0);
 
@@ -144,7 +144,7 @@ class Butterfly extends AnimatedObject {
         this.model.position.copy(position);
 
         let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
-        this.model.scale.set(scale, scale, scale);
+        this.model.scale.setScalar(scale);
 
         this.setHealthRange(0.5, 1.0);
 
@@ -159,6 +159,98 @@ class Butterfly extends AnimatedObject {
         this.mixer.update(deltaTime);
     }
 }
+
+class SimpleTree extends StaticObject {
+    constructor(environment, position) {
+        super(Assets.glTF.SimpleTree);
+        this.environment = environment;
+
+        this.model.name = "SimpleTree";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(1.8, 2.2, this.environment.prng.random());
+        this.model.scale.setScalar(scale);
+
+        this.setHealthRange(0.5, 1.0);
+    }
+}
+
+class DeadTree extends StaticObject {
+    constructor(environment, position) {
+        super(Assets.glTF.DeadTree);
+        this.environment = environment;
+
+        this.model.name = "DeadTree";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(0.0036, 0.0044);
+        this.model.scale.setScalar(scale);
+
+        this.setHealthRange(0.0, 0.5);
+    }
+}
+
+class PineTree extends StaticObject {
+    constructor(environment, position) {
+        super(Assets.glTF.PineTree);
+        this.environment = environment;
+
+        this.model.name = "PineTree";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(0.008, 0.013, this.environment.prng.random());
+        this.model.scale.set(scale, scale, scale);
+
+        this.setHealthRange(0.5, 1.0);
+    }
+
+}
+
+class DriedPine extends AnimatedObject {
+    constructor(environment, position) {
+        super(Assets.glTF.DriedPine);
+        this.environment = environment;
+
+        this.model.name = "DriedPine";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(0.0032, 0.0052, this.environment.prng.random());
+        this.model.scale.setScalar(scale);
+
+        this.setHealthRange(0.0, 0.5);
+
+        // Sets the wind animation for play.
+        this.playActionByIndex(0);
+    }
+
+    update(deltaTime) {
+        this.mixer.update(deltaTime);
+    }
+}
+
+
+class LowPolyGrass extends StaticObject {
+    constructor(environment, position) {
+        super(Assets.glTF.LowPolyGrass);
+        this.environment = environment;
+
+        this.model.name = "LowPolyGrass";
+        this.model.position.copy(position);
+
+        let scale = LinearInterpolator.real(0.01, 0.022, this.environment.prng.random());
+        this.model.scale.set(scale, scale, scale);
+
+        this.setHealthRange(0.5, 1.0);
+    }
+}
+
+export {LowPolyGrass};
+
+export {PineTree};
+export {DriedPine};
+
+export {SimpleTree};
+export {DeadTree};
 
 export {FrogOnLeaf};
 export {Shark};

@@ -2,7 +2,16 @@ import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
 import {BrokenBottle} from "./decision-points.js";
-import {GameObject, AnimatedObject, StaticObject, Butterfly} from "./objects.js";
+import {
+    GameObject,
+    AnimatedObject,
+    StaticObject,
+    Butterfly,
+    SimpleTree,
+    DeadTree,
+    PineTree,
+    DriedPine, LowPolyGrass
+} from "./objects.js";
 import {LinearInterpolator} from "../math/math.js";
 import {FrogOnLeaf, Shark} from "./objects.js";
 
@@ -317,40 +326,20 @@ class TerrainChunk extends GameObject {
             if (percent < 0.3) { // %0.3 of the time.
 
                 if (treeType === 1) {
-                    let simpleTree = new StaticObject(Assets.glTF.SimpleTree);
-                    simpleTree.model.name = "SimpleTree";
-                    simpleTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                    let scale = LinearInterpolator.real(1.8, 2.2, this.environment.prng.random());
-                    simpleTree.model.scale.set(scale, scale, scale);
-                    simpleTree.setHealthRange(0.5, 1.0);
+                    let simpleTree = new SimpleTree(this.environment, candidatePosition);
                     this.environment.objects.push(simpleTree);
 
-                    let deadTree = new StaticObject(Assets.glTF.DeadTree);
-                    deadTree.model.name = "DeadTree";
-                    deadTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                    scale = scale / 500.0;
-                    deadTree.model.scale.set(scale, scale, scale);
-                    deadTree.setHealthRange(0.0, 0.5);
+                    let deadTree = new DeadTree(this.environment, candidatePosition);
+                    deadTree.model.scale.copy(simpleTree.model.scale.clone().multiplyScalar(1 / 500));
                     this.environment.objects.push(deadTree);
                 } else if (treeType === 2) {
 
-                    let pineTree = new StaticObject(Assets.glTF.PineTree);
-                    pineTree.model.name = "PineTree";
-                    pineTree.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                    let scale = LinearInterpolator.real(0.008, 0.013, this.environment.prng.random());
-                    pineTree.model.scale.set(scale, scale, scale);
-                    pineTree.setHealthRange(0.5, 1.0);
+                    let pineTree = new PineTree(this.environment, candidatePosition);
                     this.environment.objects.push(pineTree);
 
 
-                    let driedPine = new AnimatedObject(Assets.glTF.DriedPine);
-                    driedPine.model.name = "DriedPine";
-                    driedPine.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
-                    scale = scale / 2.5;
-                    driedPine.model.scale.set(scale, scale, scale);
-                    driedPine.setHealthRange(0.0, 0.5);
-                    // Sets the wind animation for play.
-                    driedPine.playActionByIndex(0);
+                    let driedPine = new DriedPine(this.environment, candidatePosition);
+                    driedPine.model.scale.copy(pineTree.model.scale.clone().multiplyScalar(1 / 2.5));
 
                     this.environment.objects.push(driedPine);
                 }
@@ -371,14 +360,10 @@ class TerrainChunk extends GameObject {
             let percent = this.environment.prng.random() * 100;
 
             if (percent < 1) {
-                let grass = new StaticObject(Assets.glTF.LowPolyGrass);
-                grass.model.name = "LowPolyGrass";
                 const heightOffset = LinearInterpolator.real(0.1, 0.2, this.environment.prng.random());
-                grass.model.position.set(candidatePosition.x, candidatePosition.y - heightOffset, candidatePosition.z);
-                let scale = LinearInterpolator.real(0.01, 0.022, this.environment.prng.random());
-                grass.model.scale.set(scale, scale, scale);
+                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y - heightOffset, candidatePosition.z);
 
-                grass.setHealthRange(0.5, 1.0);
+                let grass = new LowPolyGrass(this.environment, position);
 
                 this.environment.objects.push(grass);
             }

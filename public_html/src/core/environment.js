@@ -90,8 +90,7 @@ class Environment {
         });
         this.scene.add(sky.skyDome);
         this.scene.add(sky.sunLight);
-        //const helper = new THREE.DirectionalLightHelper( sky.sunLight, 5 );
-        //this.scene.add( helper );
+
         this.sky = sky;
     }
 
