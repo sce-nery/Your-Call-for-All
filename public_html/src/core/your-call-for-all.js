@@ -37,6 +37,15 @@ class YourCallForAll {
                 switch (e.button) {
                     case 2:
                         console.log("Focus start on nearest decision point object")
+
+                        let queryResults = self.environment.decisionPointsKdTree
+                            .nearest(self.character.model.position, 1, 100 * 100);
+
+                        // TODO
+
+                        console.log(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+
+
                         break;
                 }
             },
@@ -57,7 +66,6 @@ class YourCallForAll {
         this.environment.update(deltaTime, this.character.model.position);
         this.character.update(deltaTime, this);
     }
-
 
     // Must be called when the game starts.
     registerPlayerControlListeners() {

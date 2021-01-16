@@ -380,6 +380,7 @@ class TerrainChunk extends GameObject {
                 brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
 
                 this.environment.objects.push(brokenBottle);
+                this.environment.insertDecisionPointToKdTree(brokenBottle);
             }
         }
     }
