@@ -46,10 +46,10 @@ class ThirdPersonCameraController {
 
         document.addEventListener("pointerlockchange", function (event) {
             if (document.pointerLockElement === self.character.owner.renderer.domElement) {
-                console.log('The pointer lock status is now locked');
+                console.log('The pointer is now locked');
                 document.addEventListener("mousemove", self.mouseMoved, false);
             } else {
-                console.log('The pointer lock status is now unlocked');
+                console.log('The pointer is now unlocked');
                 document.removeEventListener("mousemove", self.mouseMoved, false);
             }
         });
