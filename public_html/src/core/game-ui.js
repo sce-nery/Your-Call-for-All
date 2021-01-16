@@ -7,7 +7,7 @@ class GameUiController {
         this.renderer = renderer;
         this.initDocumentElements();
         this.showRenderTarget();
-        //this.showGameSettings();
+        this.showGameSettings();
     }
 
     update(deltaTime){
@@ -33,9 +33,8 @@ class GameUiController {
     }
 
     showGameSettings(){
-
         this.settings.style.visibility = "visible";
-        this.ycfa.unregisterPlayerControlListeners();
+        //this.ycfa.unregisterPlayerControlListeners();
     }
 
 
