@@ -151,11 +151,26 @@ class Butterfly extends AnimatedObject {
 
         // Sets the wind animation for play.
         this.playActionByIndex(0);
+
+        this.origin = this.model.position.clone();
+        this.timeElapsed = 0;
+
+        this.circularMotionRadius = LinearInterpolator.real(0.025, 0.05, this.environment.prng.random());
     }
 
 
     update(deltaTime) {
         this.mixer.update(deltaTime);
+        this.timeElapsed += deltaTime;
+
+        let xOffset = Math.sin(this.timeElapsed) * this.circularMotionRadius;
+        let zOffset = Math.cos(this.timeElapsed) * this.circularMotionRadius;
+
+
+
+        this.model.position.x -= xOffset;
+        this.model.position.z += zOffset;
+        this.model.rotation.y = Math.atan2(zOffset, xOffset);
     }
 }
 
