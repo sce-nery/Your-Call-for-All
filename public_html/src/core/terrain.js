@@ -175,6 +175,26 @@ class Terrain {
             }
         }
     }
+
+    getHeightAt(position) {
+
+        const raycaster = new THREE.Raycaster(new THREE.Vector3(position.x, 10000, position.z), new THREE.Vector3(0, -1, 0));
+
+        let meshes = Object.values(this.chunks).map(chunk => chunk.mesh);
+
+        let intersects = raycaster.intersectObjects(meshes);
+
+        if (intersects.length > 0) {
+
+            console.debug(`Terrain intersected: ${intersects[0]}`);
+
+            return intersects[0].point.y;
+
+
+        }
+
+        return null;
+    }
 }
 
 class TerrainChunk extends GameObject {
@@ -395,6 +415,7 @@ class TerrainChunk extends GameObject {
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
+        this.mesh.updateMatrixWorld();
     }
 
     update(deltaTime, playerPosition) {

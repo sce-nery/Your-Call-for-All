@@ -32,8 +32,8 @@ class YourCallForAll {
 
     initializeCharacter() {
         this.character = new Character(this);
-         let initialPosition = new THREE.Vector3(36,3,-54);
-        initialPosition.y = this.environment.terrain.heightMap.probe(initialPosition.x, initialPosition.z);
+        let initialPosition = new THREE.Vector3(36, 3, -54);
+        initialPosition.y = this.environment.terrain.getHeightAt(initialPosition);
         this.character.move(initialPosition);
 
         this.scene.add(this.character.model);
