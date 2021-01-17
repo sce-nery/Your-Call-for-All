@@ -27,16 +27,15 @@ let audio;
 function init() {
     Assets.load(() => {
 
-        clock = new THREE.Clock();
         initCamera();
         initListeners();
         initScene();
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
+        clock = yourCallForAll.clock;
         gameUiController = yourCallForAll.uiController;
         audio = new GameAudio(scene, camera, hyperParameters.ambientSound, gameUiController);
         applyHyperParams();
-        clock.start();
         render();
     });
 }
@@ -65,7 +64,7 @@ function applyHyperParams() {
         scene.add(helper);
     }
     if (hyperParameters.showPerformanceMonitor) {
-        stats = createPerformanceMonitor(document.body, 80 *18.5);
+        stats = createPerformanceMonitor(document.body, 80 * 18.5);
     }
     if (hyperParameters.showParameters) {
         initDebugGUIForGameParams();
@@ -74,7 +73,7 @@ function applyHyperParams() {
 
 
 function initCamera() {
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.5, 200000);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.005, 10000);
     camera.position.set(10, 10, 100);
 
 }

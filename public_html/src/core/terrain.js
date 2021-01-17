@@ -54,6 +54,8 @@ class Terrain {
      * @param purgeCache Whether to remove cache before loading.
      */
     loadChunks(position, purgeCache = false) {
+        this.environment.owner.clock.stop();
+
         if (purgeCache) {
             this.makeAllChunksInactive();
             this.removeInactiveChunksFromScene();
@@ -100,6 +102,8 @@ class Terrain {
         if ((!previousCenterChunk) || previousCenterChunk.mesh.uuid !== this.centerChunk.mesh.uuid) {
             this.environment.regenerateOctree(this.centerChunk.mesh);
         }
+
+        this.environment.owner.clock.start();
     }
 
     makeAllChunksInactive() {

@@ -2,6 +2,7 @@ import {Environment} from "./environment.js";
 import {Character} from "./character/character.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 import {GameUiController} from "./game-ui.js";
+import * as THREE from "../../vendor/three-js/build/three.module.js";
 
 class YourCallForAll {
 
@@ -10,10 +11,11 @@ class YourCallForAll {
         this.camera = camera;
         this.renderer = renderer;
 
+        this.clock = new THREE.Clock(false);
+
         this.initializeEnvironment();
         this.initializeCharacter();
         this.initializeUiController();
-
     }
 
     initializeUiController() {
