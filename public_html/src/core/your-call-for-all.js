@@ -32,19 +32,24 @@ class YourCallForAll {
 
     initializeCharacter() {
         this.character = new Character(this);
-        this.character.model.position.set(-26, 0, -4);
-        this.character.collider.translate(this.character.model.position);
+         let initialPosition = new THREE.Vector3(36,3,-54);
+        initialPosition.y = this.environment.terrain.heightMap.probe(initialPosition.x, initialPosition.z);
+        this.character.move(initialPosition);
 
         this.scene.add(this.character.model);
 
         const self = this;
 
         this.playerControl = {
+            readyForDecisionPointAction: false,
             onMouseDown: function (e) {
                 switch (e.button) {
                     case 2:
 
-                        let queryResult = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
+                        let queryResult = self.environment.getNearestDecisionPoint(
+                            self.character.model.position,
+                            self.environment.props.drawDistance * 0.75
+                        );
 
                         if (queryResult) {
                             let point = queryResult[0];
@@ -52,11 +57,12 @@ class YourCallForAll {
 
                             self.character.cameraController.focusPoint = point;
 
-                            console.debug(`Focus to: ${point}`)
+                            console.debug(`Focus to: ${point.decisionPoint}`)
                             console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
 
                             if (distance <= point.decisionPoint.labelVisibilityMinDistance) {
                                 self.uiController.showDecisionPointActionInfoContainer();
+                                self.playerControl.readyForDecisionPointAction = true;
                             }
                         }
 
@@ -68,6 +74,7 @@ class YourCallForAll {
                     case 2:
                         self.character.cameraController.focusPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
+                        self.playerControl.readyForDecisionPointAction = false;
                         console.debug("Focus end")
                         break;
                 }
@@ -75,10 +82,20 @@ class YourCallForAll {
             onMouseClick: function (e) {
             },
             onKeyDown: function (e) {
+                console.debug(`Keydown: ${e.code}`);
                 self.character.controller.input.onKeyDown(e);
             },
             onKeyUp: function (e) {
+                console.debug(`Keyup: ${e.code}`);
                 self.character.controller.input.onKeyUp(e);
+
+                if (self.playerControl.readyForDecisionPointAction) {
+                    if (e.code === "KeyI") {
+                        console.debug("Enter inspection mode")
+                    } else if (e.code === "KeyF") {
+                        console.debug("Put it into pocket")
+                    }
+                }
             },
         };
     }

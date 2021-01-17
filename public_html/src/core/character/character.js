@@ -64,6 +64,11 @@ class Character {
         this.mixer.update(deltaTime);
     }
 
+    move(offset) {
+        this.model.position.add(offset);
+        this.collider.translate(offset);
+        this.controller.locomotion.position.add(offset);
+    }
 }
 
 

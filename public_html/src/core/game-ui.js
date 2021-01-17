@@ -22,7 +22,6 @@ class GameUiController {
 
     initializeListeners() {
         document.addEventListener("keyup", (e) => {
-            console.debug(`Keyup: ${e.key}`);
             if (e.key === "Escape") {
                 this.ycfa.unregisterPlayerControlListeners();
                 this.showMainMenu();
