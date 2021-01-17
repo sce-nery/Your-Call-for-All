@@ -115,6 +115,7 @@ class ThirdPersonCameraController {
 
         if (!this.character.owner.environment.terrain.centerChunk) return;
 
+        // Computes height with raycasting. Could be more efficient if we used height data from heightmap.
         let height = this.character.owner.environment.terrain.centerChunk.getHeightAt(cameraPos);
         const offset = 0.5;
 
