@@ -26,7 +26,7 @@ class YourCallForAll {
 
         this.worldOctree = new Octree();
 
-        this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
+        this.environment = new Environment(this, 5408); // environment includes: terrain, sky, and other game objects
         this.environment.props.drawDistance = 75;
     }
 
