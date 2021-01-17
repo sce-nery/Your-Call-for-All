@@ -5,6 +5,11 @@ class GameUiController {
         this.renderer = ycfa.renderer;
         this.inSettingsPage = false;
         this.introductionMade = false;
+
+        this.visibilities = {
+            decisionPointActionInfoContainer: false,
+        }
+
         this.initializeDocumentElements();
         this.showRenderTarget();
 
@@ -87,17 +92,22 @@ class GameUiController {
     }
 
     showDecisionPointActionInfoContainer() {
-        $("#decision-point-action-info-container").transition("scale in");
+        if (!this.visibilities.decisionPointActionInfoContainer) {
+            $("#decision-point-action-info-container").transition("scale in");
+            this.visibilities.decisionPointActionInfoContainer = true;
+        }
     }
 
     hideDecisionPointActionInfoContainer() {
-        $("#decision-point-action-info-container").transition("scale out");
+        if (this.visibilities.decisionPointActionInfoContainer) {
+            $("#decision-point-action-info-container").transition("scale out");
+            this.visibilities.decisionPointActionInfoContainer = false;
+        }
     }
 
     toggleDecisionPointActionInfoContainer() {
         $("#decision-point-action-info-container").transition("scale");
     }
-
 
     showGameSettings() {
         this.settingsMenu.style.visibility = "visible";
