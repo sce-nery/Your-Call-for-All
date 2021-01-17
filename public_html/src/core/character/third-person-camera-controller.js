@@ -113,7 +113,9 @@ class ThirdPersonCameraController {
 
     applyTerrainSurfaceBoundary(cameraPos, target) {
 
-        let height = this.character.owner.environment.terrain.getHeightAt(cameraPos);
+        if (!this.character.owner.environment.terrain.centerChunk) return;
+
+        let height = this.character.owner.environment.terrain.centerChunk.getHeightAt(cameraPos);
         const offset = 0.5;
 
         if (cameraPos.y < height + offset) {

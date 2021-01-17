@@ -186,10 +186,7 @@ class Terrain {
 
         if (intersects.length > 0) {
 
-            console.debug(`Terrain intersected: ${intersects[0]}`);
-
             return intersects[0].point.y;
-
 
         }
 
@@ -427,6 +424,21 @@ class TerrainChunk extends GameObject {
         //this.materials[1].opacity = 1.0 - this.environment.props.healthFactor;
         //this.materials[0].visible = true;
         //this.materials[1].visible = true;
+    }
+
+    getHeightAt(position) {
+
+        const raycaster = new THREE.Raycaster(new THREE.Vector3(position.x, 10000, position.z), new THREE.Vector3(0, -1, 0));
+
+        let intersects = raycaster.intersectObject(this.mesh);
+
+        if (intersects.length > 0) {
+
+            return intersects[0].point.y;
+
+        }
+
+        return null;
     }
 }
 
