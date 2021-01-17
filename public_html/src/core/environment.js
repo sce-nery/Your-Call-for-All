@@ -106,17 +106,17 @@ class Environment {
     }
 
     setupDecisionPointsKdTree() {
-        const distanceSquared = function (a, b) {
-            return (a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z)
+        const distance = function (a, b) {
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
         };
 
-        this.decisionPointsKdTree = new KdTree([], distanceSquared, ["x", "z"]);
+        this.decisionPointsKdTree = new KdTree([], distance, ["x", "z"]);
     }
 
 
     getNearestDecisionPoint(position, diameter) {
         let queryResults = this.decisionPointsKdTree.nearest(position, 1, diameter * diameter);
-        if (queryResults.length > 0) return queryResults[0][0];
+        if (queryResults.length > 0) return queryResults[0];
         else return null;
     }
 

@@ -1,8 +1,8 @@
 class GameUiController {
 
-    constructor(ycfa, renderer) {
+    constructor(ycfa) {
         this.ycfa = ycfa;
-        this.renderer = renderer;
+        this.renderer = ycfa.renderer;
         this.inSettingsPage = false;
         this.introductionMade = false;
         this.initializeDocumentElements();
@@ -10,7 +10,6 @@ class GameUiController {
 
         this.ycfa.unregisterPlayerControlListeners();
         this.showMainMenu();
-
 
         this.initializeListeners();
         this.hideLoadingBar();
@@ -25,7 +24,7 @@ class GameUiController {
             }
         });
 
-        document.addEventListener("pointerlockchange",  (event) => {
+        document.addEventListener("pointerlockchange", (event) => {
             if (document.pointerLockElement !== this.ycfa.character.owner.renderer.domElement) {
                 console.log('Showing menu');
                 this.ycfa.unregisterPlayerControlListeners();
@@ -61,6 +60,8 @@ class GameUiController {
 
         this.playButton = document.querySelector("#play-button");
         this.settingsButton = document.querySelector("#settings-button");
+
+        this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
     }
 
     showMainMenu() {
@@ -84,6 +85,19 @@ class GameUiController {
     hideLoadingBar() {
         this.progressBar.style.display = 'none';
     }
+
+    showDecisionPointActionInfoContainer() {
+        $("#decision-point-action-info-container").transition("scale in");
+    }
+
+    hideDecisionPointActionInfoContainer() {
+        $("#decision-point-action-info-container").transition("scale out");
+    }
+
+    toggleDecisionPointActionInfoContainer() {
+        $("#decision-point-action-info-container").transition("scale");
+    }
+
 
     showGameSettings() {
         this.settingsMenu.style.visibility = "visible";

@@ -1,6 +1,7 @@
 import {Environment} from "./environment.js";
 import {Character} from "./character/character.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
+import {GameUiController} from "./game-ui.js";
 
 class YourCallForAll {
 
@@ -11,8 +12,12 @@ class YourCallForAll {
 
         this.initializeEnvironment();
         this.initializeCharacter();
+        this.initializeUiController();
 
+    }
 
+    initializeUiController() {
+        this.uiController = new GameUiController(this);
     }
 
     initializeEnvironment() {
@@ -20,6 +25,7 @@ class YourCallForAll {
         this.worldOctree = new Octree();
 
         this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
+        this.environment.props.drawDistance = 75;
     }
 
     initializeCharacter() {
@@ -36,13 +42,21 @@ class YourCallForAll {
                 switch (e.button) {
                     case 2:
 
-                        let nearestDecisionPoint = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
+                        let queryResult = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
 
-                        self.character.cameraController.focusPoint = nearestDecisionPoint;
+                        if (queryResult) {
+                            let point = queryResult[0];
+                            let distance = queryResult[1];
 
-                        console.debug(`Focus to: ${nearestDecisionPoint}`)
-                        console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+                            self.character.cameraController.focusPoint = point;
 
+                            console.debug(`Focus to: ${point}`)
+                            console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+
+                            if (distance <= point.decisionPoint.labelVisibilityMinDistance) {
+                                self.uiController.showDecisionPointActionInfoContainer();
+                            }
+                        }
 
                         break;
                 }
@@ -51,6 +65,7 @@ class YourCallForAll {
                 switch (e.button) {
                     case 2:
                         self.character.cameraController.focusPoint = null;
+                        self.uiController.hideDecisionPointActionInfoContainer();
                         console.debug("Focus end")
                         break;
                 }

@@ -33,7 +33,7 @@ function init() {
         initScene();
         initRenderer();
         yourCallForAll = new YourCallForAll(scene, camera, renderer);
-        gameUiController = new GameUiController(yourCallForAll, renderer);
+        gameUiController = yourCallForAll.uiController;
         audio = new GameAudio(scene, camera, hyperParameters.ambientSound, gameUiController);
         applyHyperParams();
         clock.start();
