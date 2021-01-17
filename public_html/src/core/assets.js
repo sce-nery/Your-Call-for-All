@@ -133,7 +133,7 @@ export const Assets = {
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
             $('#progress-bar')
                 .progress({
-                    percent: ((itemsLoaded - 1) / itemsTotal) * 100,
+                    percent: ((itemsLoaded) / itemsTotal) * 100,
                     text: {
                         active: 'If you see butterflies you are on the right way.',
                         success: 'Assets are loaded! Generating the world...'

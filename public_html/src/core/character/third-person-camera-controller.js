@@ -18,17 +18,11 @@ class ThirdPersonCameraController {
 
         this.boundaries = {
             maxPolarAngle: THREE.Math.degToRad(115),
-            minPolarAngle: THREE.Math.degToRad(45)
+            minPolarAngle: THREE.Math.degToRad(45),
+            currentMaxPolarAngle: THREE.Math.degToRad(115),
         }
 
-        this.initializeRayCasters();
-
         this.initializeListeners();
-    }
-
-    initializeRayCasters() {
-        const down = new THREE.Vector3(0, -1, 0);
-        this.terrainRaycaster = new THREE.Raycaster(this.camera.position, down, 0.001, 5);
     }
 
     initializeListeners() {
@@ -38,7 +32,7 @@ class ThirdPersonCameraController {
             self.spherical.theta -= sensitivity * event.movementX;
             self.spherical.phi -= sensitivity * event.movementY;
 
-            const maxPolarAngle = self.boundaries.maxPolarAngle;
+            const maxPolarAngle = self.boundaries.currentMaxPolarAngle;
             const minPolarAngle = self.boundaries.minPolarAngle;
             self.spherical.phi = Math.max(minPolarAngle, Math.min(maxPolarAngle, self.spherical.phi));
 
@@ -102,6 +96,8 @@ class ThirdPersonCameraController {
         const cameraPosition = this.calculateIdealCameraPosition();
         const cameraTarget = this.calculateIdealCameraTarget();
 
+        this.applyTerrainSurfaceBoundary(this.currentCameraPosition, this.currentLookAt);
+
         if (!this.isFocusingOnAnObject()) {
             this.lookAround(cameraPosition, cameraTarget);
         }
@@ -111,25 +107,30 @@ class ThirdPersonCameraController {
         this.currentCameraPosition.lerp(cameraPosition, t);
         this.currentLookAt.lerp(cameraTarget, t);
 
-        this.applyTerrainSurfaceBoundary(this.currentCameraPosition);
-
         this.camera.position.copy(this.currentCameraPosition);
         this.camera.lookAt(this.currentLookAt);
     }
 
-    applyTerrainSurfaceBoundary(position) {
+    applyTerrainSurfaceBoundary(cameraPos, target) {
 
-        let intersects = this.terrainRaycaster.intersectObject(this.character.owner.environment.terrain.centerChunk.mesh);
+        let height = this.character.owner.environment.terrain.getHeightAt(cameraPos);
+        const offset = 0.5;
 
-        if (intersects.length > 0) {
+        if (cameraPos.y < height + offset) {
 
-            if (intersects[0].distance < 0.5) {
+            let newCameraPos = cameraPos.clone();
+            newCameraPos.y = height + offset;
 
-                position.y = intersects[0].point.y + 0.5;
+            let targetToNewCameraPos = newCameraPos.clone().sub(target);
 
-            }
+            let angleBetweenUpAndNewCameraPos = new THREE.Vector3(0,1,0).angleTo(targetToNewCameraPos);
 
+            this.boundaries.currentMaxPolarAngle = angleBetweenUpAndNewCameraPos;
+
+        } else {
+            this.boundaries.currentMaxPolarAngle = this.boundaries.maxPolarAngle;
         }
+
 
     }
 
