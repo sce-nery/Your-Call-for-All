@@ -42,11 +42,11 @@
 
 .health-bar {
     position: absolute;
-    width: 98%;
+    width: 100.2%;
     z-index: 1;
-    top: 1%;
-    left: 1%;
-    right: 1%;
+    top: -0.1%;
+    left: -0.1%;
+    right: -0.1%;
 }
 
 .body-background {
