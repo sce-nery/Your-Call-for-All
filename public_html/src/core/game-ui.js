@@ -95,6 +95,9 @@ class GameUiController {
 
         this.musicButton =  document.querySelector("#music-button");
 
+
+        this.inspectionModeCursor =  document.querySelector("#inspection-mode-cursor");
+
     }
 
     showMainMenu() {
@@ -135,6 +138,14 @@ class GameUiController {
 
     toggleDecisionPointActionInfoContainer() {
         $("#decision-point-action-info-container").transition("scale");
+    }
+
+    showInspectionModeCursor() {
+        this.inspectionModeCursor.style.visibility = "visible";
+    }
+
+    hideInspectionModeCursor() {
+        this.inspectionModeCursor.style.visibility = "hidden";
     }
 
     showGameSettings() {

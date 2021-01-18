@@ -4,6 +4,7 @@ import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 import {GameUiController} from "./game-ui.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import {GameAudio} from "./audio.js";
+import {TransformControls} from "../../vendor/three-js/examples/jsm/controls/TransformControls.js";
 
 class YourCallForAll {
 
@@ -13,7 +14,6 @@ class YourCallForAll {
         this.renderer = renderer;
         this.hyperParameters = hyperParameters;
 
-
         this.clock = new THREE.Clock(false);
 
         this.initializeEnvironment();
@@ -21,6 +21,7 @@ class YourCallForAll {
         this.initializeUiController();
         this.initializeAudio();
 
+        this.initializeInspectionControls();
     }
 
     initializeAudio() {
@@ -51,6 +52,8 @@ class YourCallForAll {
 
         this.playerControl = {
             readyForDecisionPointAction: false,
+            inspectionModeEnabled: false,
+
             onMouseDown: function (e) {
                 switch (e.button) {
                     case 2:
@@ -100,19 +103,43 @@ class YourCallForAll {
 
                 if (self.playerControl.readyForDecisionPointAction) {
                     if (e.code === "KeyI") {
-                        console.debug("Enter inspection mode");
+
+                        if (!self.playerControl.inspectionModeEnabled) {
+                            console.debug("Enter inspection mode");
+                            self.uiController.showInspectionModeCursor();
+                            self.playerControl.inspectionModeEnabled = true;
+
+                            self.inspectionControls.attach(self.character.cameraController.currentlyFocusedDecisionPoint.model);
+                            self.scene.add(self.inspectionControls);
+                        } else {
+                            console.debug("Leave inspection mode");
+                            self.uiController.hideInspectionModeCursor();
+                            self.playerControl.inspectionModeEnabled = false;
+
+                            self.inspectionControls.detach();
+                            self.scene.remove(self.inspectionControls);
+                        }
+
+
                     } else if (e.code === "KeyF") {
 
                         self.character.removeBadObjectFromTheEnvironment(self.character.cameraController.currentlyFocusedDecisionPoint);
                         self.character.cameraController.currentlyFocusedDecisionPoint = null;
-
-
+                        self.uiController.hideDecisionPointActionInfoContainer();
+                        self.playerControl.readyForDecisionPointAction = false;
 
                         console.warn("TODO: Show info about the environmental effects of the object");
+
                     }
                 }
             },
         };
+    }
+
+    initializeInspectionControls() {
+        this.inspectionControls =  new TransformControls( this.camera, this.renderer.domElement );
+
+
     }
 
     update(deltaTime) {
