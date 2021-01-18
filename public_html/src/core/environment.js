@@ -113,6 +113,24 @@ class Environment {
         this.decisionPointsKdTree = new KdTree([], distance, ["x", "z"]);
     }
 
+    rebuildDecisionPointsKdTree() {
+        const distance = function (a, b) {
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
+        };
+
+        let kdTreeDecisionPointElements = []
+        for (let i = 0; i < this.objects.length; i++) {
+            let object = this.objects[i];
+            if (object instanceof DecisionPoint) {
+                let element = object.model.position;
+                element.decisionPoint = object;
+                kdTreeDecisionPointElements.push(element);
+            }
+        }
+
+        this.decisionPointsKdTree = new KdTree(kdTreeDecisionPointElements, distance, ["x", "z"]);
+    }
+
 
     getNearestDecisionPoint(position, diameter) {
         let queryResults = this.decisionPointsKdTree.nearest(position, 1, diameter * diameter);
@@ -175,6 +193,16 @@ class Environment {
     removeObjectFromScene(object) {
         this.scene.remove(object.model);
         object.isInScene = false;
+    }
+
+    removeBadObject(decisionPoint) {
+        this.removeObjectFromScene(decisionPoint);
+
+        decisionPoint.model.remove(decisionPoint.label);
+
+        this.objects = this.objects.filter(item => item.model.uuid !== decisionPoint.model.uuid);
+
+        this.rebuildDecisionPointsKdTree();
     }
 
     addObjectToScene(object) {

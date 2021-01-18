@@ -26,6 +26,10 @@ class Character {
         this.setupControllers();
     }
 
+    removeBadObjectFromTheEnvironment(decisionPoint) {
+        this.owner.environment.removeBadObject(decisionPoint);
+    }
+
     setupControllers() {
         this.controller = new CharacterController(this);
         this.cameraController = new ThirdPersonCameraController(this);

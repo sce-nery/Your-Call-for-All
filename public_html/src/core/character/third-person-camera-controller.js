@@ -6,7 +6,7 @@ class ThirdPersonCameraController {
         this.character = character;
         this.camera = this.character.camera;
 
-        this.focusPoint = null;
+        this.currentlyFocusedDecisionPoint = null;
 
         this.currentCameraPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
@@ -63,7 +63,7 @@ class ThirdPersonCameraController {
     calculateIdealCameraTarget() {
         // Look at point relative to character.
         if (this.isFocusingOnAnObject()) {
-            return this.focusPoint;
+            return this.currentlyFocusedDecisionPoint.model.position;
         }
 
         const target = new THREE.Vector3(-0.5, 1.0, 0);
@@ -76,7 +76,7 @@ class ThirdPersonCameraController {
     }
 
     isFocusingOnAnObject() {
-        return this.focusPoint !== null;
+        return this.currentlyFocusedDecisionPoint !== null;
     }
 
     enterPointerLock() {

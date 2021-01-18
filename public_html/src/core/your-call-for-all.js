@@ -55,7 +55,7 @@ class YourCallForAll {
                             let point = queryResult[0];
                             let distance = queryResult[1];
 
-                            self.character.cameraController.focusPoint = point;
+                            self.character.cameraController.currentlyFocusedDecisionPoint = point.decisionPoint;
 
                             console.debug(`Focus to: ${point.decisionPoint}`)
                             console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
@@ -72,7 +72,7 @@ class YourCallForAll {
             onMouseUp: function (e) {
                 switch (e.button) {
                     case 2:
-                        self.character.cameraController.focusPoint = null;
+                        self.character.cameraController.currentlyFocusedDecisionPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
                         console.debug("Focus end")
@@ -91,9 +91,15 @@ class YourCallForAll {
 
                 if (self.playerControl.readyForDecisionPointAction) {
                     if (e.code === "KeyI") {
-                        console.debug("Enter inspection mode")
+                        console.debug("Enter inspection mode");
                     } else if (e.code === "KeyF") {
-                        console.debug("Put it into pocket")
+
+                        self.character.removeBadObjectFromTheEnvironment(self.character.cameraController.currentlyFocusedDecisionPoint);
+                        self.character.cameraController.currentlyFocusedDecisionPoint = null;
+
+
+
+                        console.warn("TODO: Show info about the environmental effects of the object");
                     }
                 }
             },
