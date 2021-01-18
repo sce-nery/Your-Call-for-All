@@ -6,7 +6,6 @@ import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {GameAudio} from "./core/audio.js";
-import {GameUiController} from "./core/game-ui.js";
 import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 import {GUI} from "../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
 
@@ -15,7 +14,7 @@ let hyperParameters = {
     showGridHelper: false,
     showPerformanceMonitor: true,
     showParameters: true,
-    ambientSound: './assets/sounds/song3.mp3',
+    ambientSound: './assets/sounds/fairy-ring.mp3',
 }
 
 let yourCallForAll;
