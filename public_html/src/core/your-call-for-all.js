@@ -91,7 +91,7 @@ class YourCallForAll {
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
                         console.debug("Focus end");
-                        self.uiController.posMessage.style.visibility =  "hidden";
+
                         break;
                 }
             },
@@ -133,10 +133,30 @@ class YourCallForAll {
                         self.playerControl.readyForDecisionPointAction = false;
 
                         $('.positive-info')
-                            .transition('pulse')
+                            .transition({
+                                animation  : 'fade',
+                                duration   : '2s',
+                                onComplete : function() {
+                                    console.log("fade is done!")
+                                    self.uiController.posMessage.style.visibility =  "hidden";
+                                }
+                            });
                         ;
 
-                        self.uiController.posMessage.style.visibility =  "visible";
+                        $('.positive-info')
+                            .transition({
+                                animation  : 'fade',
+                                duration   : '5s',
+                                onComplete : function() {
+                                    console.log("fade is done!")
+                                    self.uiController.posMessage.style.visibility =  "hidden";
+                                }
+                            });
+                        ;
+
+
+
+                        //self.uiController.posMessage.style.visibility =  "visible";
 
                         console.warn("TODO: Show info about the environmental effects of the object");
 
