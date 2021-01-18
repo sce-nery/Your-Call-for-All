@@ -203,6 +203,11 @@ class Environment {
         this.objects = this.objects.filter(item => item.model.uuid !== decisionPoint.model.uuid);
 
         this.rebuildDecisionPointsKdTree();
+
+        this.props.healthFactor -= decisionPoint.healthInfluence;
+
+        // Boundary check
+        this.props.healthFactor = Math.min(1.0, Math.max(0.0, this.props.healthFactor));
     }
 
     addObjectToScene(object) {

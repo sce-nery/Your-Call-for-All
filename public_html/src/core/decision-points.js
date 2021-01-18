@@ -9,7 +9,7 @@ class DecisionPoint extends GameObject {
         super();
         this.name = name;
 
-        this.badInfluence = 0.0;
+        this.healthInfluence = 0.0;
 
         this.setupLabel(name);
     }
@@ -50,7 +50,7 @@ class BrokenBottle extends DecisionPoint {
         this.label.position.set(0, 0.75, 0);
         this.model.add(this.label);
 
-        this.badInfluence = 0.1;
+        this.healthInfluence = -0.02;
     }
 
 
