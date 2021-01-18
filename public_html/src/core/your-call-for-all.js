@@ -65,11 +65,6 @@ class YourCallForAll {
 
 
 
-                        $('.positive-info')
-                            .transition('shake')
-                        ;
-
-                        self.uiController.posMessage.style.visibility =  "visible";
 
                         if (queryResult) {
                             let point = queryResult[0];
@@ -136,6 +131,12 @@ class YourCallForAll {
                         self.character.cameraController.currentlyFocusedDecisionPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
+
+                        $('.positive-info')
+                            .transition('pulse')
+                        ;
+
+                        self.uiController.posMessage.style.visibility =  "visible";
 
                         console.warn("TODO: Show info about the environmental effects of the object");
 
