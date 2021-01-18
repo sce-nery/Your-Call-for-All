@@ -96,10 +96,11 @@ class FrogOnLeaf extends AnimatedObject {
         this.model.name = "Frog";
         this.model.position.set(position.x, position.y, position.z);
 
-        let scale = LinearInterpolator.real(0.1, 0.3, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(0.1, 0.3);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.3, 0.6);
+        this.setHealthRange(min, 1.0);
 
         // Sets the wind animation for play.
         this.playActionByIndex(0);
@@ -118,10 +119,11 @@ class Shark extends AnimatedObject {
         this.model.name = "Shark";
         this.model.position.set(position.x, position.y, position.z);
 
-        let scale = LinearInterpolator.real(0.7, 0.9, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(0.6, 0.9);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.4, 0.7);
+        this.setHealthRange(min, 1.0);
 
         // Sets the wind animation for play.
         this.playActionByIndex(0);
@@ -142,12 +144,13 @@ class Butterfly extends AnimatedObject {
         this.model.name = "Butterfly";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(0.004, 0.012, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(0.004, 0.012);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.7, 0.9);
+        this.setHealthRange(min, 1.0);
 
-        this.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
+        this.mixer.timeScale = this.environment.prng.randomBetween(0.8, 1.2);
 
         // Sets the wind animation for play.
         this.playActionByIndex(0);
@@ -155,7 +158,7 @@ class Butterfly extends AnimatedObject {
         this.origin = this.model.position.clone();
         this.timeElapsed = 0;
 
-        this.circularMotionRadius = LinearInterpolator.real(0.025, 0.05, this.environment.prng.random());
+        this.circularMotionRadius = this.environment.prng.randomBetween(0.025, 0.05);
     }
 
 
@@ -165,7 +168,6 @@ class Butterfly extends AnimatedObject {
 
         let xOffset = Math.sin(this.timeElapsed) * this.circularMotionRadius;
         let zOffset = Math.cos(this.timeElapsed) * this.circularMotionRadius;
-
 
 
         this.model.position.x -= xOffset;
@@ -182,10 +184,11 @@ class SimpleTree extends StaticObject {
         this.model.name = "SimpleTree";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(1.8, 2.2, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(1.8, 2.2);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.4, 0.8);
+        this.setHealthRange(min, 1.0);
     }
 }
 
@@ -197,10 +200,11 @@ class DeadTree extends StaticObject {
         this.model.name = "DeadTree";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(0.0036, 0.0044);
+        let scale = this.environment.prng.randomBetween(0.0036, 0.0044);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.0, 0.5);
+        let max = this.environment.prng.randomBetween(0.4, 0.8);
+        this.setHealthRange(0.0, max);
     }
 }
 
@@ -212,10 +216,11 @@ class PineTree extends StaticObject {
         this.model.name = "PineTree";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(0.008, 0.013, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(0.008, 0.013);
         this.model.scale.set(scale, scale, scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.4, 0.8);
+        this.setHealthRange(min, 1.0);
     }
 
 }
@@ -228,10 +233,11 @@ class DriedPine extends AnimatedObject {
         this.model.name = "DriedPine";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(0.0032, 0.0052, this.environment.prng.random());
+        let scale = this.environment.prng.randomBetween(0.0032, 0.0052);
         this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.0, 0.5);
+        let max = this.environment.prng.randomBetween(0.4, 0.8);
+        this.setHealthRange(0.0, max);
 
         // Sets the wind animation for play.
         this.playActionByIndex(0);
@@ -251,10 +257,11 @@ class LowPolyGrass extends StaticObject {
         this.model.name = "LowPolyGrass";
         this.model.position.copy(position);
 
-        let scale = LinearInterpolator.real(0.01, 0.022, this.environment.prng.random());
-        this.model.scale.set(scale, scale, scale);
+        let scale = this.environment.prng.randomBetween(0.01, 0.022);
+        this.model.scale.setScalar(scale);
 
-        this.setHealthRange(0.5, 1.0);
+        let min = this.environment.prng.randomBetween(0.4, 0.8);
+        this.setHealthRange(min, 1.0);
     }
 }
 

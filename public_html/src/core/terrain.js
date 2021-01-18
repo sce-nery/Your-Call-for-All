@@ -351,6 +351,7 @@ class TerrainChunk extends GameObject {
                     this.environment.objects.push(simpleTree);
 
                     let deadTree = new DeadTree(this.environment, candidatePosition);
+                    deadTree.healthRange.max = simpleTree.healthRange.min;
                     deadTree.model.scale.copy(simpleTree.model.scale.clone().multiplyScalar(1 / 500));
                     this.environment.objects.push(deadTree);
                 } else if (treeType === 2) {
@@ -359,6 +360,7 @@ class TerrainChunk extends GameObject {
                     this.environment.objects.push(pineTree);
 
                     let driedPine = new DriedPine(this.environment, candidatePosition);
+                    driedPine.healthRange.max = pineTree.healthRange.min;
                     driedPine.model.scale.copy(pineTree.model.scale.clone().multiplyScalar(1 / 2.5));
 
                     this.environment.objects.push(driedPine);
