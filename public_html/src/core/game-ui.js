@@ -73,11 +73,16 @@ class GameUiController {
             }
             this.musicIsPlaying = !this.musicIsPlaying;
 
-
-            //let buttonTextNode = this.playButton.childNodes.item(0);
-            //buttonTextNode.textContent = "Resume";
-            //this.ycfa.character.cameraController.enterPointerLock();
         }
+
+        $('#health')
+            .progress({
+                percent: ((this.ycfa.environment.props.healthFactor * 100) / 100) * 100,
+                text: {
+                    active: 'You are surrounded by garbage!',
+                    success: 'You saved the world. Thanks you!'
+                }
+            });
     }
 
     initializeDocumentElements() {
@@ -94,6 +99,7 @@ class GameUiController {
         this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
 
         this.musicButton =  document.querySelector("#music-button");
+        this.healthBar =  document.querySelector("#health-bar-id");
 
 
         this.inspectionModeCursor =  document.querySelector("#inspection-mode-cursor");
@@ -112,6 +118,7 @@ class GameUiController {
 
     showRenderTarget() {
         this.renderTarget.style = "visible";
+        this.healthBar.style.visibility = "visible";
     }
 
     hideRenderTarget() {
