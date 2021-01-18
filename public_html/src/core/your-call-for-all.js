@@ -27,7 +27,7 @@ class YourCallForAll {
         this.character = new Character(this);
         this.character.model.position.set(-26, 0, -4);
         this.character.collider.translate(this.character.model.position);
-
+       // this.character.getSpotlight(this.scene);//bura
         this.scene.add(this.character.model);
 
         const self = this;

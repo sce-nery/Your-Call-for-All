@@ -32,6 +32,7 @@ export const Assets = {
             Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
             BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/decision-points/broken-bottle/scene.gltf",
             LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree-wind/scene.gltf",
+            FlashLight: "/Your-Call-for-All/public_html/assets/models/objects/spotlight/scene.gltf"
         },
         OBJ: {},
         Texture: {
@@ -69,6 +70,7 @@ export const Assets = {
         PalmTree: null,
         RealTree: null,
         Jackie: null,
+        FlashLight:null,
     },
 
 

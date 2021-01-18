@@ -243,8 +243,23 @@ class LowPolyGrass extends StaticObject {
     }
 }
 
-export {LowPolyGrass};
+class FlashLight extends StaticObject {
+    constructor(position) {
+        super(Assets.glTF.FlashLight);
 
+
+        this.model.name = "FlashLight";
+        this.model.position.copy(position);
+
+        let scale = (0.1);
+        this.model.scale.set(scale, scale, scale);
+
+
+    }
+}
+
+export {LowPolyGrass};
+export {FlashLight};
 export {PineTree};
 export {DriedPine};
 
