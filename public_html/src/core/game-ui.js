@@ -65,11 +65,11 @@ class GameUiController {
 
             if (this.musicIsPlaying) {
                 this.ycfa.audio.stopMusic();
-                this.volumeOnOff.classList.remove(["volume", "off", "icon"]);
-                this.volumeOnOff.classList.add(["volume", "up", "icon"]);
+                document.getElementById("volume-on-of").className = "volume up icon";
 
             } else {
                 this.ycfa.audio.playMusic();
+                document.getElementById("volume-on-of").className = "volume off icon";
             }
             this.musicIsPlaying = !this.musicIsPlaying;
 
@@ -94,7 +94,7 @@ class GameUiController {
         this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
 
         this.musicButton =  document.querySelector("#music-button");
-        this.volumeOnOff = document.querySelector("#volume-on-of");
+
     }
 
     showMainMenu() {
