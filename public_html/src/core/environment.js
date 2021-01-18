@@ -21,7 +21,7 @@ class Environment {
      */
     constructor(yourCallForAll, seed) {
         this.props = {
-            healthFactor: 1.0,
+            healthFactor: 0.5,
             drawDistance: 100,
         }
 
