@@ -10,8 +10,8 @@ class GameAudio {
         this.gameUiController = gameUiController;
         this.audioLoader = new THREE.AudioLoader();
 
-        //this.setupAudioListener();
-        //this.ambientAudio();
+        this.setupAudioListener();
+        this.ambientAudio();
     }
 
     stopMusic() {
@@ -31,22 +31,15 @@ class GameAudio {
 
         let sound = new THREE.Audio( this.listener );
 
-        sound.setBuffer( this.loadAudio() );
-        sound.setLoop( true );
-        sound.setVolume( 0.5 );
-        sound.play();
+        this.audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setLoop( true );
+            sound.setVolume( 0.1 );
+            sound.play();
+        });
 
         this.ambientSound = sound;
 
-    }
-    loadAudio( ){
-        this.audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
-            //sound.setBuffer( buffer );
-            //sound.setLoop( true );
-            //sound.setVolume( 0.5 );
-            //sound.play();
-            return buffer;
-        });
     }
 
 

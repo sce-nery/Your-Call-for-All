@@ -3,19 +3,28 @@ import {Character} from "./character/character.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
 import {GameUiController} from "./game-ui.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {GameAudio} from "./audio.js";
 
 class YourCallForAll {
 
-    constructor(scene, camera, renderer) {
+    constructor(scene, camera, renderer, hyperParameters) {
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.hyperParameters = hyperParameters;
+
 
         this.clock = new THREE.Clock(false);
 
         this.initializeEnvironment();
         this.initializeCharacter();
         this.initializeUiController();
+        this.initializeAudio();
+
+    }
+
+    initializeAudio() {
+        this.audio = new GameAudio(this.scene, this.camera, this.hyperParameters.ambientSound);
     }
 
     initializeUiController() {
