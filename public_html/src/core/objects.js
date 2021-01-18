@@ -241,7 +241,7 @@ class Butterfly extends AnimatedObject {
 }
 
 class SimpleTree extends StaticObject {
-    static prevalence = 0.3;
+    static prevalence = 0.15;
 
     constructor(environment, position) {
         super(Assets.glTF.SimpleTree);
@@ -282,7 +282,7 @@ class SimpleTree extends StaticObject {
 }
 
 class DeadTree extends StaticObject {
-    static prevalence = 0.3;
+    static prevalence = 0.15;
 
     constructor(environment, position) {
         super(Assets.glTF.DeadTree);
@@ -304,7 +304,7 @@ class DeadTree extends StaticObject {
 }
 
 class PineTree extends StaticObject {
-    static prevalence = 0.3;
+    static prevalence = 0.15;
 
     constructor(environment, position) {
         super(Assets.glTF.PineTree);
@@ -346,7 +346,7 @@ class PineTree extends StaticObject {
 }
 
 class DriedPine extends AnimatedObject {
-    static prevalence = 0.3;
+    static prevalence = 0.15;
 
     constructor(environment, position) {
         super(Assets.glTF.DriedPine);
