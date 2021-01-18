@@ -163,8 +163,9 @@ class GameUiController {
         this.progressBar.style.display = 'none';
     }
 
-    showDecisionPointActionInfoContainer() {
+    showDecisionPointActionInfoContainer(actionText = "Remove") {
         if (!this.visibilities.decisionPointActionInfoContainer) {
+            document.querySelector("#action-text").textContent = actionText;
             $("#decision-point-action-info-container").transition("scale in");
             this.visibilities.decisionPointActionInfoContainer = true;
         }
