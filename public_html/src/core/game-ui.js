@@ -9,7 +9,10 @@ class GameUiController {
 
         this.visibilities = {
             decisionPointActionInfoContainer: false,
+            inspectionModeInfoContainer: false,
         }
+
+        this.healthProgress = 0;
 
         this.initializeDocumentElements();
         this.showRenderTarget();
@@ -31,6 +34,10 @@ class GameUiController {
 
         document.addEventListener("pointerlockchange", (event) => {
             if (document.pointerLockElement !== this.ycfa.character.owner.renderer.domElement) {
+                if (this.ycfa.playerControl.inspectionModeEnabled) {
+                    return;
+                }
+
                 console.log('Showing menu');
                 this.ycfa.unregisterPlayerControlListeners();
                 this.showMainMenu();
@@ -48,7 +55,6 @@ class GameUiController {
                     this.musicIsPlaying = !this.musicIsPlaying;
                 }
             }
-
 
 
             this.ycfa.registerPlayerControlListeners();
@@ -76,18 +82,20 @@ class GameUiController {
         }
 
 
-
     }
 
     update() {
-        $('#health')
-            .progress({
-                percent: ((this.ycfa.environment.props.healthFactor * 100) / 100) * 100,
-                text: {
-                    active: 'You are surrounded by garbage!',
-                    success: 'You saved the world. Thanks you!'
-                }
-            });
+        if (this.ycfa.environment.props.healthFactor !== this.healthProgress) {
+            this.healthProgress = this.ycfa.environment.props.healthFactor;
+            $('#health')
+                .progress({
+                    percent: this.healthProgress * 100,
+                    text: {
+                        active: 'You are surrounded by garbage!',
+                        success: 'You saved the world. Thanks you!'
+                    }
+                });
+        }
     }
 
     initializeDocumentElements() {
@@ -103,22 +111,19 @@ class GameUiController {
 
         this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
 
-        this.musicButton =  document.querySelector("#music-button");
-        this.healthBar =  document.querySelector("#health-bar-id");
+        this.musicButton = document.querySelector("#music-button");
+        this.healthBar = document.querySelector("#health-bar-id");
 
-
-        this.inspectionModeCursor =  document.querySelector("#inspection-mode-cursor");
-
-        this.posMessage =  document.querySelector("#positive-info");
+        this.posMessage = document.querySelector("#positive-info");
 
     }
 
     showAndDestroyPositiveInfo() {
         $('.positive-info')
             .transition({
-                animation  : 'fade',
-                duration   : '2s',
-                onComplete : function() {
+                animation: 'fade',
+                duration: '2s',
+                onComplete: function () {
                     console.log("fade is done!")
                 }
             });
@@ -126,9 +131,9 @@ class GameUiController {
 
         $('.positive-info')
             .transition({
-                animation  : 'fade',
-                duration   : '5s',
-                onComplete : function() {
+                animation: 'fade',
+                duration: '5s',
+                onComplete: function () {
                     console.log("fade is done!")
                 }
             });
@@ -176,12 +181,25 @@ class GameUiController {
         $("#decision-point-action-info-container").transition("scale");
     }
 
-    showInspectionModeCursor() {
-        this.inspectionModeCursor.style.visibility = "visible";
+    enterInspectionModeUI() {
+
+
+        document.querySelector("#label-renderer").style.visibility = "hidden";
+
+        if (!this.visibilities.inspectionModeInfoContainer) {
+            $("#inspection-mode-info-container").transition("scale in");
+            this.visibilities.inspectionModeInfoContainer = true;
+        }
     }
 
-    hideInspectionModeCursor() {
-        this.inspectionModeCursor.style.visibility = "hidden";
+    exitInspectionModeUI() {
+
+        document.querySelector("#label-renderer").style.visibility = "visible";
+
+        if (this.visibilities.inspectionModeInfoContainer) {
+            $("#inspection-mode-info-container").transition("scale out");
+            this.visibilities.inspectionModeInfoContainer = false;
+        }
     }
 
     showGameSettings() {

@@ -29,7 +29,7 @@ function init() {
         initListeners();
         initScene();
         initRenderer();
-        yourCallForAll = new YourCallForAll(scene, camera, renderer, hyperParameters);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer, labelRenderer, hyperParameters);
         clock = yourCallForAll.clock;
         gameUiController = yourCallForAll.uiController;
         audio = yourCallForAll.audio;
@@ -90,11 +90,11 @@ function initRenderer() {
     renderer.setPixelRatio(1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     // For some reason, these break the water color
-    //renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    //renderer.toneMappingExposure = 0.5;
-    //renderer.outputEncoding = THREE.sRGBEncoding;
-    //renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    // renderer.toneMappingExposure = 0.5;
+    // renderer.outputEncoding = THREE.sRGBEncoding;
+    // renderer.shadowMap.enabled = true;
+    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
@@ -103,11 +103,11 @@ function initRenderer() {
 
     document.querySelector("#render-target").appendChild(renderer.domElement);
 
-
     labelRenderer = new CSS2DRenderer();
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
     labelRenderer.domElement.style.position = 'absolute';
     labelRenderer.domElement.style.top = '0px';
+    labelRenderer.domElement.id = "label-renderer";
     document.querySelector("#render-target").appendChild(labelRenderer.domElement);
 }
 

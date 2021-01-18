@@ -190,7 +190,7 @@ class Terrain {
 
         }
 
-        return null;
+        return 0;
     }
 }
 

@@ -8,10 +8,11 @@ import {TransformControls} from "../../vendor/three-js/examples/jsm/controls/Tra
 
 class YourCallForAll {
 
-    constructor(scene, camera, renderer, hyperParameters) {
+    constructor(scene, camera, renderer, labelRenderer, hyperParameters) {
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.labelRenderer = renderer;
         this.hyperParameters = hyperParameters;
 
         this.clock = new THREE.Clock(false);
@@ -64,8 +65,6 @@ class YourCallForAll {
                         );
 
 
-
-
                         if (queryResult) {
                             let point = queryResult[0];
                             let distance = queryResult[1];
@@ -87,11 +86,12 @@ class YourCallForAll {
             onMouseUp: function (e) {
                 switch (e.button) {
                     case 2:
-                        self.character.cameraController.currentlyFocusedDecisionPoint = null;
-                        self.uiController.hideDecisionPointActionInfoContainer();
-                        self.playerControl.readyForDecisionPointAction = false;
-                        console.debug("Focus end");
-
+                        if (!self.playerControl.inspectionModeEnabled) {
+                            self.character.cameraController.currentlyFocusedDecisionPoint = null;
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.playerControl.readyForDecisionPointAction = false;
+                            console.debug("Focus end")
+                        }
                         break;
                 }
             },
@@ -100,6 +100,21 @@ class YourCallForAll {
             onKeyDown: function (e) {
                 console.debug(`Keydown: ${e.code}`);
                 self.character.controller.input.onKeyDown(e);
+
+                if (self.playerControl.inspectionModeEnabled) {
+                    if (e.code === "KeyR") {
+
+                        self.transformControls.setMode("rotate");
+
+                    } else if (e.code === "KeyT") {
+
+                        self.transformControls.setMode("translate");
+
+                    } else if (e.code === "KeyY") {
+                        self.transformControls.setMode("scale");
+
+                    }
+                }
             },
             onKeyUp: function (e) {
                 console.debug(`Keyup: ${e.code}`);
@@ -110,18 +125,33 @@ class YourCallForAll {
 
                         if (!self.playerControl.inspectionModeEnabled) {
                             console.debug("Enter inspection mode");
-                            self.uiController.showInspectionModeCursor();
+
                             self.playerControl.inspectionModeEnabled = true;
 
-                            self.inspectionControls.attach(self.character.cameraController.currentlyFocusedDecisionPoint.model);
-                            self.scene.add(self.inspectionControls);
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.uiController.enterInspectionModeUI();
+
+                            document.exitPointerLock();
+
+                            self.transformControls.attach(self.character.cameraController.currentlyFocusedDecisionPoint.model);
+                            self.scene.add(self.transformControls);
                         } else {
                             console.debug("Leave inspection mode");
-                            self.uiController.hideInspectionModeCursor();
+
                             self.playerControl.inspectionModeEnabled = false;
 
-                            self.inspectionControls.detach();
-                            self.scene.remove(self.inspectionControls);
+                            self.uiController.exitInspectionModeUI();
+
+                            self.transformControls.detach();
+                            self.scene.remove(self.transformControls);
+
+                            self.character.cameraController.enterPointerLock();
+
+                            self.character.cameraController.currentlyFocusedDecisionPoint = null;
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.playerControl.readyForDecisionPointAction = false;
+                            console.debug("Focus end")
+
                         }
 
 
@@ -132,7 +162,6 @@ class YourCallForAll {
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
                         self.uiController.showAndDestroyPositiveInfo();
-                        //console.warn("TODO: Show info about the environmental effects of the object");
 
                     }
                 }
@@ -141,8 +170,7 @@ class YourCallForAll {
     }
 
     initializeInspectionControls() {
-        this.inspectionControls =  new TransformControls( this.camera, this.renderer.domElement );
-
+        this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
 
     }
 
