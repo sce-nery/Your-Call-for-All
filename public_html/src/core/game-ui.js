@@ -107,6 +107,8 @@ class GameUiController {
 
         this.inspectionModeCursor =  document.querySelector("#inspection-mode-cursor");
 
+        this.posMessage =  document.querySelector("#positive-info");
+
     }
 
     showMainMenu() {

@@ -34,6 +34,9 @@ function init() {
         gameUiController = yourCallForAll.uiController;
         audio = yourCallForAll.audio;
         applyHyperParams();
+
+
+
         render();
     });
 }
@@ -44,6 +47,7 @@ function render() {
     if (stats) {
         stats.update();
     }
+
 
     yourCallForAll.update(deltaTime);
 

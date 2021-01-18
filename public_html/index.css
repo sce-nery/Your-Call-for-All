@@ -26,6 +26,13 @@
     margin-right: 25%;
 }
 
+.positive-info {
+    position: absolute;
+    right: 1.5%;
+    bottom: 12.5%;
+    z-index: 1;
+}
+
 .health-bar {
     position: absolute;
     width: 100%;

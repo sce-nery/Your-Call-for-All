@@ -63,6 +63,14 @@ class YourCallForAll {
                             self.environment.props.drawDistance * 0.75
                         );
 
+
+
+                        $('.positive-info')
+                            .transition('shake')
+                        ;
+
+                        self.uiController.posMessage.style.visibility =  "visible";
+
                         if (queryResult) {
                             let point = queryResult[0];
                             let distance = queryResult[1];
@@ -87,7 +95,8 @@ class YourCallForAll {
                         self.character.cameraController.currentlyFocusedDecisionPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
-                        console.debug("Focus end")
+                        console.debug("Focus end");
+                        self.uiController.posMessage.style.visibility =  "hidden";
                         break;
                 }
             },
