@@ -35,7 +35,7 @@ class GameAudio {
             sound.setBuffer( buffer );
             sound.setLoop( true );
             sound.setVolume( 0.1 );
-            sound.play();
+            //sound.play();
         });
 
         this.ambientSound = sound;

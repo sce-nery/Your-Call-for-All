@@ -5,6 +5,7 @@ class GameUiController {
         this.renderer = ycfa.renderer;
         this.inSettingsPage = false;
         this.introductionMade = false;
+        this.musicIsPlaying = false;
 
         this.visibilities = {
             decisionPointActionInfoContainer: false,
@@ -42,7 +43,13 @@ class GameUiController {
                 // TODO: If the first time, show series of messages to user.
 
                 this.introductionMade = true;
+                if (!this.musicIsPlaying) {
+                    this.ycfa.audio.playMusic();
+                    this.musicIsPlaying = !this.musicIsPlaying;
+                }
             }
+
+
 
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
@@ -52,6 +59,24 @@ class GameUiController {
             buttonTextNode.textContent = "Resume";
 
             this.ycfa.character.cameraController.enterPointerLock();
+        }
+
+        this.musicButton.onclick = () => {
+
+            if (this.musicIsPlaying) {
+                this.ycfa.audio.stopMusic();
+                this.volumeOnOff.classList.remove(["volume", "off", "icon"]);
+                this.volumeOnOff.classList.add(["volume", "up", "icon"]);
+
+            } else {
+                this.ycfa.audio.playMusic();
+            }
+            this.musicIsPlaying = !this.musicIsPlaying;
+
+
+            //let buttonTextNode = this.playButton.childNodes.item(0);
+            //buttonTextNode.textContent = "Resume";
+            //this.ycfa.character.cameraController.enterPointerLock();
         }
     }
 
@@ -67,6 +92,9 @@ class GameUiController {
         this.settingsButton = document.querySelector("#settings-button");
 
         this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
+
+        this.musicButton =  document.querySelector("#music-button");
+        this.volumeOnOff = document.querySelector("#volume-on-of");
     }
 
     showMainMenu() {
