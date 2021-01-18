@@ -75,6 +75,9 @@ class GameUiController {
 
         }
 
+    }
+
+    update() {
         $('#health')
             .progress({
                 percent: ((this.ycfa.environment.props.healthFactor * 100) / 100) * 100,

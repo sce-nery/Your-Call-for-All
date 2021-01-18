@@ -145,6 +145,7 @@ class YourCallForAll {
     update(deltaTime) {
         this.environment.update(deltaTime, this.character.model.position);
         this.character.update(deltaTime, this);
+        this.uiController.update(deltaTime);
     }
 
     // Must be called when the game starts.
