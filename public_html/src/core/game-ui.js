@@ -65,11 +65,11 @@ class GameUiController {
 
             if (this.musicIsPlaying) {
                 this.ycfa.audio.stopMusic();
-                document.getElementById("volume-on-of").className = "volume up icon";
+                document.getElementById("volume-on-of").className = "volume off icon";
 
             } else {
                 this.ycfa.audio.playMusic();
-                document.getElementById("volume-on-of").className = "volume off icon";
+                document.getElementById("volume-on-of").className = "volume up icon";
             }
             this.musicIsPlaying = !this.musicIsPlaying;
 
