@@ -21,7 +21,7 @@ export const Assets = {
             DeadTree: `${root}/assets/models/objects/trees/dead-tree/scene.gltf`,
             //TwoTrees: `${root}/assets/models/objects/trees/two-trees/scene.gltf`,
             Butterfly: `${root}/assets/models/objects/trees/butterfly/scene.gltf`,
-            FrogOnLeaf: `${root}/assets/models/objects/trees/frog-on-leaf/scene.gltf`,
+            FrogOnLeaf: `${root}/assets/models/objects/trees/frog-on-leaf/frog.glb`,
             Shark: `${root}/assets/models/objects/trees/shark/scene.gltf`,
             //YardGrass: `${root}/assets/models/objects/foliage/yard-grass/scene.gltf`,
             //PlantShrub: `${root}/assets/models/objects/foliage/plant-shrub/scene.gltf`,

@@ -39,6 +39,8 @@ class DecisionPoint extends GameObject {
 }
 
 class BrokenBottle extends DecisionPoint {
+    static prevalence = 0.1;
+
     constructor() {
         super("Broken Bottle");
         let gltf = Assets.cloneGLTF(Assets.glTF.BrokenBottle);
@@ -58,6 +60,23 @@ class BrokenBottle extends DecisionPoint {
         super.update(deltaTime, playerPosition);
     }
 
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) {
+
+            const percent = environment.prng.random() * 100;
+
+            if (percent < BrokenBottle.prevalence) {
+                let brokenBottle = new BrokenBottle();
+                brokenBottle.model.name = "BrokenBottle";
+                brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                environment.objects.push(brokenBottle);
+                environment.insertDecisionPointToKdTree(brokenBottle);
+            }
+
+        }
+    }
 
 }
 

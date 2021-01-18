@@ -89,6 +89,8 @@ class StaticObject extends GameObject {
 }
 
 class FrogOnLeaf extends AnimatedObject {
+    static prevalence = 0.1;
+
     constructor(environment, position) {
         super(Assets.glTF.FrogOnLeaf);
         this.environment = environment;
@@ -108,10 +110,31 @@ class FrogOnLeaf extends AnimatedObject {
 
     update(deltaTime) {
         this.mixer.update(deltaTime);
+
+        this.model.rotation.z += Math.sin(this.mixer.time * 1.25) * 0.001;
+        this.model.rotation.x += Math.cos(this.mixer.time * 1.25) * 0.001;
+    }
+
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
+
+            let percent = environment.prng.random() * 100;
+
+            if (percent < FrogOnLeaf.prevalence) {
+
+                let frog = new FrogOnLeaf(environment, new THREE.Vector3(candidatePosition.x, 0, candidatePosition.z));
+
+                environment.objects.push(frog);
+
+            }
+        }
     }
 }
 
 class Shark extends AnimatedObject {
+    static prevalence = 0.08;
+
     constructor(environment, position) {
         super(Assets.glTF.Shark);
         this.environment = environment;
@@ -119,7 +142,7 @@ class Shark extends AnimatedObject {
         this.model.name = "Shark";
         this.model.position.set(position.x, position.y, position.z);
 
-        let scale = this.environment.prng.randomBetween(0.6, 0.9);
+        let scale = this.environment.prng.randomBetween(0.3, 0.6);
         this.model.scale.setScalar(scale);
 
         let min = this.environment.prng.randomBetween(0.4, 0.7);
@@ -129,14 +152,42 @@ class Shark extends AnimatedObject {
         this.playActionByIndex(0);
         this.mixer.timeScale = 0.8 + this.environment.prng.random() * 0.4;
 
+        this.circularMotionRadius = this.environment.prng.randomBetween(0.05, 0.10);
+        this.circularMotionSpeed = this.environment.prng.randomBetween(0.2, 0.4);
     }
 
     update(deltaTime) {
         this.mixer.update(deltaTime);
+
+        let xOffset = Math.sin(this.mixer.time * this.circularMotionSpeed) * this.circularMotionRadius;
+        let zOffset = Math.cos(this.mixer.time * this.circularMotionSpeed) * this.circularMotionRadius;
+
+        this.model.position.y += Math.sin(this.mixer.time) * this.circularMotionRadius * 0.05;
+        this.model.position.x += xOffset;
+        this.model.position.z -= zOffset;
+        this.model.rotation.y = Math.PI / 2 + Math.atan2(zOffset, xOffset);
+    }
+
+    static scatter(environment, candidatePosition) {
+        if (candidatePosition.y < -5) {
+
+            let percent = environment.prng.random() * 100;
+
+            if (percent < Shark.prevalence) {
+
+                let shark = new Shark(environment, new THREE.Vector3(candidatePosition.x, -0.75, candidatePosition.z));
+
+                environment.objects.push(shark);
+
+            }
+        }
+
     }
 }
 
 class Butterfly extends AnimatedObject {
+    static prevalence = 0.15;
+
     constructor(environment, position) {
         super(Assets.glTF.Butterfly);
         this.environment = environment;
@@ -156,27 +207,42 @@ class Butterfly extends AnimatedObject {
         this.playActionByIndex(0);
 
         this.origin = this.model.position.clone();
-        this.timeElapsed = 0;
 
         this.circularMotionRadius = this.environment.prng.randomBetween(0.025, 0.05);
+        this.circularMotionSpeed = this.environment.prng.randomBetween(0.4, 0.8);
     }
 
 
     update(deltaTime) {
         this.mixer.update(deltaTime);
-        this.timeElapsed += deltaTime;
 
-        let xOffset = Math.sin(this.timeElapsed) * this.circularMotionRadius;
-        let zOffset = Math.cos(this.timeElapsed) * this.circularMotionRadius;
+        let xOffset = Math.sin(this.mixer.time * this.circularMotionSpeed) * this.circularMotionRadius;
+        let zOffset = Math.cos(this.mixer.time * this.circularMotionSpeed) * this.circularMotionRadius;
 
-
+        this.model.position.y += Math.sin(this.mixer.time) * this.circularMotionRadius * 0.1;
         this.model.position.x -= xOffset;
         this.model.position.z += zOffset;
         this.model.rotation.y = Math.atan2(zOffset, xOffset);
     }
+
+    static scatter(environment, candidatePosition) {
+        if (candidatePosition.y > 0 && candidatePosition.y < 20) {
+
+            let percent = environment.prng.random() * 100;
+
+            if (percent < Butterfly.prevalence) {
+                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
+                let butterfly = new Butterfly(environment, position);
+
+                environment.objects.push(butterfly);
+            }
+        }
+    }
 }
 
 class SimpleTree extends StaticObject {
+    static prevalence = 0.3;
+
     constructor(environment, position) {
         super(Assets.glTF.SimpleTree);
         this.environment = environment;
@@ -190,9 +256,34 @@ class SimpleTree extends StaticObject {
         let min = this.environment.prng.randomBetween(0.4, 0.8);
         this.setHealthRange(min, 1.0);
     }
+
+    // TODO: This function also scatters this tree's bad health counterpart,
+    //  which I guess is not a good program design. Preferably, there should be another
+    //  abstraction that handles pairs of good and bad trees.
+    static scatter(environment, candidatePosition) {
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
+
+            let percent = environment.prng.random() * 100;
+
+            if (percent < SimpleTree.prevalence) { // %0.3 of the time.
+
+                let simpleTree = new SimpleTree(environment, candidatePosition);
+                environment.objects.push(simpleTree);
+
+                let deadTree = new DeadTree(environment, candidatePosition);
+                deadTree.healthRange.max = simpleTree.healthRange.min;
+                deadTree.model.scale.copy(simpleTree.model.scale.clone().multiplyScalar(1 / 500));
+                environment.objects.push(deadTree);
+
+            }
+
+        }
+    }
 }
 
 class DeadTree extends StaticObject {
+    static prevalence = 0.3;
+
     constructor(environment, position) {
         super(Assets.glTF.DeadTree);
         this.environment = environment;
@@ -206,9 +297,15 @@ class DeadTree extends StaticObject {
         let max = this.environment.prng.randomBetween(0.4, 0.8);
         this.setHealthRange(0.0, max);
     }
+
+    static scatter(environment, candidatePosition) {
+        // Not implemented. See SimpleTree.scatter
+    }
 }
 
 class PineTree extends StaticObject {
+    static prevalence = 0.3;
+
     constructor(environment, position) {
         super(Assets.glTF.PineTree);
         this.environment = environment;
@@ -223,9 +320,34 @@ class PineTree extends StaticObject {
         this.setHealthRange(min, 1.0);
     }
 
+    // TODO: This function also scatters this tree's bad health counterpart,
+    //  which I guess is not a good program design. Preferably, there should be another
+    //  abstraction that handles pairs of good and bad trees.
+    static scatter(environment, candidatePosition) {
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
+
+            let percent = environment.prng.random() * 100;
+
+            if (percent < PineTree.prevalence) {
+
+                let pineTree = new PineTree(environment, candidatePosition);
+                environment.objects.push(pineTree);
+
+                let driedPine = new DriedPine(environment, candidatePosition);
+                driedPine.healthRange.max = pineTree.healthRange.min;
+                driedPine.model.scale.copy(pineTree.model.scale.clone().multiplyScalar(1 / 2.5));
+
+                environment.objects.push(driedPine);
+            }
+
+        }
+    }
+
 }
 
 class DriedPine extends AnimatedObject {
+    static prevalence = 0.3;
+
     constructor(environment, position) {
         super(Assets.glTF.DriedPine);
         this.environment = environment;
@@ -246,10 +368,16 @@ class DriedPine extends AnimatedObject {
     update(deltaTime) {
         this.mixer.update(deltaTime);
     }
+
+    static scatter(environment, candidatePosition) {
+        // Not implemented. See PineTree.scatter
+    }
 }
 
 
 class LowPolyGrass extends StaticObject {
+    static prevalence = 0.1;
+
     constructor(environment, position) {
         super(Assets.glTF.LowPolyGrass);
         this.environment = environment;
@@ -262,6 +390,24 @@ class LowPolyGrass extends StaticObject {
 
         let min = this.environment.prng.randomBetween(0.4, 0.8);
         this.setHealthRange(min, 1.0);
+    }
+
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 10) {
+            let percent = environment.prng.random() * 100;
+
+            if (percent < LowPolyGrass.prevalence) {
+                const heightOffset = environment.prng.randomBetween(0.1, 0.2,);
+                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y - heightOffset, candidatePosition.z);
+
+                let grass = new LowPolyGrass(environment, position);
+
+                environment.objects.push(grass);
+            }
+
+        }
+
     }
 }
 
