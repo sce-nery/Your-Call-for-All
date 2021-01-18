@@ -75,6 +75,8 @@ class GameUiController {
 
         }
 
+
+
     }
 
     update() {
@@ -109,6 +111,28 @@ class GameUiController {
 
         this.posMessage =  document.querySelector("#positive-info");
 
+    }
+
+    showAndDestroyPositiveInfo() {
+        $('.positive-info')
+            .transition({
+                animation  : 'fade',
+                duration   : '2s',
+                onComplete : function() {
+                    console.log("fade is done!")
+                }
+            });
+        ;
+
+        $('.positive-info')
+            .transition({
+                animation  : 'fade',
+                duration   : '5s',
+                onComplete : function() {
+                    console.log("fade is done!")
+                }
+            });
+        ;
     }
 
     showMainMenu() {

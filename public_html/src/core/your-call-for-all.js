@@ -131,34 +131,8 @@ class YourCallForAll {
                         self.character.cameraController.currentlyFocusedDecisionPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
-
-                        $('.positive-info')
-                            .transition({
-                                animation  : 'fade',
-                                duration   : '2s',
-                                onComplete : function() {
-                                    console.log("fade is done!")
-                                    self.uiController.posMessage.style.visibility =  "hidden";
-                                }
-                            });
-                        ;
-
-                        $('.positive-info')
-                            .transition({
-                                animation  : 'fade',
-                                duration   : '5s',
-                                onComplete : function() {
-                                    console.log("fade is done!")
-                                    self.uiController.posMessage.style.visibility =  "hidden";
-                                }
-                            });
-                        ;
-
-
-
-                        //self.uiController.posMessage.style.visibility =  "visible";
-
-                        console.warn("TODO: Show info about the environmental effects of the object");
+                        self.uiController.showAndDestroyPositiveInfo();
+                        //console.warn("TODO: Show info about the environmental effects of the object");
 
                     }
                 }
