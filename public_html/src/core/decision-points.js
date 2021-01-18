@@ -9,6 +9,8 @@ class DecisionPoint extends GameObject {
         super();
         this.name = name;
 
+        this.actionText = "Remove";
+
         this.healthInfluence = 0.0;
 
         this.setupLabel(name);
@@ -45,6 +47,8 @@ class BrokenBottle extends DecisionPoint {
         super("Broken Bottle");
         let gltf = Assets.cloneGLTF(Assets.glTF.BrokenBottle);
         gltf.scale.set(0.01, 0.01, 0.01);
+
+        this.actionText = "Put into pocket";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
@@ -89,13 +93,15 @@ class BiomedicalWaste extends DecisionPoint {
         let gltf = Assets.cloneGLTF(Assets.glTF.BiomedicalWaste);
         gltf.scale.set(0.3, 0.3, 0.3);
 
+        this.actionText = "Incinerate";
+
         this.model = new THREE.Object3D();
         this.model.add(gltf);
 
         this.label.position.set(0, 1.5, 0);
         this.model.add(this.label);
 
-        this.healthInfluence = -0.2;
+        this.healthInfluence = -0.1;
     }
 
 
@@ -105,7 +111,7 @@ class BiomedicalWaste extends DecisionPoint {
 
     static scatter(environment, candidatePosition) {
 
-        if (candidatePosition.y > 1) {
+        if (candidatePosition.y > 1 && candidatePosition.y < 50) {
 
             const percent = environment.prng.random() * 100;
 
@@ -124,6 +130,52 @@ class BiomedicalWaste extends DecisionPoint {
 }
 
 
+class RadioactiveMetalBarrel extends DecisionPoint {
+    static prevalence = 0.01;
+
+    constructor() {
+        super("Radioactive Metal Barrel");
+        let gltf = Assets.cloneGLTF(Assets.glTF.RadioactiveMetalBarrel);
+        gltf.scale.set(0.75, 0.75, 0.75);
+
+        this.actionText = "Bury deep into the soil";
+
+        this.model = new THREE.Object3D();
+        this.model.add(gltf);
+
+        this.label.position.set(0, 1.5, 0);
+        this.model.add(this.label);
+
+        this.healthInfluence = -0.2;
+    }
+
+
+    update(deltaTime, playerPosition) {
+        super.update(deltaTime, playerPosition);
+    }
+
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 50) {
+
+            const percent = environment.prng.random() * 100;
+
+            if (percent < BiomedicalWaste.prevalence) {
+                let radioactiveMetalBarrel = new RadioactiveMetalBarrel();
+
+                radioactiveMetalBarrel.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                environment.objects.push(radioactiveMetalBarrel);
+                environment.insertDecisionPointToKdTree(radioactiveMetalBarrel);
+            }
+
+        }
+    }
+
+}
+
+
 export {DecisionPoint};
 export {BrokenBottle};
 export {BiomedicalWaste};
+export {RadioactiveMetalBarrel};

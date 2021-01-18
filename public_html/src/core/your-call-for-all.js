@@ -69,13 +69,15 @@ class YourCallForAll {
                             let point = queryResult[0];
                             let distance = queryResult[1];
 
-                            self.character.cameraController.currentlyFocusedDecisionPoint = point.decisionPoint;
+                            const decisionPoint = point.decisionPoint;
 
-                            console.debug(`Focus to: ${point.decisionPoint}`)
+                            self.character.cameraController.currentlyFocusedDecisionPoint = decisionPoint;
+
+                            console.debug(`Focus to: ${point}`)
                             console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
 
                             if (distance <= point.decisionPoint.labelVisibilityMinDistance) {
-                                self.uiController.showDecisionPointActionInfoContainer();
+                                self.uiController.showDecisionPointActionInfoContainer(decisionPoint.actionText);
                                 self.playerControl.readyForDecisionPointAction = true;
                             }
                         }
