@@ -14,6 +14,7 @@ import {
 } from "./objects.js";
 import {LinearInterpolator} from "../math/math.js";
 import {FrogOnLeaf, Shark} from "./objects.js";
+import {BiomedicalWaste} from "./decision-points.js";
 
 class Terrain {
 
@@ -333,6 +334,8 @@ class TerrainChunk extends GameObject {
     scatterDecisionPoints(candidatePosition) {
 
         BrokenBottle.scatter(this.environment, candidatePosition);
+
+        BiomedicalWaste.scatter(this.environment, candidatePosition);
 
     }
 
