@@ -5,7 +5,6 @@ import {RenderPass} from "../vendor/three-js/examples/jsm/postprocessing/RenderP
 import {Assets} from "./core/assets.js";
 import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
-import {GameAudio} from "./core/audio.js";
 import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 import {GUI} from "../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
 
@@ -30,10 +29,10 @@ function init() {
         initListeners();
         initScene();
         initRenderer();
-        yourCallForAll = new YourCallForAll(scene, camera, renderer);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer, hyperParameters);
         clock = yourCallForAll.clock;
         gameUiController = yourCallForAll.uiController;
-        audio = new GameAudio(scene, camera, hyperParameters.ambientSound, gameUiController);
+        audio = yourCallForAll.audio;
         applyHyperParams();
         render();
     });

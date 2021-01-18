@@ -47,6 +47,7 @@ class GameUiController {
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
+
             let buttonTextNode = this.playButton.childNodes.item(0);
             buttonTextNode.textContent = "Resume";
 

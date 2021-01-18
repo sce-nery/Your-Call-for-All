@@ -34,7 +34,7 @@ class GameAudio {
         this.audioLoader.load( this.ambientAudioSoundName, function( buffer ) {
             sound.setBuffer( buffer );
             sound.setLoop( true );
-            sound.setVolume( 0.5 );
+            sound.setVolume( 0.1 );
             sound.play();
         });
 
