@@ -455,7 +455,7 @@ class PinkTree extends AnimatedObject {
 
 class Flashlight extends StaticObject {
     constructor(character) {
-        super(Assets.glTF.FlashLight);
+        super(Assets.glTF.Flashlight);
 
         this.character = character;
 
