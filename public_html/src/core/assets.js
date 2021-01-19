@@ -11,7 +11,7 @@ export const Assets = {
     URL: {
         glTF: {
             Jackie: `${root}/assets/models/characters/jackie/jackie.glb`,
-            //PinkTree: `${root}/assets/models/objects/trees/pink-tree/scene.gltf`,
+            PinkTree: `${root}/assets/models/objects/trees/pink-tree/scene.gltf`,
             //WillowTree: `${root}/assets/models/objects/trees/willow-tree/scene.gltf`,
             //PalmTree: `${root}/assets/models/objects/trees/palm-tree/scene.gltf`,
             LowPolyTree: `${root}/assets/models/objects/trees/low-poly-tree/scene.gltf`,

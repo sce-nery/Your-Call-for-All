@@ -411,6 +411,48 @@ class LowPolyGrass extends StaticObject {
     }
 }
 
+
+class PinkTree extends AnimatedObject {
+    static prevalence = 0.01;
+
+    constructor(environment, position) {
+        super(Assets.glTF.PinkTree);
+        this.environment = environment;
+
+        this.model.name = "PinkTree";
+        this.model.position.copy(position);
+
+        let scale = this.environment.prng.randomBetween(0.2, 0.3);
+        this.model.scale.setScalar(scale);
+
+        let min = this.environment.prng.randomBetween(0.8, 0.9);
+        this.setHealthRange(min, 1.0);
+
+        this.playActionByIndex(0);
+    }
+
+    update(deltaTime) {
+        this.mixer.update(deltaTime);
+    }
+
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 15) {
+            let percent = environment.prng.random() * 100;
+
+            if (percent < PinkTree.prevalence) {
+                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                let pinkTree = new PinkTree(environment, position);
+
+                environment.objects.push(pinkTree);
+            }
+
+        }
+
+    }
+}
+
 class Flashlight extends StaticObject {
     constructor(character) {
         super(Assets.glTF.FlashLight);
@@ -472,7 +514,7 @@ class Flashlight extends StaticObject {
             let flashlightPosition = new THREE.Vector3();
             this.character.rightHand.getWorldPosition(flashlightPosition);
             flashlightPosition.add(direction.clone().multiplyScalar(0.1))
-            flashlightPosition.add(new THREE.Vector3(0,0.02,0))
+            flashlightPosition.add(new THREE.Vector3(0, 0.02, 0))
 
             this.model.position.copy(flashlightPosition);
             this.light.position.copy(this.model.position);
@@ -489,6 +531,7 @@ class Flashlight extends StaticObject {
     }
 }
 
+export {PinkTree};
 export {LowPolyGrass};
 export {Flashlight};
 export {PineTree};

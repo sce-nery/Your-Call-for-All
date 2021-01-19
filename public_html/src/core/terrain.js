@@ -10,6 +10,7 @@ import {
     SimpleTree,
     DeadTree,
     PineTree,
+    PinkTree,
     DriedPine, LowPolyGrass
 } from "./objects.js";
 import {LinearInterpolator} from "../math/math.js";
@@ -319,6 +320,8 @@ class TerrainChunk extends GameObject {
         SimpleTree.scatter(this.environment, candidatePosition);
 
         PineTree.scatter(this.environment, candidatePosition);
+
+        PinkTree.scatter(this.environment, candidatePosition);
 
     }
 
