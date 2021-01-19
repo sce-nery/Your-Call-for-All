@@ -24,17 +24,56 @@ class GameUiController {
 
         this.initializeListeners();
         this.hideLoadingBar();
+        this.messages = [
+            "Hurry up before you lose it all.",
+            "You are surrounded by garbage!",
+            "You really like to destroy it, huh?",
+            "Ew! It smells awful. (It stinks).",
+            "What did you do to butterflies?",
+
+
+            "Do something before it’s too late.",
+            "Not a pretty scenery, huh?",
+            "Don’t you care about the sharks, trees, even yourself?",
+            "Not the best view I have ever seen.",
+            "So quiet, where are the animals?",
+
+
+            "It could be better but I could live here.",
+            "You can do it, listen to your heart.",
+            "This place could look so much better with more green.",
+            "Make this place like somewhere you dream tol live in!",
+            "Go ahead and clean this place, I trust you.",
+
+
+            "Wow! What a lovely place.",
+            "Look at the butterflies, they are dancing!",
+            "This place brings me joy, make it stay that way!",
+            "The air is addictive today if there is such a thing.",
+            "Have you ever seen such a blue?It’s magical.",
+
+
+            "I want to stay here forever if only everyone treated the environment as you do!",
+            "The air, the smell, the view, it’s fascinating.",
+            "There is something in the air, almost addictive.",
+            "You’re doing great, look at how beautiful the butterflies look!",
+            "You are our saviour! Enjoy the beautiful scenery.",
+        ];
 
     }
 
     update() {
+        let health = Math.round(this.healthProgress * 4) * 5; // 0 5 10 15 20
+        let randomNum = Math.round(Math.random() * 4);  // 0-4
+        let message = this.messages[health + randomNum];
+
         if (this.ycfa.environment.props.healthFactor !== this.healthProgress) {
             this.healthProgress = this.ycfa.environment.props.healthFactor;
             $('#health')
                 .progress({
                     percent: this.healthProgress * 100,
                     text: {
-                        active: 'You are surrounded by garbage!',
+                        active: message,
                         success: 'You saved the world. Thanks you!'
                     }
                 });
