@@ -62,13 +62,14 @@ class GameUiController {
 
     }
 
-    update() {
-        let health = Math.round(this.healthProgress * 4) * 5; // 0 5 10 15 20
-        let randomNum = Math.round(Math.random() * 4);  // 0-4
-        let message = this.messages[health + randomNum];
-
+    update(deltaTime) {
         if (this.ycfa.environment.props.healthFactor !== this.healthProgress) {
             this.healthProgress = this.ycfa.environment.props.healthFactor;
+
+            let health = Math.round(this.healthProgress * 4) * 5; // 0 5 10 15 20
+            let randomNum = Math.round(Math.random() * 4);  // 0-4
+            let message = this.messages[health + randomNum];
+
             $('#health')
                 .progress({
                     percent: this.healthProgress * 100,
