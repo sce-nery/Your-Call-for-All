@@ -21,7 +21,7 @@ class Environment {
      */
     constructor(yourCallForAll, seed) {
         this.props = {
-            healthFactor: 0.0,
+            healthFactor: 0.1,
             drawDistance: 100,
         }
 
@@ -87,7 +87,7 @@ class Environment {
             rayleigh: 1,
             mieCoefficient: 0.005,
             mieDirectionalG: 0.7,
-            inclination: 0.39,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+            inclination: 0.42,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
             azimuth: 0.25,     // Facing front,
             exposure: 0.5,
         });
@@ -106,17 +106,35 @@ class Environment {
     }
 
     setupDecisionPointsKdTree() {
-        const distanceSquared = function (a, b) {
-            return (a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z)
+        const distance = function (a, b) {
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
         };
 
-        this.decisionPointsKdTree = new KdTree([], distanceSquared, ["x", "z"]);
+        this.decisionPointsKdTree = new KdTree([], distance, ["x", "z"]);
+    }
+
+    rebuildDecisionPointsKdTree() {
+        const distance = function (a, b) {
+            return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
+        };
+
+        let kdTreeDecisionPointElements = []
+        for (let i = 0; i < this.objects.length; i++) {
+            let object = this.objects[i];
+            if (object instanceof DecisionPoint) {
+                let element = object.model.position;
+                element.decisionPoint = object;
+                kdTreeDecisionPointElements.push(element);
+            }
+        }
+
+        this.decisionPointsKdTree = new KdTree(kdTreeDecisionPointElements, distance, ["x", "z"]);
     }
 
 
     getNearestDecisionPoint(position, diameter) {
         let queryResults = this.decisionPointsKdTree.nearest(position, 1, diameter * diameter);
-        if (queryResults.length > 0) return queryResults[0][0];
+        if (queryResults.length > 0) return queryResults[0];
         else return null;
     }
 
@@ -175,6 +193,21 @@ class Environment {
     removeObjectFromScene(object) {
         this.scene.remove(object.model);
         object.isInScene = false;
+    }
+
+    removeBadObject(decisionPoint) {
+        this.removeObjectFromScene(decisionPoint);
+
+        decisionPoint.model.remove(decisionPoint.label);
+
+        this.objects = this.objects.filter(item => item.model.uuid !== decisionPoint.model.uuid);
+
+        this.rebuildDecisionPointsKdTree();
+
+        this.props.healthFactor -= decisionPoint.healthInfluence;
+
+        // Boundary check
+        this.props.healthFactor = Math.min(1.0, Math.max(0.0, this.props.healthFactor));
     }
 
     addObjectToScene(object) {

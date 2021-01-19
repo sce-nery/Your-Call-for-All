@@ -1,8 +1,10 @@
-
-
 /**
  * Mersenne Twister random number generator.
  * Adapted from: https://gist.github.com/banksean/300494
+ *
+ * I've converted it into class structure and made the following extensions:
+ *  - randomBetween(min, max)
+ *
  */
 
 /*
@@ -66,6 +68,8 @@
    http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
    email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
 */
+import {LinearInterpolator} from "./math.js";
+
 class MersenneTwisterPRNG {
     constructor(seed) {
         if (seed === undefined) {
@@ -177,6 +181,10 @@ class MersenneTwisterPRNG {
     random() {
         return this.generateInt32() * (1.0 / 4294967296.0);
         /* divided by 2^32 */
+    }
+
+    randomBetween(min, max) {
+        return LinearInterpolator.real(min, max, this.random());
     }
 
     /* These real versions are due to Isaku Wada, 2002/01/09 added */

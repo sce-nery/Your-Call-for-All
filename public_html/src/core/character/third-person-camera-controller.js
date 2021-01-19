@@ -6,7 +6,7 @@ class ThirdPersonCameraController {
         this.character = character;
         this.camera = this.character.camera;
 
-        this.focusPoint = null;
+        this.currentlyFocusedDecisionPoint = null;
 
         this.currentCameraPosition = new THREE.Vector3();
         this.currentLookAt = new THREE.Vector3();
@@ -18,17 +18,11 @@ class ThirdPersonCameraController {
 
         this.boundaries = {
             maxPolarAngle: THREE.Math.degToRad(115),
-            minPolarAngle: THREE.Math.degToRad(45)
+            minPolarAngle: THREE.Math.degToRad(45),
+            currentMaxPolarAngle: THREE.Math.degToRad(115),
         }
 
-        this.initializeRayCasters();
-
         this.initializeListeners();
-    }
-
-    initializeRayCasters() {
-        const down = new THREE.Vector3(0, -1, 0);
-        this.terrainRaycaster = new THREE.Raycaster(this.camera.position, down, 0.001, 5);
     }
 
     initializeListeners() {
@@ -38,7 +32,7 @@ class ThirdPersonCameraController {
             self.spherical.theta -= sensitivity * event.movementX;
             self.spherical.phi -= sensitivity * event.movementY;
 
-            const maxPolarAngle = self.boundaries.maxPolarAngle;
+            const maxPolarAngle = self.boundaries.currentMaxPolarAngle;
             const minPolarAngle = self.boundaries.minPolarAngle;
             self.spherical.phi = Math.max(minPolarAngle, Math.min(maxPolarAngle, self.spherical.phi));
 
@@ -46,10 +40,10 @@ class ThirdPersonCameraController {
 
         document.addEventListener("pointerlockchange", function (event) {
             if (document.pointerLockElement === self.character.owner.renderer.domElement) {
-                console.log('The pointer lock status is now locked');
+                console.log('The pointer is now locked');
                 document.addEventListener("mousemove", self.mouseMoved, false);
             } else {
-                console.log('The pointer lock status is now unlocked');
+                console.log('The pointer is now unlocked');
                 document.removeEventListener("mousemove", self.mouseMoved, false);
             }
         });
@@ -69,7 +63,7 @@ class ThirdPersonCameraController {
     calculateIdealCameraTarget() {
         // Look at point relative to character.
         if (this.isFocusingOnAnObject()) {
-            return this.focusPoint;
+            return this.currentlyFocusedDecisionPoint.model.position;
         }
 
         const target = new THREE.Vector3(-0.5, 1.0, 0);
@@ -82,7 +76,7 @@ class ThirdPersonCameraController {
     }
 
     isFocusingOnAnObject() {
-        return this.focusPoint !== null;
+        return this.currentlyFocusedDecisionPoint !== null;
     }
 
     enterPointerLock() {
@@ -102,6 +96,8 @@ class ThirdPersonCameraController {
         const cameraPosition = this.calculateIdealCameraPosition();
         const cameraTarget = this.calculateIdealCameraTarget();
 
+        this.applyTerrainSurfaceBoundary(this.currentCameraPosition, this.currentLookAt);
+
         if (!this.isFocusingOnAnObject()) {
             this.lookAround(cameraPosition, cameraTarget);
         }
@@ -111,25 +107,33 @@ class ThirdPersonCameraController {
         this.currentCameraPosition.lerp(cameraPosition, t);
         this.currentLookAt.lerp(cameraTarget, t);
 
-        this.applyTerrainSurfaceBoundary(this.currentCameraPosition);
-
         this.camera.position.copy(this.currentCameraPosition);
         this.camera.lookAt(this.currentLookAt);
     }
 
-    applyTerrainSurfaceBoundary(position) {
+    applyTerrainSurfaceBoundary(cameraPos, target) {
 
-        let intersects = this.terrainRaycaster.intersectObject(this.character.owner.environment.terrain.centerChunk.mesh);
+        if (!this.character.owner.environment.terrain.centerChunk) return;
 
-        if (intersects.length > 0) {
+        // Computes height with raycasting. Could be more efficient if we used height data from heightmap.
+        let height = this.character.owner.environment.terrain.centerChunk.getHeightAt(cameraPos);
+        const offset = 0.5;
 
-            if (intersects[0].distance < 0.5) {
+        if (cameraPos.y < height + offset) {
 
-                position.y = intersects[0].point.y + 0.5;
+            let newCameraPos = cameraPos.clone();
+            newCameraPos.y = height + offset;
 
-            }
+            let targetToNewCameraPos = newCameraPos.clone().sub(target);
 
+            let angleBetweenUpAndNewCameraPos = new THREE.Vector3(0,1,0).angleTo(targetToNewCameraPos);
+
+            this.boundaries.currentMaxPolarAngle = angleBetweenUpAndNewCameraPos;
+
+        } else {
+            this.boundaries.currentMaxPolarAngle = this.boundaries.maxPolarAngle;
         }
+
 
     }
 

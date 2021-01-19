@@ -1,6 +1,6 @@
 import Stats from "../../vendor/stats.module.js";
 
-export function createPerformanceMonitor(container = null) {
+export function createPerformanceMonitor(container = null, offsetX = 0) {
     let stats = new Stats();
     stats.showPanel(0);
 
@@ -10,5 +10,6 @@ export function createPerformanceMonitor(container = null) {
         container.appendChild(stats.domElement);
     }
 
+    stats.domElement.style.cssText = `position:absolute;top:0px;left:${offsetX}px;`;
     return stats;
 }

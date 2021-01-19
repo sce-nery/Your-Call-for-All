@@ -6,6 +6,7 @@ import {Capsule} from "../../../vendor/three-js/examples/jsm/math/Capsule.js";
 import {FlashLight, StaticObject} from "../objects.js";
 
 
+
 class Character {
 
     constructor(ycfa) {
@@ -26,9 +27,12 @@ class Character {
 
         this.setupActions();
         this.setupShadows();
-
         this.setupControllers();
         this.getSpotlight();
+    }
+
+    removeBadObjectFromTheEnvironment(decisionPoint) {
+        this.owner.environment.removeBadObject(decisionPoint);
     }
 
     setupControllers() {
@@ -106,6 +110,11 @@ class Character {
 
     }
 
+    move(offset) {
+        this.model.position.add(offset);
+        this.collider.translate(offset);
+        this.controller.locomotion.position.add(offset);
+    }
 }
 
 

@@ -1,49 +1,86 @@
 import {Environment} from "./environment.js";
 import {Character} from "./character/character.js";
 import {Octree} from "../../vendor/three-js/examples/jsm/math/Octree.js";
+import {GameUiController} from "./game-ui.js";
+import * as THREE from "../../vendor/three-js/build/three.module.js";
+import {GameAudio} from "./audio.js";
+import {TransformControls} from "../../vendor/three-js/examples/jsm/controls/TransformControls.js";
 
 class YourCallForAll {
 
-    constructor(scene, camera, renderer) {
+    constructor(scene, camera, renderer, labelRenderer, hyperParameters) {
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.labelRenderer = renderer;
+        this.hyperParameters = hyperParameters;
+
+        this.clock = new THREE.Clock(false);
 
         this.initializeEnvironment();
         this.initializeCharacter();
+        this.initializeUiController();
+        this.initializeAudio();
 
-        // Call when the game starts
-        this.registerPlayerControlListeners();
+        this.initializeInspectionControls();
+    }
+
+    initializeAudio() {
+        this.audio = new GameAudio(this.scene, this.camera, this.hyperParameters.ambientSound);
+    }
+
+    initializeUiController() {
+        this.uiController = new GameUiController(this);
     }
 
     initializeEnvironment() {
 
         this.worldOctree = new Octree();
 
-        this.environment = new Environment(this, 2527); // environment includes: terrain, sky, and other game objects
+        this.environment = new Environment(this, 5408); // environment includes: terrain, sky, and other game objects
+        this.environment.props.drawDistance = 75;
     }
 
     initializeCharacter() {
         this.character = new Character(this);
-        this.character.model.position.set(-26, 0, -4);
-        this.character.collider.translate(this.character.model.position);
-       // this.character.getSpotlight(this.scene);//bura
+        let initialPosition = new THREE.Vector3(36, 3, -54);
+        initialPosition.y = this.environment.terrain.getHeightAt(initialPosition);
+        this.character.move(initialPosition);
+
         this.scene.add(this.character.model);
 
         const self = this;
 
         this.playerControl = {
+            readyForDecisionPointAction: false,
+            inspectionModeEnabled: false,
+
             onMouseDown: function (e) {
                 switch (e.button) {
                     case 2:
 
-                        let nearestDecisionPoint = self.environment.getNearestDecisionPoint(self.character.model.position, 100);
+                        let queryResult = self.environment.getNearestDecisionPoint(
+                            self.character.model.position,
+                            self.environment.props.drawDistance * 0.75
+                        );
 
-                        self.character.cameraController.focusPoint = nearestDecisionPoint;
 
-                        console.debug(`Focus to: ${nearestDecisionPoint}`)
-                        console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+                        if (queryResult) {
+                            let point = queryResult[0];
+                            let distance = queryResult[1];
 
+                            const decisionPoint = point.decisionPoint;
+
+                            self.character.cameraController.currentlyFocusedDecisionPoint = decisionPoint;
+
+                            console.debug(`Focus to: ${point}`)
+                            console.debug(`K-d Tree Balance: ${self.environment.decisionPointsKdTree.balanceFactor()}`);
+
+                            if (distance <= point.decisionPoint.labelVisibilityMinDistance) {
+                                self.uiController.showDecisionPointActionInfoContainer(decisionPoint.actionText);
+                                self.playerControl.readyForDecisionPointAction = true;
+                            }
+                        }
 
                         break;
                 }
@@ -51,29 +88,98 @@ class YourCallForAll {
             onMouseUp: function (e) {
                 switch (e.button) {
                     case 2:
-                        self.character.cameraController.focusPoint = null;
-                        console.debug("Focus end")
+                        if (!self.playerControl.inspectionModeEnabled) {
+                            self.character.cameraController.currentlyFocusedDecisionPoint = null;
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.playerControl.readyForDecisionPointAction = false;
+                            console.debug("Focus end")
+                        }
                         break;
                 }
             },
             onMouseClick: function (e) {
-                self.character.cameraController.enterPointerLock();
             },
             onKeyDown: function (e) {
+                console.debug(`Keydown: ${e.code}`);
                 self.character.controller.input.onKeyDown(e);
+
+                if (self.playerControl.inspectionModeEnabled) {
+                    if (e.code === "KeyR") {
+
+                        self.transformControls.setMode("rotate");
+
+                    } else if (e.code === "KeyT") {
+
+                        self.transformControls.setMode("translate");
+
+                    } else if (e.code === "KeyY") {
+                        self.transformControls.setMode("scale");
+
+                    }
+                }
             },
             onKeyUp: function (e) {
+                console.debug(`Keyup: ${e.code}`);
                 self.character.controller.input.onKeyUp(e);
+
+                if (self.playerControl.readyForDecisionPointAction) {
+                    if (e.code === "KeyI") {
+
+                        if (!self.playerControl.inspectionModeEnabled) {
+                            console.debug("Enter inspection mode");
+
+                            self.playerControl.inspectionModeEnabled = true;
+
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.uiController.enterInspectionModeUI();
+
+                            document.exitPointerLock();
+
+                            self.transformControls.attach(self.character.cameraController.currentlyFocusedDecisionPoint.model);
+                            self.scene.add(self.transformControls);
+                        } else {
+                            console.debug("Leave inspection mode");
+
+                            self.playerControl.inspectionModeEnabled = false;
+
+                            self.uiController.exitInspectionModeUI();
+
+                            self.transformControls.detach();
+                            self.scene.remove(self.transformControls);
+
+                            self.character.cameraController.enterPointerLock();
+
+                            self.character.cameraController.currentlyFocusedDecisionPoint = null;
+                            self.uiController.hideDecisionPointActionInfoContainer();
+                            self.playerControl.readyForDecisionPointAction = false;
+                            console.debug("Focus end")
+
+                        }
+
+
+                    } else if (e.code === "KeyF") {
+
+                        self.character.removeBadObjectFromTheEnvironment(self.character.cameraController.currentlyFocusedDecisionPoint);
+                        self.character.cameraController.currentlyFocusedDecisionPoint = null;
+                        self.uiController.hideDecisionPointActionInfoContainer();
+                        self.playerControl.readyForDecisionPointAction = false;
+                        self.uiController.showAndDestroyPositiveInfo();
+
+                    }
+                }
             },
-            resetKeys: function (e){
-                self.character.controller.input.resetKeys();
-            }
         };
+    }
+
+    initializeInspectionControls() {
+        this.transformControls = new TransformControls(this.camera, this.renderer.domElement);
+
     }
 
     update(deltaTime) {
         this.environment.update(deltaTime, this.character.model.position);
         this.character.update(deltaTime, this);
+        this.uiController.update(deltaTime);
     }
 
     // Must be called when the game starts.
@@ -93,7 +199,7 @@ class YourCallForAll {
         document.removeEventListener("click", this.playerControl.onMouseClick);
         document.removeEventListener('keydown', this.playerControl.onKeyDown, false);
         document.removeEventListener('keyup', this.playerControl.onKeyUp, false);
-        this.playerControl.resetKeys();
+        this.character.controller.input.resetKeys();
     }
 }
 

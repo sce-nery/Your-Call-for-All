@@ -37,6 +37,7 @@ class KdTree {
     }
 
     buildTree(points, depth, parent) {
+        const self = this;
         var dim = depth % this.dimensions.length,
             median,
             node;
@@ -49,7 +50,7 @@ class KdTree {
         }
 
         points.sort(function (a, b) {
-            return a[this.dimensions[dim]] - b[this.dimensions[dim]];
+            return a[self.dimensions[dim]] - b[self.dimensions[dim]];
         });
 
         median = Math.floor(points.length / 2);

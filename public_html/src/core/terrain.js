@@ -1,7 +1,7 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
-import {BrokenBottle} from "./decision-points.js";
+import {BrokenBottle, RadioactiveMetalBarrel} from "./decision-points.js";
 import {
     GameObject,
     AnimatedObject,
@@ -14,6 +14,7 @@ import {
 } from "./objects.js";
 import {LinearInterpolator} from "../math/math.js";
 import {FrogOnLeaf, Shark} from "./objects.js";
+import {BiomedicalWaste} from "./decision-points.js";
 
 class Terrain {
 
@@ -54,6 +55,8 @@ class Terrain {
      * @param purgeCache Whether to remove cache before loading.
      */
     loadChunks(position, purgeCache = false) {
+        this.environment.owner.clock.stop();
+
         if (purgeCache) {
             this.makeAllChunksInactive();
             this.removeInactiveChunksFromScene();
@@ -100,6 +103,8 @@ class Terrain {
         if ((!previousCenterChunk) || previousCenterChunk.mesh.uuid !== this.centerChunk.mesh.uuid) {
             this.environment.regenerateOctree(this.centerChunk.mesh);
         }
+
+        this.environment.owner.clock.start();
     }
 
     makeAllChunksInactive() {
@@ -170,6 +175,23 @@ class Terrain {
                 chunk.update(deltaTime, playerPosition);
             }
         }
+    }
+
+    getHeightAt(position) {
+
+        const raycaster = new THREE.Raycaster(new THREE.Vector3(position.x, 10000, position.z), new THREE.Vector3(0, -1, 0));
+
+        let meshes = Object.values(this.chunks).map(chunk => chunk.mesh);
+
+        let intersects = raycaster.intersectObjects(meshes);
+
+        if (intersects.length > 0) {
+
+            return intersects[0].point.y;
+
+        }
+
+        return 0;
     }
 }
 
@@ -276,78 +298,27 @@ class TerrainChunk extends GameObject {
             }
         }
 
-        console.debug(`Created ${this.environment.objects.length} objects.`);
+        console.debug(`Created ${this.environment.objects.length} objects so far.`);
 
         this.geometry.verticesNeedUpdate = true;
         this.geometry.computeVertexNormals();
     }
 
     scatterAnimals(candidatePosition) {
-        let percent = this.environment.prng.random() * 100;
 
-        if (candidatePosition.y > -1 && candidatePosition.y < 0) { // Height check
-            if (percent < 0.1) {
+        FrogOnLeaf.scatter(this.environment, candidatePosition);
 
-                let frog = new FrogOnLeaf(this.environment, new THREE.Vector3(candidatePosition.x, 0, candidatePosition.z));
+        Shark.scatter(this.environment, candidatePosition);
 
-                this.environment.objects.push(frog);
-
-            }
-        }
-
-        if (candidatePosition.y < -2) {
-            if (percent < 0.1) {
-
-                let shark = new Shark(this.environment, new THREE.Vector3(candidatePosition.x, -0.75, candidatePosition.z));
-
-                this.environment.objects.push(shark);
-
-            }
-        }
-
-        if (candidatePosition.y > 0 && candidatePosition.y < 20) {
-            if (percent < 0.15) {
-                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y + 1.0, candidatePosition.z);
-                let butterfly = new Butterfly(this.environment, position);
-
-                this.environment.objects.push(butterfly);
-            }
-        }
+        Butterfly.scatter(this.environment, candidatePosition);
 
     }
 
     scatterTrees(candidatePosition) {
 
-        if (candidatePosition.y > 1 && candidatePosition.y < 10) { // Height check
-            let percent = this.environment.prng.random() * 100;
+        SimpleTree.scatter(this.environment, candidatePosition);
 
-            let treeType = Math.ceil(this.environment.prng.random() * 2);
-
-            if (percent < 0.3) { // %0.3 of the time.
-
-                if (treeType === 1) {
-                    let simpleTree = new SimpleTree(this.environment, candidatePosition);
-                    this.environment.objects.push(simpleTree);
-
-                    let deadTree = new DeadTree(this.environment, candidatePosition);
-                    deadTree.model.scale.copy(simpleTree.model.scale.clone().multiplyScalar(1 / 500));
-                    this.environment.objects.push(deadTree);
-                } else if (treeType === 2) {
-
-                    let pineTree = new PineTree(this.environment, candidatePosition);
-                    this.environment.objects.push(pineTree);
-
-                    let driedPine = new DriedPine(this.environment, candidatePosition);
-                    driedPine.model.scale.copy(pineTree.model.scale.clone().multiplyScalar(1 / 2.5));
-
-                    this.environment.objects.push(driedPine);
-                }
-
-            }
-
-
-        }
-
+        PineTree.scatter(this.environment, candidatePosition);
 
     }
 
@@ -355,34 +326,19 @@ class TerrainChunk extends GameObject {
     }
 
     scatterBushes(candidatePosition) {
-        if (candidatePosition.y > 1 && candidatePosition.y < 10) {
-            let percent = this.environment.prng.random() * 100;
 
-            if (percent < 1) {
-                const heightOffset = LinearInterpolator.real(0.1, 0.2, this.environment.prng.random());
-                const position = new THREE.Vector3(candidatePosition.x, candidatePosition.y - heightOffset, candidatePosition.z);
+        LowPolyGrass.scatter(this.environment, candidatePosition);
 
-                let grass = new LowPolyGrass(this.environment, position);
-
-                this.environment.objects.push(grass);
-            }
-
-        }
     }
 
     scatterDecisionPoints(candidatePosition) {
-        const percent = this.environment.prng.random() * 100;
 
-        if (percent < 0.1) {
-            if (candidatePosition.y > 1 && candidatePosition.y < 10) {
-                let brokenBottle = new BrokenBottle();
-                brokenBottle.model.name = "BrokenBottle";
-                brokenBottle.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+        BrokenBottle.scatter(this.environment, candidatePosition);
 
-                this.environment.objects.push(brokenBottle);
-                this.environment.insertDecisionPointToKdTree(brokenBottle);
-            }
-        }
+        BiomedicalWaste.scatter(this.environment, candidatePosition);
+
+        RadioactiveMetalBarrel.scatter(this.environment, candidatePosition);
+
     }
 
     setupChunkMesh() {
@@ -391,6 +347,7 @@ class TerrainChunk extends GameObject {
         this.mesh.castShadow = true;
         this.mesh.receiveShadow = true;
         this.mesh.rotation.x = -Math.PI / 2;
+        this.mesh.updateMatrixWorld();
     }
 
     update(deltaTime, playerPosition) {
@@ -402,6 +359,21 @@ class TerrainChunk extends GameObject {
         //this.materials[1].opacity = 1.0 - this.environment.props.healthFactor;
         //this.materials[0].visible = true;
         //this.materials[1].visible = true;
+    }
+
+    getHeightAt(position) {
+
+        const raycaster = new THREE.Raycaster(new THREE.Vector3(position.x, 10000, position.z), new THREE.Vector3(0, -1, 0));
+
+        let intersects = raycaster.intersectObject(this.mesh);
+
+        if (intersects.length > 0) {
+
+            return intersects[0].point.y;
+
+        }
+
+        return null;
     }
 }
 

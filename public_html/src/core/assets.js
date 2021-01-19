@@ -5,45 +5,48 @@ import {SkeletonUtils} from "../../vendor/three-js/examples/jsm/utils/SkeletonUt
 
 const loadingManager = new THREE.LoadingManager();
 
-export const Assets = {
+const root = "/Your-Call-for-All/public_html";
 
+export const Assets = {
     URL: {
         glTF: {
-            Jackie: "/Your-Call-for-All/public_html/assets/models/characters/jackie/jackie.glb",
-            PinkTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pink-tree/scene.gltf",
-            WillowTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/willow-tree/scene.gltf",
-            PalmTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/palm-tree/scene.gltf",
-            LowPolyTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree/scene.gltf",
-            SimpleTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/simple-tree/scene.gltf",
-            PineTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/pine-tree/scene.gltf",
-            DriedPine: "/Your-Call-for-All/public_html/assets/models/objects/trees/dried-pine/scene.gltf",
-            DeadTree: "/Your-Call-for-All/public_html/assets/models/objects/trees/dead-tree/scene.gltf",
-            TwoTrees: "/Your-Call-for-All/public_html/assets/models/objects/trees/two-trees/scene.gltf",
-            Butterfly: "/Your-Call-for-All/public_html/assets/models/objects/trees/butterfly/scene.gltf",
-            FrogOnLeaf: "/Your-Call-for-All/public_html/assets/models/objects/trees/frog-on-leaf/scene.gltf",
-            Shark: "/Your-Call-for-All/public_html/assets/models/objects/trees/shark/scene.gltf",
-            YardGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/yard-grass/scene.gltf",
-            PlantShrub: "/Your-Call-for-All/public_html/assets/models/objects/foliage/plant-shrub/scene.gltf",
-            Grass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/grass/scene.gltf",
-            LowPolyGrass: "/Your-Call-for-All/public_html/assets/models/objects/foliage/low-poly-grass/scene.gltf",
-            Lavender: "/Your-Call-for-All/public_html/assets/models/objects/foliage/lavender/scene.gltf",
-            WoodenBlock: "/Your-Call-for-All/public_html/assets/models/objects/trees/wooden-block/scene.gltf",
-            TropicalPlant: "/Your-Call-for-All/public_html/assets/models/objects/foliage/tropical-plant/scene.gltf",
-            Rock: "/Your-Call-for-All/public_html/assets/models/objects/foliage/rock/scene.gltf",
-            BrokenBottle: "/Your-Call-for-All/public_html/assets/models/objects/decision-points/broken-bottle/scene.gltf",
-            LowPolyTreeWind: "/Your-Call-for-All/public_html/assets/models/objects/trees/low-poly-tree-wind/scene.gltf",
-            FlashLight: "/Your-Call-for-All/public_html/assets/models/objects/spotlight/scene.gltf"
+            Jackie: `${root}/assets/models/characters/jackie/jackie.glb`,
+            //PinkTree: `${root}/assets/models/objects/trees/pink-tree/scene.gltf`,
+            //WillowTree: `${root}/assets/models/objects/trees/willow-tree/scene.gltf`,
+            //PalmTree: `${root}/assets/models/objects/trees/palm-tree/scene.gltf`,
+            LowPolyTree: `${root}/assets/models/objects/trees/low-poly-tree/scene.gltf`,
+            SimpleTree: `${root}/assets/models/objects/trees/simple-tree/scene.gltf`,
+            PineTree: `${root}/assets/models/objects/trees/pine-tree/scene.gltf`,
+            DriedPine: `${root}/assets/models/objects/trees/dried-pine/scene.gltf`,
+            DeadTree: `${root}/assets/models/objects/trees/dead-tree/scene.gltf`,
+            //TwoTrees: `${root}/assets/models/objects/trees/two-trees/scene.gltf`,
+            Butterfly: `${root}/assets/models/objects/trees/butterfly/scene.gltf`,
+            FrogOnLeaf: `${root}/assets/models/objects/trees/frog-on-leaf/frog.glb`,
+            Shark: `${root}/assets/models/objects/trees/shark/scene.gltf`,
+            //YardGrass: `${root}/assets/models/objects/foliage/yard-grass/scene.gltf`,
+            //PlantShrub: `${root}/assets/models/objects/foliage/plant-shrub/scene.gltf`,
+            //Grass: `${root}/assets/models/objects/foliage/grass/scene.gltf`,
+            LowPolyGrass: `${root}/assets/models/objects/foliage/low-poly-grass/scene.gltf`,
+            Lavender: `${root}/assets/models/objects/foliage/lavender/scene.gltf`,
+            WoodenBlock: `${root}/assets/models/objects/trees/wooden-block/scene.gltf`,
+            //TropicalPlant: `${root}/assets/models/objects/foliage/tropical-plant/scene.gltf`,
+            //Rock: `${root}/assets/models/objects/foliage/rock/scene.gltf`,
+            BrokenBottle: `${root}/assets/models/objects/decision-points/broken-bottle/scene.gltf`,
+            BiomedicalWaste: `${root}/assets/models/objects/decision-points/biomedical-waste/scene.gltf`,
+            RadioactiveMetalBarrel: `${root}/assets/models/objects/decision-points/radioactive-metal-barrel/radioactive-metal-barrel.glb`,
+            //LowPolyTreeWind: `${root}/assets/models/objects/trees/low-poly-tree-wind/scene.gltf`,
+            FlashLight: `${root}/assets/models/objects/spotlight/scene.gltf`
         },
         OBJ: {},
         Texture: {
-            Grass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Color.png',
-            Grass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/Grass_Normal.png',
-            ShallowGrass_Color: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Color.jpg',
-            ShallowGrass_Normal: '/Your-Call-for-All/public_html/assets/textures/ground/ShallowGrass_Normal.jpg',
-            Sand_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Sand_Color.jpg',
-            Snow_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Snow_Color.jpg',
-            Rocks_Color: '/Your-Call-for-All/public_html/assets/textures/ground/Rocks_Color.jpg',
-            Water_Normal: '/Your-Call-for-All/public_html/assets/textures/water/Water_Normal.jpg',
+            Grass_Color: `${root}/assets/textures/ground/Grass_Color.png`,
+            Grass_Normal: `${root}/assets/textures/ground/Grass_Normal.png`,
+            ShallowGrass_Color: `${root}/assets/textures/ground/ShallowGrass_Color.jpg`,
+            ShallowGrass_Normal: `${root}/assets/textures/ground/ShallowGrass_Normal.jpg`,
+            Sand_Color: `${root}/assets/textures/ground/Sand_Color.jpg`,
+            Snow_Color: `${root}/assets/textures/ground/Snow_Color.jpg`,
+            Rocks_Color: `${root}/assets/textures/ground/Rocks_Color.jpg`,
+            Water_Normal: `${root}/assets/textures/water/Water_Normal.jpg`,
         }
     },
 
@@ -64,6 +67,8 @@ export const Assets = {
         TropicalPlant: null,
         Rock: null,
         BrokenBottle: null,
+        BiomedicalWaste: null,
+        RadioactiveMetalBarrel: null,
         DeadTree: null,
         PinkTree: null,
         WillowTree: null,
@@ -99,11 +104,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.glTF)) {
             gltfLoader.load(this.URL.glTF[key], (gltf) => {
-
-                $('#progress-bar')
-                    .progress('increment')
-                ;
-
                 this.glTF[key] = gltf;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -113,9 +113,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.OBJ)) {
             objLoader.load(this.URL.OBJ[key], (obj) => {
-                $('#progress-bar')
-                    .progress('increment')
-                ;
                 this.OBJ[key] = obj;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -125,9 +122,6 @@ export const Assets = {
 
         for (const key of Object.keys(this.URL.Texture)) {
             textureLoader.load(this.URL.Texture[key], (texture) => {
-                $('#progress-bar')
-                    .progress('increment')
-                ;
                 this.Texture[key] = texture;
             }, null, function (e) {
                 console.error(`Failed to load: ${key}`);
@@ -137,30 +131,23 @@ export const Assets = {
 
 
         loadingManager.onLoad = onLoad;
+        loadingManager.onError = function (url) {
 
+            console.error('There was an error loading ' + url);
 
-
-
-
-
-        /*
-        const progressbarElem = document.querySelector('#progressbar');
-
+        };
         loadingManager.onProgress = function (url, itemsLoaded, itemsTotal) {
-            progressbarElem.style.width = `${itemsLoaded / itemsTotal * 100 | 0}%`;
-            //console.log(progressbarElem.style.width);
-            let percentage = document.getElementById("percentage");
-            if (percentage) {
-                percentage.innerHTML = progressbarElem.style.width;
-                if (parseInt(progressbarElem.style.width) > 65) {
-                    document.getElementById("l-message").innerHTML = "Look at the color of the ocean. It's your call!";
-                    //document.getElementById("loading").style.backgroundImage = "url('./assets/images/start-screen-img2.png')";
-                }
-            }
-        }
+            $('#progress-bar')
+                .progress({
+                    percent: ((itemsLoaded) / itemsTotal) * 100,
+                    text: {
+                        active: 'If you see butterflies you are on the right way.',
+                        success: 'Assets are loaded! Generating the world...'
+                    }
+                });
+        };
 
 
-         */
         // Comment this if error is unrelated to asset loading,
         // and check preserve logs checkbox in browser console
         // loadingManager.onError = function (e) {
