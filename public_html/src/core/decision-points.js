@@ -48,7 +48,7 @@ class BrokenBottle extends DecisionPoint {
         let gltf = Assets.cloneGLTF(Assets.glTF.BrokenBottle);
         gltf.scale.set(0.01, 0.01, 0.01);
 
-        this.actionText = "Put into pocket";
+        this.actionText = "A frightening 4,000 years is how long it takes a glass bottle to decompose in the environment. Every time we leave a recipient of this kind in the countryside, we are putting the environment and its ecosystem at risk.";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
@@ -93,7 +93,7 @@ class BiomedicalWaste extends DecisionPoint {
         let gltf = Assets.cloneGLTF(Assets.glTF.BiomedicalWaste);
         gltf.scale.set(0.3, 0.3, 0.3);
 
-        this.actionText = "Incinerate";
+        this.actionText = "Improper segregation and disposal of biomedical waste has the potential to contaminate groundwater sources, which in turn may infect humans and animals alike.";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
@@ -175,6 +175,50 @@ class RadioactiveMetalBarrel extends DecisionPoint {
 }
 
 
+class PlasticBag extends DecisionPoint {
+    static prevalence = 0.1;
+
+    constructor() {
+        super("Plastic Bag");
+        let gltf = Assets.cloneGLTF(Assets.glTF.PlasticBag);
+        gltf.scale.set(0.3, 0.3, 0.3);
+
+        this.actionText = "It can take up to 1,000 years for plastic to decompose in landfills. The plastic bags we use daily take 10 years to 1,000 years to decompose, while plastic bottles can take 450 years or more.";
+
+        this.model = new THREE.Object3D();
+        this.model.add(gltf);
+
+        this.label.position.set(0, 0.5, 0);
+        this.model.add(this.label);
+
+        this.healthInfluence = -0.04;
+    }
+
+
+    update(deltaTime, playerPosition) {
+        super.update(deltaTime, playerPosition);
+    }
+
+    static scatter(environment, candidatePosition) {
+
+        if (candidatePosition.y > 1 && candidatePosition.y < 50) {
+
+            const percent = environment.prng.random() * 100;
+
+            if (percent < PlasticBag.prevalence) {
+                let plasticBag = new PlasticBag();
+
+                plasticBag.model.position.set(candidatePosition.x, candidatePosition.y, candidatePosition.z);
+
+                environment.objects.push(plasticBag);
+                environment.insertDecisionPointToKdTree(plasticBag);
+            }
+
+        }
+    }
+
+}
+export {PlasticBag};
 export {DecisionPoint};
 export {BrokenBottle};
 export {BiomedicalWaste};
