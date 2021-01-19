@@ -27,6 +27,14 @@
     z-index: 1;
 }
 
+.settings-page-bar {
+    position: absolute;
+    width: 25%;
+    top: 25%;
+    left: 50%;
+    z-index: 1;
+}
+
 .progress-bar-css {
     margin-top: 25%;
     margin-left: 25%;

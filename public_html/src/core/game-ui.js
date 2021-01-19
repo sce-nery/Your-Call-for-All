@@ -79,6 +79,21 @@ class GameUiController {
             }
             this.musicIsPlaying = !this.musicIsPlaying;
 
+
+        }
+
+        this.settingsButton.onclick = () => {
+
+            let v = this.settingsPageBar.style.visibility;
+
+            if (v === "visible"){
+                this.settingsPageBar.style.visibility = "hidden";
+            }else {
+                this.settingsPageBar.style.visibility = "visible";
+            }
+
+            //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
+            //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
         }
 
 
@@ -115,6 +130,7 @@ class GameUiController {
         this.healthBar = document.querySelector("#health-bar-id");
 
         this.posMessage = document.querySelector("#positive-info");
+        this.settingsPageBar = document.querySelector("#settings-page-bar");
 
     }
 
