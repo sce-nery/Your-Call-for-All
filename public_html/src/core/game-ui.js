@@ -42,7 +42,7 @@ class GameUiController {
             "It could be better but I could live here.",
             "You can do it, listen to your heart.",
             "This place could look so much better with more green.",
-            "Make this place like somewhere you dream tol live in!",
+            "Make this place like somewhere you dream to live in!",
             "Go ahead and clean this place, I trust you.",
 
 
@@ -50,7 +50,7 @@ class GameUiController {
             "Look at the butterflies, they are dancing!",
             "This place brings me joy, make it stay that way!",
             "The air is addictive today if there is such a thing.",
-            "Have you ever seen such a blue?It’s magical.",
+            "Have you ever seen such a blue? It’s magical.",
 
 
             "I want to stay here forever if only everyone treated the environment as you do!",
