@@ -1,7 +1,7 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
-import {BrokenBottle, RadioactiveMetalBarrel} from "./decision-points.js";
+import {BrokenBottle, PlasticBag, RadioactiveMetalBarrel} from "./decision-points.js";
 import {
     GameObject,
     AnimatedObject,
@@ -338,6 +338,8 @@ class TerrainChunk extends GameObject {
         BiomedicalWaste.scatter(this.environment, candidatePosition);
 
         RadioactiveMetalBarrel.scatter(this.environment, candidatePosition);
+
+        PlasticBag.scatter(this.environment, candidatePosition);
 
     }
 
