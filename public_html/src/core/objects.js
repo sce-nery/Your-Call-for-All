@@ -463,6 +463,8 @@ class Flashlight extends StaticObject {
 
         this.model.scale.setScalar(0.02);
 
+        this.enabled = false;
+
         this.setupLight();
     }
 
@@ -488,8 +490,7 @@ class Flashlight extends StaticObject {
     }
 
     update(deltaTime, ycfa) {
-        let timeOfDay = ycfa.environment.sky.props.inclination;
-        if (timeOfDay > 0.5 && timeOfDay <= 1.0) {
+        if (this.enabled) {
             if (!this.isInScene) {
                 ycfa.scene.add(this.model);
                 ycfa.scene.add(this.light);

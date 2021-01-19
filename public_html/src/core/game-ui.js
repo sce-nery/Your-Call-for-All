@@ -49,6 +49,8 @@ class GameUiController {
 
         this.info = document.querySelector("#info-container");
 
+        this.controlsInfo = document.querySelector("#main-menu-controls-info-container");
+
         this.playButton = document.querySelector("#play-button");
         this.settingsButton = document.querySelector("#settings-button");
 
@@ -278,11 +280,13 @@ class GameUiController {
     showMainMenu() {
         this.menu.style.visibility = "visible";
         this.info.style.visibility = "visible";
+        this.controlsInfo.style.visibility = "visible";
     }
 
     hideMainMenu() {
         this.menu.style.visibility = "hidden";
         this.info.style.visibility = "hidden";
+        this.controlsInfo.style.visibility = "hidden";
     }
 
     showRenderTarget() {

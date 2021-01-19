@@ -20,6 +20,13 @@
     z-index: 1;
 }
 
+.main-menu-controls-info-container {
+    position: absolute;
+    right: 1.5%;
+    bottom: 10.0%;
+    z-index: 1;
+}
+
 .inspection-mode-info-container {
     position: absolute;
     right: 1.5%;
