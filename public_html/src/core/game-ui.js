@@ -75,7 +75,6 @@ class GameUiController {
                     percent: this.healthProgress * 100,
                     text: {
                         active: message,
-                        success: 'You saved the world. Thanks you!'
                     }
                 });
         }
