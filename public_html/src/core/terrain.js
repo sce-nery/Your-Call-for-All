@@ -1,21 +1,8 @@
 import * as THREE from "../../vendor/three-js/build/three.module.js";
 import TextureUtils from "../util/texture-utils.js";
 import {Assets} from "./assets.js";
-import {BrokenBottle, PlasticBag, RadioactiveMetalBarrel} from "./decision-points.js";
-import {
-    GameObject,
-    AnimatedObject,
-    StaticObject,
-    Butterfly,
-    SimpleTree,
-    DeadTree,
-    PineTree,
-    PinkTree,
-    DriedPine, LowPolyGrass
-} from "./objects.js";
-import {LinearInterpolator} from "../math/math.js";
-import {FrogOnLeaf, Shark} from "./objects.js";
-import {BiomedicalWaste} from "./decision-points.js";
+import {BiomedicalWaste, BrokenBottle, PlasticBag, RadioactiveMetalBarrel} from "./decision-points.js";
+import {Butterfly, FrogOnLeaf, GameObject, LowPolyGrass, PineTree, PinkTree, Shark, SimpleTree} from "./objects.js";
 
 class Terrain {
 

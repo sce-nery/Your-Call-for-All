@@ -3,8 +3,7 @@ import {ThirdPersonCameraController} from "./third-person-camera-controller.js";
 import {Assets} from "../assets.js";
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {Capsule} from "../../../vendor/three-js/examples/jsm/math/Capsule.js";
-import {Flashlight, StaticObject} from "../objects.js";
-
+import {Flashlight} from "../objects.js";
 
 
 class Character {
