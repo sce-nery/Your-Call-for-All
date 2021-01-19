@@ -7,12 +7,13 @@ import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 import {GUI} from "../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
+import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
 
 let hyperParameters = {
     showGridHelper: false,
-    showPerformanceMonitor: true,
-    showParameters: true,
+    showPerformanceMonitor: false,
+    showParameters: false,
 }
 
 let yourCallForAll;
@@ -28,12 +29,17 @@ function init() {
         initListeners();
         initScene();
         initRenderer();
+
+
         yourCallForAll = new YourCallForAll(scene, camera, renderer, labelRenderer, bloomPass);
+
+
         clock = yourCallForAll.clock;
         gameUiController = yourCallForAll.uiController;
         audio = yourCallForAll.audio;
-        applyHyperParams();
 
+
+        applyHyperParams();
 
 
         render();
@@ -90,8 +96,8 @@ function initRenderer() {
     // renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 0.5;
     // renderer.outputEncoding = THREE.sRGBEncoding;
-     renderer.shadowMap.enabled = true;
-     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));

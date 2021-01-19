@@ -82,6 +82,8 @@ class Sky extends GameObject {
 
             this.environment.scene.environment = this.environment.owner.pmremGenerator.fromScene(this.skyDome).texture;
 
+        } else {
+            this.environment.scene.environment = null;
         }
     }
 }
