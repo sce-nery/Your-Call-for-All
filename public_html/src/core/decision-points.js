@@ -11,6 +11,8 @@ class DecisionPoint extends GameObject {
 
         this.actionText = "Remove";
 
+        this.infoText = "You've just made the world a better place!";
+
         this.healthInfluence = 0.0;
 
         this.setupLabel(name);
@@ -41,14 +43,19 @@ class DecisionPoint extends GameObject {
 }
 
 class BrokenBottle extends DecisionPoint {
-    static prevalence = 0.025;
+    static prevalence = 0.03;
 
     constructor() {
         super("Broken Bottle");
         let gltf = Assets.cloneGLTF(Assets.glTF.BrokenBottle);
         gltf.scale.set(0.01, 0.01, 0.01);
 
-        this.actionText = "A frightening 4,000 years is how long it takes a glass bottle to decompose in the environment. Every time we leave a recipient of this kind in the countryside, we are putting the environment and its ecosystem at risk.";
+        this.actionText = "Put into pocket";
+
+        this.infoText = "A frightening 4,000 years is how long it \n" +
+            "takes a glass bottle to decompose in the environment. \n" +
+            "Every time we leave a recipient of this kind in the countryside, \n" +
+            "we are putting the environment and its ecosystem at risk.";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
@@ -93,7 +100,11 @@ class BiomedicalWaste extends DecisionPoint {
         let gltf = Assets.cloneGLTF(Assets.glTF.BiomedicalWaste);
         gltf.scale.set(0.3, 0.3, 0.3);
 
-        this.actionText = "Improper segregation and disposal of biomedical waste has the potential to contaminate groundwater sources, which in turn may infect humans and animals alike.";
+        this.actionText = "Incinerate";
+
+        this.infoText = "Improper segregation and disposal of biomedical waste \n" +
+            "has the potential to contaminate groundwater \n" +
+            "sources, which in turn may infect humans and animals alike.";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
@@ -140,6 +151,8 @@ class RadioactiveMetalBarrel extends DecisionPoint {
 
         this.actionText = "Bury deep into the soil";
 
+        this.infoText = "...";
+
         this.model = new THREE.Object3D();
         this.model.add(gltf);
 
@@ -183,7 +196,12 @@ class PlasticBag extends DecisionPoint {
         let gltf = Assets.cloneGLTF(Assets.glTF.PlasticBag);
         gltf.scale.set(0.3, 0.3, 0.3);
 
-        this.actionText = "It can take up to 1,000 years for plastic to decompose in landfills. The plastic bags we use daily take 10 years to 1,000 years to decompose, while plastic bottles can take 450 years or more.";
+        this.actionText = "Put into pocket";
+
+        this.infoText = "It can take up to 1,000 years for plastic to decompose \n" +
+            "in landfills. The plastic bags we use daily take 10 years to 1,000 \n" +
+            "years to decompose, while plastic bottles can take 450 years or more.";
+
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
