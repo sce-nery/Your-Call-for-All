@@ -65,15 +65,13 @@ class Sky extends GameObject {
             this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
         }
 
-
     }
 
     updateInclination() {
 
-        let dayCycle = 60;
+        let dayCycle = 300; // 5min
 
         this.props.inclination = (this.time / dayCycle) % 1.0;
-
 
     }
 

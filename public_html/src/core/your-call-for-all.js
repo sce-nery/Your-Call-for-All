@@ -197,6 +197,11 @@ class YourCallForAll {
 
                     }
                 }
+
+                if (e.code === "KeyP") {
+                    self.character.flashlight.enabled = !self.character.flashlight.enabled;
+                }
+
             },
         };
     }
