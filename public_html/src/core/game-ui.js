@@ -64,6 +64,8 @@ class GameUiController {
             }
 
             this.settingsPageBar.style.visibility = "hidden";
+            this.graphicsSettingsTabMenu.style.visibility = "hidden";
+            this.advanceSettingsTabMenu.style.visibility = "hidden";
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
