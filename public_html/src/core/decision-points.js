@@ -240,6 +240,8 @@ class PlasticBag extends DecisionPoint {
     }
 
 }
+
+
 export {PlasticBag};
 export {DecisionPoint};
 export {BrokenBottle};
