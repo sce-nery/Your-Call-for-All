@@ -110,9 +110,6 @@ class GameUiController {
                 this.advanceSettingsTabMenu.style.visibility = "hidden";
             }
 
-
-            //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
-            //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
         }
 
         this.graphicsSettingsTab.onclick = () => {
@@ -129,18 +126,17 @@ class GameUiController {
 
             let v = this.creditsPageBar.style.visibility;
 
-            if (v === "visible"){
+            let buttonTextNode = this.creditsButton.childNodes.item(0);
+
+            if (v === "visible") {
                 this.creditsPageBar.style.visibility = "hidden";
-            }else {
+                buttonTextNode.textContent = "Credits";
+            } else {
                 this.creditsPageBar.style.visibility = "visible";
+                buttonTextNode.textContent = "Hide Credits";
             }
-
-            //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
-            //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
+            
         }
-
-
-
 
 
         this.smoothShadingOption.onclick = () => {
