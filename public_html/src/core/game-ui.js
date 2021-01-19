@@ -28,7 +28,7 @@ class GameUiController {
             "Hurry up before you lose it all.",
             "You are surrounded by garbage!",
             "You really like to destroy it, huh?",
-            "Ew! It smells awful. (It stinks).",
+            "Ew! It smells awful.",
             "What did you do to butterflies?",
 
 
