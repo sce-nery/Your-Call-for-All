@@ -14,7 +14,7 @@ let hyperParameters = {
     showPerformanceMonitor: true,
     showParameters: true,
     ambientSound: './assets/sounds/fairy-ring.mp3',
-    flatShading: true,
+    flatShading: false,
 }
 
 let yourCallForAll;

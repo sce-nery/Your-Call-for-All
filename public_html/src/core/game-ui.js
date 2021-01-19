@@ -22,9 +22,16 @@ class GameUiController {
 
         this.initializeListeners();
         this.hideLoadingBar();
+
+
     }
 
     initializeListeners() {
+
+          $('.ui.dropdown').dropdown()
+
+
+
         document.addEventListener("keyup", (e) => {
             if (e.key === "Escape") {
                 this.ycfa.unregisterPlayerControlListeners();
