@@ -33,7 +33,7 @@ class Sky extends GameObject {
 
         this.updateInclination();
 
-        if (this.tick % 60 === 0)
+        if (this.tick % 120 === 0)
         {
             this.updateEnvironmentMap();
         }
