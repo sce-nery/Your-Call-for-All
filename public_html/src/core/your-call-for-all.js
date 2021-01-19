@@ -8,14 +8,16 @@ import {TransformControls} from "../../vendor/three-js/examples/jsm/controls/Tra
 
 class YourCallForAll {
 
-    constructor(scene, camera, renderer, labelRenderer, hyperParameters) {
+    constructor(scene, camera, renderer, labelRenderer, bloomPass) {
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
         this.labelRenderer = renderer;
-        this.hyperParameters = hyperParameters;
+        this.bloomPass = bloomPass;
 
         this.clock = new THREE.Clock(false);
+
+        this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
 
         this.initializeSettings();
 
@@ -30,7 +32,14 @@ class YourCallForAll {
     initializeSettings() {
         this.settings = {
             shading: "smooth",
-            drawDistance: 100
+            drawDistance: 100,
+            environmentMappingEnabled: false,
+            enableBloom: () => {
+                this.bloomPass.enabled = true;
+            },
+            disableBloom: () => {
+                this.bloomPass.enabled = false;
+            }
         }
     }
 
@@ -46,7 +55,7 @@ class YourCallForAll {
     }
 
     initializeAudio() {
-        this.audio = new GameAudio(this.scene, this.camera, this.hyperParameters.ambientSound);
+        this.audio = new GameAudio(this.scene, this.camera, "../assets/sounds/fairy-ring.mp3");
     }
 
     initializeUiController() {

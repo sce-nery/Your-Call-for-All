@@ -1,3 +1,5 @@
+import * as THREE from "../../vendor/three-js/build/three.module.js";
+
 class GameUiController {
 
     constructor(ycfa) {
@@ -23,6 +25,64 @@ class GameUiController {
         this.initializeListeners();
         this.hideLoadingBar();
 
+    }
+
+    update() {
+        if (this.ycfa.environment.props.healthFactor !== this.healthProgress) {
+            this.healthProgress = this.ycfa.environment.props.healthFactor;
+            $('#health')
+                .progress({
+                    percent: this.healthProgress * 100,
+                    text: {
+                        active: 'You are surrounded by garbage!',
+                        success: 'You saved the world. Thanks you!'
+                    }
+                });
+        }
+    }
+
+    initializeDocumentElements() {
+        this.progressBar = document.querySelector('#progress-bar');
+        this.renderTarget = document.querySelector("#render-target");
+
+        this.menu = document.querySelector("#menu-container");
+
+        this.info = document.querySelector("#info-container");
+
+        this.playButton = document.querySelector("#play-button");
+        this.settingsButton = document.querySelector("#settings-button");
+
+        this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
+
+        this.musicButton = document.querySelector("#music-button");
+        this.healthBar = document.querySelector("#health-bar-id");
+
+        this.posMessage = document.querySelector("#positive-info");
+
+
+        this.settingsPageBar = document.querySelector("#settings-page-bar");
+        this.graphicsSettingsTab = document.querySelector("#graphics-settings");
+        this.advanceSettingsTab = document.querySelector("#advance-settings");
+
+        this.graphicsSettingsTabMenu = document.querySelector("#graphics-settings-menu");
+        this.advanceSettingsTabMenu = document.querySelector("#advance-settings-menu");
+
+        this.smoothShadingOption = document.querySelector("#smooth-shading-option");
+        this.flatShadingOption = document.querySelector("#flat-shading-option");
+        this.pixelRatio1 = document.querySelector("#pixel-ratio-1");
+        this.pixelRatioHalf = document.querySelector("#pixel-ratio-half");
+        this.pixelRatioQuarter = document.querySelector("#pixel-ratio-quarter");
+        this.toneMappingNone = document.querySelector("#no-tone-mapping");
+        this.toneMappingACES = document.querySelector("#aces-tone-mapping");
+        this.toneMappingReinhard = document.querySelector("#reinhard-tone-mapping");
+        this.environmentMappingEnable = document.querySelector("#enable-env-mapping");
+        this.environmentMappingDisable = document.querySelector("#disable-env-mapping");
+        this.bloomEnable = document.querySelector("#enable-bloom");
+        this.bloomDisable = document.querySelector("#disable-bloom");
+
+
+        this.creditsButton = document.querySelector("#credits-button");
+        this.creditsPageBar = document.querySelector("#credits-page-bar");
     }
 
     initializeListeners() {
@@ -159,57 +219,37 @@ class GameUiController {
         this.pixelRatioQuarter.onclick = () => {
             this.ycfa.renderer.setPixelRatio(0.25);
         }
-    }
 
-    update() {
-        if (this.ycfa.environment.props.healthFactor !== this.healthProgress) {
-            this.healthProgress = this.ycfa.environment.props.healthFactor;
-            $('#health')
-                .progress({
-                    percent: this.healthProgress * 100,
-                    text: {
-                        active: 'You are surrounded by garbage!',
-                        success: 'You saved the world. Thanks you!'
-                    }
-                });
+        this.toneMappingNone.onclick = () => {
+            this.ycfa.renderer.toneMapping = THREE.NoToneMapping;
+            this.ycfa.renderer.outputEncoding = THREE.LinearEncoding;
         }
-    }
 
-    initializeDocumentElements() {
-        this.progressBar = document.querySelector('#progress-bar');
-        this.renderTarget = document.querySelector("#render-target");
+        this.toneMappingReinhard.onclick = () => {
+            this.ycfa.renderer.toneMapping = THREE.ReinhardToneMapping;
+            this.ycfa.renderer.outputEncoding = THREE.sRGBEncoding;
+        }
 
-        this.menu = document.querySelector("#menu-container");
+        this.toneMappingACES.onclick = () => {
+            this.ycfa.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+             this.ycfa.renderer.outputEncoding = THREE.sRGBEncoding;
+        }
 
-        this.info = document.querySelector("#info-container");
+        this.environmentMappingEnable.onclick = () => {
+            this.ycfa.settings.environmentMappingEnabled = true;
+        }
 
-        this.playButton = document.querySelector("#play-button");
-        this.settingsButton = document.querySelector("#settings-button");
+        this.environmentMappingDisable.onclick = () => {
+            this.ycfa.settings.environmentMappingEnabled = false;
+        }
 
-        this.decisionPointActionInfoContainer = document.querySelector("#decision-point-action-info-container");
+        this.bloomEnable.onclick = () => {
+            this.ycfa.settings.enableBloom();
+        }
 
-        this.musicButton = document.querySelector("#music-button");
-        this.healthBar = document.querySelector("#health-bar-id");
-
-        this.posMessage = document.querySelector("#positive-info");
-
-
-        this.settingsPageBar = document.querySelector("#settings-page-bar");
-        this.graphicsSettingsTab = document.querySelector("#graphics-settings");
-        this.advanceSettingsTab = document.querySelector("#advance-settings");
-
-        this.graphicsSettingsTabMenu = document.querySelector("#graphics-settings-menu");
-        this.advanceSettingsTabMenu = document.querySelector("#advance-settings-menu");
-
-        this.smoothShadingOption = document.querySelector("#smooth-shading-option");
-        this.flatShadingOption = document.querySelector("#flat-shading-option");
-        this.pixelRatio1 = document.querySelector("#pixel-ratio-1");
-        this.pixelRatioHalf = document.querySelector("#pixel-ratio-half");
-        this.pixelRatioQuarter = document.querySelector("#pixel-ratio-quarter");
-
-
-        this.creditsButton = document.querySelector("#credits-button");
-        this.creditsPageBar = document.querySelector("#credits-page-bar");
+        this.bloomDisable.onclick = () => {
+            this.ycfa.settings.disableBloom();
+        }
     }
 
     showAndDestroyPositiveInfo(infoText) {
@@ -224,7 +264,7 @@ class GameUiController {
 
 
         // sleep time expects milliseconds
-        function sleep (time) {
+        function sleep(time) {
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 

@@ -13,8 +13,6 @@ let hyperParameters = {
     showGridHelper: false,
     showPerformanceMonitor: true,
     showParameters: true,
-    ambientSound: './assets/sounds/fairy-ring.mp3',
-    flatShading: false,
 }
 
 let yourCallForAll;
@@ -30,7 +28,7 @@ function init() {
         initListeners();
         initScene();
         initRenderer();
-        yourCallForAll = new YourCallForAll(scene, camera, renderer, labelRenderer, hyperParameters);
+        yourCallForAll = new YourCallForAll(scene, camera, renderer, labelRenderer, bloomPass);
         clock = yourCallForAll.clock;
         gameUiController = yourCallForAll.uiController;
         audio = yourCallForAll.audio;
@@ -92,8 +90,8 @@ function initRenderer() {
     // renderer.toneMapping = THREE.ACESFilmicToneMapping;
     // renderer.toneMappingExposure = 0.5;
     // renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.shadowMap.enabled = true;
-    // renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+     renderer.shadowMap.enabled = true;
+     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));

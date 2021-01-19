@@ -21,19 +21,22 @@ class Sky extends GameObject {
         this.sunLight = new THREE.DirectionalLight(0xffffff);
         this.sunLight.castShadow = true;
         this.time = 0;
+        this.tick = 0;
         this.props = props;
         this.skyDome.scale.setScalar(10000);
     }
 
     update(deltaTime) {
         this.time += deltaTime;
+        this.tick += 1;
         const uniforms = this.skyDome.material.uniforms;
 
-        let dayCycle = 60;
+        this.updateInclination();
 
-        let inc = (this.time / dayCycle) % 1.0;
-
-        //this.props.inclination = inc;
+        if (this.tick % 60 === 0)
+        {
+            this.updateEnvironmentMap();
+        }
 
 
         uniforms["turbidity"].value = this.props.turbidity;
@@ -62,6 +65,26 @@ class Sky extends GameObject {
             this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
         }
 
+
+    }
+
+    updateInclination() {
+
+        let dayCycle = 60;
+
+        this.props.inclination = (this.time / dayCycle) % 1.0;
+
+
+    }
+
+    updateEnvironmentMap() {
+
+        // Environment mapping:
+        if (this.environment.owner.settings.environmentMappingEnabled) {
+
+            this.environment.scene.environment = this.environment.owner.pmremGenerator.fromScene(this.skyDome).texture;
+
+        }
     }
 }
 
