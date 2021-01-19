@@ -465,15 +465,16 @@ class Flashlight extends StaticObject {
 
             this.light.target.updateMatrixWorld();
 
-            this.character.rightArm.rotation.z = THREE.Math.degToRad(-60);
+            this.character.rightArm.rotation.z = THREE.Math.degToRad(-75);
             this.character.rightForeArm.lookAt(this.light.target.position);
             this.character.rightHand.lookAt(this.light.target.position);
 
-            let rightHandWorldPosition = new THREE.Vector3();
-            this.character.rightHand.getWorldPosition(rightHandWorldPosition);
-            rightHandWorldPosition.add(direction.clone().multiplyScalar(0.1))
+            let flashlightPosition = new THREE.Vector3();
+            this.character.rightHand.getWorldPosition(flashlightPosition);
+            flashlightPosition.add(direction.clone().multiplyScalar(0.1))
+            flashlightPosition.add(new THREE.Vector3(0,0.02,0))
 
-            this.model.position.copy(rightHandWorldPosition);
+            this.model.position.copy(flashlightPosition);
             this.light.position.copy(this.model.position);
 
             this.model.lookAt(this.light.target.position);
