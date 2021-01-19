@@ -34,6 +34,7 @@ export const Assets = {
             BrokenBottle: `${root}/assets/models/objects/decision-points/broken-bottle/scene.gltf`,
             BiomedicalWaste: `${root}/assets/models/objects/decision-points/biomedical-waste/scene.gltf`,
             RadioactiveMetalBarrel: `${root}/assets/models/objects/decision-points/radioactive-metal-barrel/radioactive-metal-barrel.glb`,
+            PlasticBag:`${root}/assets/models/objects/decision-points/plastic-bag/scene.gltf`,
             //LowPolyTreeWind: `${root}/assets/models/objects/trees/low-poly-tree-wind/scene.gltf`,
             FlashLight: `${root}/assets/models/objects/spotlight/scene.gltf`
         },
@@ -69,6 +70,7 @@ export const Assets = {
         BrokenBottle: null,
         BiomedicalWaste: null,
         RadioactiveMetalBarrel: null,
+        PlasticBag:null,
         DeadTree: null,
         PinkTree: null,
         WillowTree: null,
