@@ -156,7 +156,7 @@ class RadioactiveMetalBarrel extends DecisionPoint {
         this.model = new THREE.Object3D();
         this.model.add(gltf);
 
-        this.label.position.set(0, 1.5, 0);
+        this.label.position.set(0, 1.75, 0);
         this.model.add(this.label);
 
         this.healthInfluence = -0.2;
