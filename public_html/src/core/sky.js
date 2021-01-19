@@ -9,7 +9,7 @@ class Sky extends GameObject {
         rayleigh: 3,
         mieCoefficient: 0.005,
         mieDirectionalG: 0.7,
-        inclination: 0.49,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
+        inclination: 0.75,  // 0.0: sunrise, 0.25: midday, 0.5: sunset, 0.75: midnight, 1.0: sunrise
         azimuth: 0.25,     // Facing front,
         exposure: 0.5,
 
@@ -55,7 +55,7 @@ class Sky extends GameObject {
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
         this.sunLight.color.set(LinearInterpolator.color(0xffffff, 0xfdb55e, amount));
-        this.sunLight.intensity = ((inclination / 2) + 0.25) % 1.0;
+        this.sunLight.intensity = (this.props.inclination > 0.5 && this.props.inclination < 1.0) ? 0.0 : 1.0;
 
         // Update fog:
         if (this.environment.scene.fog) {

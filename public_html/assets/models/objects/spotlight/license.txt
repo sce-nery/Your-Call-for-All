@@ -1,0 +1,11 @@
+Model Information:
+* title:	FlashLight
+* source:	https://sketchfab.com/3d-models/flashlight-1018adc607544ccf86c7bdf9be715bf1
+* author:	Danny van Beek (https://sketchfab.com/DeniZgamR)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "FlashLight" (https://sketchfab.com/3d-models/flashlight-1018adc607544ccf86c7bdf9be715bf1) by Danny van Beek (https://sketchfab.com/DeniZgamR) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

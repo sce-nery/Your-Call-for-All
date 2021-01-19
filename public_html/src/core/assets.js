@@ -35,6 +35,7 @@ export const Assets = {
             BiomedicalWaste: `${root}/assets/models/objects/decision-points/biomedical-waste/scene.gltf`,
             RadioactiveMetalBarrel: `${root}/assets/models/objects/decision-points/radioactive-metal-barrel/radioactive-metal-barrel.glb`,
             //LowPolyTreeWind: `${root}/assets/models/objects/trees/low-poly-tree-wind/scene.gltf`,
+            FlashLight: `${root}/assets/models/objects/spotlight/scene.gltf`
         },
         OBJ: {},
         Texture: {
@@ -74,6 +75,7 @@ export const Assets = {
         PalmTree: null,
         RealTree: null,
         Jackie: null,
+        FlashLight:null,
     },
 
 

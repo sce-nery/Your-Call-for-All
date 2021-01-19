@@ -1,6 +1,5 @@
 import {Assets} from "./assets.js";
 import * as THREE from "../../vendor/three-js/build/three.module.js";
-import {LinearInterpolator} from "../math/math.js";
 
 
 class GameObject {
@@ -140,6 +139,7 @@ class Shark extends AnimatedObject {
         this.environment = environment;
 
         this.model.name = "Shark";
+
         this.model.position.set(position.x, position.y, position.z);
 
         let scale = this.environment.prng.randomBetween(0.3, 0.6);
@@ -411,8 +411,83 @@ class LowPolyGrass extends StaticObject {
     }
 }
 
-export {LowPolyGrass};
+class Flashlight extends StaticObject {
+    constructor(character) {
+        super(Assets.glTF.FlashLight);
 
+        this.character = character;
+
+        this.model.name = "Flashlight";
+
+        this.model.scale.setScalar(0.01);
+
+        this.setupLight();
+    }
+
+    setupLight() {
+
+        this.light = new THREE.SpotLight(0xffffff, 1);
+
+        this.light.position.set(this.model.position.x, this.model.position.y - 1, this.model.position.z);
+
+        this.light.position.set(15, 40, 35);
+        this.light.angle = Math.PI / 4;
+        this.light.penumbra = 0.1;
+        this.light.decay = 2;
+        this.light.distance = 200;
+
+        this.light.castShadow = true;
+        this.light.shadow.mapSize.width = 512;
+        this.light.shadow.mapSize.height = 512;
+        this.light.shadow.camera.near = 10;
+        this.light.shadow.camera.far = 200;
+        this.light.shadow.focus = 1;
+
+    }
+
+    update(deltaTime, ycfa) {
+        let timeOfDay = ycfa.environment.sky.props.inclination;
+        if (timeOfDay > 0.5 && timeOfDay <= 1.0) {
+            if (!this.isInScene) {
+                ycfa.scene.add(this.model);
+                ycfa.scene.add(this.light);
+                this.isInScene = true;
+            }
+
+            this.model.position.copy(ycfa.character.model.position.clone().add(new THREE.Vector3(0, 1, 0)));
+            this.light.position.copy(this.model.position);
+
+            let cameraTarget = this.character.cameraController.currentLookAt.clone();
+            let cameraPos = this.character.cameraController.currentCameraPosition.clone();
+
+            let direction = cameraTarget.clone().sub(cameraPos).normalize();
+
+            this.light.target.position.copy(
+                cameraTarget.clone().add(direction)
+            );
+
+
+            this.light.target.updateMatrixWorld();
+
+            this.character.rightForeArm.lookAt(this.light.target.position);
+            this.character.rightHand.lookAt(this.light.target.position);
+
+            this.character.rightHand.getWorldPosition(this.model.position);
+
+            this.model.lookAt(this.light.target.position);
+
+        } else {
+            if (this.isInScene) {
+                ycfa.scene.remove(this.model);
+                ycfa.scene.remove(this.light);
+                this.isInScene = false;
+            }
+        }
+    }
+}
+
+export {LowPolyGrass};
+export {Flashlight};
 export {PineTree};
 export {DriedPine};
 

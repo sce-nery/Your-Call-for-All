@@ -3,12 +3,14 @@ import {ThirdPersonCameraController} from "./third-person-camera-controller.js";
 import {Assets} from "../assets.js";
 import * as THREE from "../../../vendor/three-js/build/three.module.js";
 import {Capsule} from "../../../vendor/three-js/examples/jsm/math/Capsule.js";
+import {Flashlight, StaticObject} from "../objects.js";
 
 
 
 class Character {
 
     constructor(ycfa) {
+
         this.owner = ycfa;
         this.scene = ycfa.scene;
         this.camera = ycfa.camera;
@@ -24,6 +26,10 @@ class Character {
         this.setupActions();
         this.setupShadows();
         this.setupControllers();
+
+        this.setupRightArm();
+        this.setupFlashlight();
+
     }
 
     removeBadObjectFromTheEnvironment(decisionPoint) {
@@ -33,6 +39,17 @@ class Character {
     setupControllers() {
         this.controller = new CharacterController(this);
         this.cameraController = new ThirdPersonCameraController(this);
+
+    }
+
+    setupFlashlight() {
+        this.flashlight = new Flashlight(this);
+    }
+
+    setupRightArm() {
+        this.rightArm = this.model.getObjectByName("mixamorig1RightArm");
+        this.rightForeArm = this.model.getObjectByName("mixamorig1RightForeArm");
+        this.rightHand = this.model.getObjectByName("mixamorig1RightHand");
     }
 
     setupActions() {
@@ -64,8 +81,9 @@ class Character {
     update(deltaTime, ycfa) {
         this.controller.update(deltaTime, ycfa);
         this.cameraController.update(deltaTime);
-
         this.mixer.update(deltaTime);
+
+        this.flashlight.update(deltaTime, ycfa);
     }
 
     move(offset) {
