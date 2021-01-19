@@ -64,6 +64,8 @@ class GameUiController {
             }
 
             this.settingsPageBar.style.visibility = "hidden";
+            this.graphicsSettingsTabMenu.style.visibility = "hidden";
+            this.advanceSettingsTabMenu.style.visibility = "hidden";
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
@@ -99,12 +101,14 @@ class GameUiController {
                 this.settingsPageBar.style.visibility = "visible";
             }
 
-
+            this.graphicsSettingsTabMenu.style.visibility = "visible";
             let buttonTextNode = this.settingsButton.childNodes.item(0);
             if (this.settingsPageBar.style.visibility === "visible"){
                 buttonTextNode.textContent = "Hide Settings";
             }else {
                 buttonTextNode.textContent = "Settings";
+                this.graphicsSettingsTabMenu.style.visibility = "hidden";
+                this.advanceSettingsTabMenu.style.visibility = "hidden";
             }
 
 
@@ -121,6 +125,18 @@ class GameUiController {
             }else {
                 this.settingsPageBar.style.visibility = "visible";
             }
+            this.graphicsSettingsTabMenu.style.visibility = "hidden";
+            this.advanceSettingsTabMenu.style.visibility = "hidden";
+        }
+
+        this.graphicsSettingsTab.onclick = () => {
+            this.graphicsSettingsTabMenu.style.visibility = "visible";
+            this.advanceSettingsTabMenu.style.visibility = "hidden";
+        }
+
+        this.advanceSettingsTab.onclick = () => {
+            this.advanceSettingsTabMenu.style.visibility = "visible";
+            this.graphicsSettingsTabMenu.style.visibility = "hidden";
         }
 
 
@@ -159,6 +175,12 @@ class GameUiController {
         this.posMessage = document.querySelector("#positive-info");
         this.settingsPageBar = document.querySelector("#settings-page-bar");
         this.settingsExitButton = document.querySelector("#exit-button");
+        this.graphicsSettingsTab = document.querySelector("#graphics-settings");
+        this.advanceSettingsTab = document.querySelector("#advance-settings");
+
+        this.graphicsSettingsTabMenu = document.querySelector("#graphics-settings-menu");
+        this.advanceSettingsTabMenu = document.querySelector("#advance-settings-menu");
+
 
     }
 
