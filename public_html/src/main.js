@@ -7,7 +7,6 @@ import {createPerformanceMonitor} from "./util/debug.js";
 import {UnrealBloomPass} from "../vendor/three-js/examples/jsm/postprocessing/UnrealBloomPass.js";
 import {CSS2DRenderer} from "../vendor/three-js/examples/jsm/renderers/CSS2DRenderer.js";
 import {GUI} from "../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
-import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControls.js";
 
 
 let hyperParameters = {

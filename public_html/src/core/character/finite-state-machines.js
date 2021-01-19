@@ -1,4 +1,4 @@
-import {IdleState, RunState, WalkState, JumpState} from "./character-states.js";
+import {IdleState, JumpState, RunState, WalkState} from "./character-states.js";
 
 
 class CharacterStateMachine {
