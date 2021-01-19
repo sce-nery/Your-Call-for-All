@@ -151,7 +151,11 @@ class RadioactiveMetalBarrel extends DecisionPoint {
 
         this.actionText = "Bury deep into the soil";
 
-        this.infoText = "...";
+        this.infoText = "Although nuclear energy is very environment-friendly, the nuclear " +
+            "waste that produced must be well handled. The time frame of radioactive waste " +
+            "ranges from 10,000 to 1,000,000 years. Usually it is " +
+            "stored deep under the soil, inside impermeable " +
+            "clay-reinforced concrete vaults";
 
         this.model = new THREE.Object3D();
         this.model.add(gltf);
