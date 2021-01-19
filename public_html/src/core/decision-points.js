@@ -41,7 +41,7 @@ class DecisionPoint extends GameObject {
 }
 
 class BrokenBottle extends DecisionPoint {
-    static prevalence = 0.025;
+    static prevalence = 0.03;
 
     constructor() {
         super("Broken Bottle");

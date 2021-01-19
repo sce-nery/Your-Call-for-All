@@ -474,6 +474,7 @@ class Flashlight extends StaticObject {
 
             let rightHandWorldPosition = new THREE.Vector3();
             this.character.rightHand.getWorldPosition(rightHandWorldPosition);
+            rightHandWorldPosition.add(direction.clone().multiplyScalar(0.1))
 
             this.model.position.copy(rightHandWorldPosition);
 
