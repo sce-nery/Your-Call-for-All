@@ -43,7 +43,7 @@ class DecisionPoint extends GameObject {
 }
 
 class BrokenBottle extends DecisionPoint {
-    static prevalence = 0.03;
+    static prevalence = 0.05;
 
     constructor() {
         super("Broken Bottle");
@@ -93,7 +93,7 @@ class BrokenBottle extends DecisionPoint {
 
 
 class BiomedicalWaste extends DecisionPoint {
-    static prevalence = 0.008;
+    static prevalence = 0.009;
 
     constructor() {
         super("Biomedical Waste");
