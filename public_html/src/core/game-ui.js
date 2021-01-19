@@ -99,6 +99,16 @@ class GameUiController {
                 this.settingsPageBar.style.visibility = "visible";
             }
 
+
+            let buttonTextNode = this.settingsButton.childNodes.item(0);
+            if (this.settingsPageBar.style.visibility === "visible"){
+                buttonTextNode.textContent = "Hide Settings";
+            }else {
+                buttonTextNode.textContent = "Settings";
+            }
+
+
+
             //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
             //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
         }
