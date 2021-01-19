@@ -29,8 +29,8 @@
 
 .settings-page-bar {
     position: absolute;
-    width: 25%;
-    top: 25%;
+    width: 45%;
+    top: 50%;
     left: 50%;
     z-index: 1;
 }
@@ -51,6 +51,7 @@
 
 .positive-info {
     position: absolute;
+    width: 20%;
     right: 1.5%;
     bottom: 12.5%;
     z-index: 1;

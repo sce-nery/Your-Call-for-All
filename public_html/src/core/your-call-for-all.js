@@ -172,11 +172,12 @@ class YourCallForAll {
 
                     } else if (e.code === "KeyF") {
 
+                        let infoText = self.character.cameraController.currentlyFocusedDecisionPoint.infoText;
                         self.character.removeBadObjectFromTheEnvironment(self.character.cameraController.currentlyFocusedDecisionPoint);
                         self.character.cameraController.currentlyFocusedDecisionPoint = null;
                         self.uiController.hideDecisionPointActionInfoContainer();
                         self.playerControl.readyForDecisionPointAction = false;
-                        self.uiController.showAndDestroyPositiveInfo();
+                        self.uiController.showAndDestroyPositiveInfo(infoText);
 
                     }
                 }
