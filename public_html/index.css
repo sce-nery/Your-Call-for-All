@@ -43,6 +43,7 @@
 
 .positive-info {
     position: absolute;
+    width: 20%;
     right: 1.5%;
     bottom: 12.5%;
     z-index: 1;

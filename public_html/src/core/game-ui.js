@@ -23,13 +23,11 @@ class GameUiController {
         this.initializeListeners();
         this.hideLoadingBar();
 
-
     }
 
     initializeListeners() {
 
-          $('.ui.dropdown').dropdown()
-
+        $('.ui.dropdown').dropdown()
 
 
         document.addEventListener("keyup", (e) => {
@@ -95,22 +93,21 @@ class GameUiController {
 
             let v = this.settingsPageBar.style.visibility;
 
-            if (v === "visible"){
+            if (v === "visible") {
                 this.settingsPageBar.style.visibility = "hidden";
-            }else {
+            } else {
                 this.settingsPageBar.style.visibility = "visible";
             }
 
             this.graphicsSettingsTabMenu.style.visibility = "visible";
             let buttonTextNode = this.settingsButton.childNodes.item(0);
-            if (this.settingsPageBar.style.visibility === "visible"){
+            if (this.settingsPageBar.style.visibility === "visible") {
                 buttonTextNode.textContent = "Hide Settings";
-            }else {
+            } else {
                 buttonTextNode.textContent = "Settings";
                 this.graphicsSettingsTabMenu.style.visibility = "hidden";
                 this.advanceSettingsTabMenu.style.visibility = "hidden";
             }
-
 
 
             //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
@@ -120,9 +117,9 @@ class GameUiController {
         this.settingsExitButton.onclick = () => {
             let v = this.settingsPageBar.style.visibility;
 
-            if (v === "visible"){
+            if (v === "visible") {
                 this.settingsPageBar.style.visibility = "hidden";
-            }else {
+            } else {
                 this.settingsPageBar.style.visibility = "visible";
             }
             this.graphicsSettingsTabMenu.style.visibility = "hidden";
@@ -184,26 +181,27 @@ class GameUiController {
 
     }
 
-    showAndDestroyPositiveInfo() {
-        $('.positive-info')
-            .transition({
-                animation: 'fade',
-                duration: '2s',
-                onComplete: function () {
-                    console.log("fade is done!")
-                }
-            });
-        ;
+    showAndDestroyPositiveInfo(infoText) {
+        let wordCount = infoText.split(" ").length;
+        let duration = wordCount * 0.28;
 
-        $('.positive-info')
-            .transition({
-                animation: 'fade',
-                duration: '5s',
-                onComplete: function () {
-                    console.log("fade is done!")
-                }
-            });
-        ;
+
+        document.querySelector("#info-text").textContent = infoText;
+
+
+        $('.positive-info').transition('scale');
+
+
+        // sleep time expects milliseconds
+        function sleep (time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
+        }
+
+        // Usage!
+        sleep(duration * 1000).then(() => {
+            $('.positive-info').transition("scale");
+        });
+
     }
 
     showMainMenu() {
