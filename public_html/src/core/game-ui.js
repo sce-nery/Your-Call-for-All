@@ -68,7 +68,6 @@ class GameUiController {
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
-
             let buttonTextNode = this.playButton.childNodes.item(0);
             buttonTextNode.textContent = "Resume";
 
@@ -135,7 +134,7 @@ class GameUiController {
                 this.creditsPageBar.style.visibility = "visible";
                 buttonTextNode.textContent = "Hide Credits";
             }
-            
+
         }
 
 
@@ -144,13 +143,22 @@ class GameUiController {
             this.ycfa.switchShadingOption(false);
         }
 
-
         this.flatShadingOption.onclick = () => {
             this.ycfa.settings.shading = "flat";
             this.ycfa.switchShadingOption(true);
         }
 
+        this.pixelRatio1.onclick = () => {
+            this.ycfa.renderer.setPixelRatio(1);
+        }
 
+        this.pixelRatioHalf.onclick = () => {
+            this.ycfa.renderer.setPixelRatio(0.5);
+        }
+
+        this.pixelRatioQuarter.onclick = () => {
+            this.ycfa.renderer.setPixelRatio(0.25);
+        }
     }
 
     update() {
@@ -184,6 +192,8 @@ class GameUiController {
         this.healthBar = document.querySelector("#health-bar-id");
 
         this.posMessage = document.querySelector("#positive-info");
+
+
         this.settingsPageBar = document.querySelector("#settings-page-bar");
         this.graphicsSettingsTab = document.querySelector("#graphics-settings");
         this.advanceSettingsTab = document.querySelector("#advance-settings");
@@ -193,12 +203,13 @@ class GameUiController {
 
         this.smoothShadingOption = document.querySelector("#smooth-shading-option");
         this.flatShadingOption = document.querySelector("#flat-shading-option");
+        this.pixelRatio1 = document.querySelector("#pixel-ratio-1");
+        this.pixelRatioHalf = document.querySelector("#pixel-ratio-half");
+        this.pixelRatioQuarter = document.querySelector("#pixel-ratio-quarter");
 
 
         this.creditsButton = document.querySelector("#credits-button");
         this.creditsPageBar = document.querySelector("#credits-page-bar");
-
-
     }
 
     showAndDestroyPositiveInfo(infoText) {
@@ -217,7 +228,6 @@ class GameUiController {
             return new Promise((resolve) => setTimeout(resolve, time));
         }
 
-        // Usage!
         sleep(duration * 1000).then(() => {
             $('.positive-info').transition("scale");
         });
