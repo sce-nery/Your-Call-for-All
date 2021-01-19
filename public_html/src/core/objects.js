@@ -454,9 +454,6 @@ class Flashlight extends StaticObject {
                 this.isInScene = true;
             }
 
-            this.model.position.copy(ycfa.character.model.position.clone().add(new THREE.Vector3(0, 1, 0)));
-            this.light.position.copy(this.model.position);
-
             let cameraTarget = this.character.cameraController.currentLookAt.clone();
             let cameraPos = this.character.cameraController.currentCameraPosition.clone();
 
@@ -477,6 +474,7 @@ class Flashlight extends StaticObject {
             rightHandWorldPosition.add(direction.clone().multiplyScalar(0.1))
 
             this.model.position.copy(rightHandWorldPosition);
+            this.light.position.copy(this.model.position);
 
             this.model.lookAt(this.light.target.position);
 
