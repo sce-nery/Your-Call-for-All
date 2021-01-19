@@ -13,7 +13,7 @@ import {MapControls} from "../vendor/three-js/examples/jsm/controls/OrbitControl
 let hyperParameters = {
     showGridHelper: false,
     showPerformanceMonitor: false,
-    showParameters: false,
+    showParameters: true,
 }
 
 let yourCallForAll;

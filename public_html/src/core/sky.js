@@ -33,8 +33,7 @@ class Sky extends GameObject {
 
         this.updateInclination();
 
-        if (this.tick % 120 === 0)
-        {
+        if (this.tick % 120 === 0) {
             this.updateEnvironmentMap();
         }
 
@@ -63,6 +62,11 @@ class Sky extends GameObject {
         // Update fog:
         if (this.environment.scene.fog) {
             this.environment.scene.fog.color.set(LinearInterpolator.color(0xfdb55e, 0xa0afa0, this.environment.props.healthFactor));
+
+
+            if (inclination > 0.5 && inclination < 1.0) {
+                this.environment.scene.fog.color.set(0x000000);
+            }
         }
 
     }
