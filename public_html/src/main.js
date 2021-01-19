@@ -14,6 +14,7 @@ let hyperParameters = {
     showPerformanceMonitor: true,
     showParameters: true,
     ambientSound: './assets/sounds/fairy-ring.mp3',
+    flatShading: true,
 }
 
 let yourCallForAll;
@@ -48,7 +49,6 @@ function render() {
         stats.update();
     }
 
-
     yourCallForAll.update(deltaTime);
 
     renderer.toneMappingExposure = yourCallForAll.environment.sky.props.exposure;
@@ -77,7 +77,6 @@ function applyHyperParams() {
 function initCamera() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 10000);
     camera.position.set(10, 10, 100);
-
 }
 
 function initListeners() {
@@ -113,7 +112,6 @@ function initRenderer() {
 
 function initScene() {
     scene = new THREE.Scene();
-
 }
 
 
@@ -182,4 +180,5 @@ function initDebugGUIForGameParams() {
     bloomFolder.add(bloomPass, "radius", 0.1, 1, 0.001);
     bloomFolder.add(bloomPass, "threshold", 0, 1, 0.0001);
     bloomFolder.add(bloomPass, "enabled", false, true);
+
 }

@@ -23,6 +23,18 @@ class YourCallForAll {
         this.initializeAudio();
 
         this.initializeInspectionControls();
+        this.flatShadingOption(this.hyperParameters.flatShading);
+
+    }
+
+    flatShadingOption(enableFlatShading) {
+        for(let i = 0;  i <this.scene.children.length; i++){
+            this.scene.children[i].traverse( function (child) {
+                if(child instanceof THREE.Mesh){
+                    child.material.flatShading = enableFlatShading;
+                }
+            });
+        }
     }
 
     initializeAudio() {
