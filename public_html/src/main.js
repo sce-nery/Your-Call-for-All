@@ -12,7 +12,7 @@ import {GUI} from "../vendor/three-js/examples/jsm/libs/dat.gui.module.js";
 let hyperParameters = {
     showGridHelper: false,
     showPerformanceMonitor: false,
-    showParameters: true,
+    showParameters: false,
 }
 
 let yourCallForAll;
@@ -72,7 +72,7 @@ function applyHyperParams() {
         stats = createPerformanceMonitor(document.body, 80 * 18.5);
     }
     if (hyperParameters.showParameters) {
-        //initDebugGUIForGameParams();
+        initDebugGUIForGameParams();
     }
 }
 
