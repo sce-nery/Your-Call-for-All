@@ -64,6 +64,7 @@ class GameUiController {
             this.settingsPageBar.style.visibility = "hidden";
             this.graphicsSettingsTabMenu.style.visibility = "hidden";
             this.advanceSettingsTabMenu.style.visibility = "hidden";
+            this.creditsPageBar.style.visibility = "hidden";
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
@@ -124,6 +125,24 @@ class GameUiController {
             this.graphicsSettingsTabMenu.style.visibility = "hidden";
         }
 
+        this.creditsButton.onclick = () => {
+
+            let v = this.creditsPageBar.style.visibility;
+
+            if (v === "visible"){
+                this.creditsPageBar.style.visibility = "hidden";
+            }else {
+                this.creditsPageBar.style.visibility = "visible";
+            }
+
+            //this.ycfa.flatShadingOption(this.ycfa.hyperParameters.flatShading);
+            //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
+        }
+
+
+
+
+
         this.smoothShadingOption.onclick = () => {
             this.ycfa.settings.shading = "smooth";
             this.ycfa.switchShadingOption(false);
@@ -178,6 +197,10 @@ class GameUiController {
 
         this.smoothShadingOption = document.querySelector("#smooth-shading-option");
         this.flatShadingOption = document.querySelector("#flat-shading-option");
+
+
+        this.creditsButton = document.querySelector("#credits-button");
+        this.creditsPageBar = document.querySelector("#credits-page-bar");
 
 
     }
