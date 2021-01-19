@@ -43,7 +43,8 @@ class YourCallForAll {
         }
     }
 
-    switchShadingOption(shading) {
+    updateShading() {
+        let shading = this.settings.shading;
         for (let i = 0; i < this.scene.children.length; i++) {
             this.scene.children[i].traverse(function (child) {
                 if (child.isMesh) {

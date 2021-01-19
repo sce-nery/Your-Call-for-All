@@ -242,12 +242,12 @@ class GameUiController {
 
         this.smoothShadingOption.onclick = () => {
             this.ycfa.settings.shading = "smooth";
-            this.ycfa.switchShadingOption(false);
+            this.ycfa.updateShading();
         }
 
         this.flatShadingOption.onclick = () => {
             this.ycfa.settings.shading = "flat";
-            this.ycfa.switchShadingOption(true);
+            this.ycfa.updateShading();
         }
 
         this.pixelRatio1.onclick = () => {
