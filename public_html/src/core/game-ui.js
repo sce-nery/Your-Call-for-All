@@ -56,7 +56,7 @@ class GameUiController {
                 }
             }
 
-
+            this.settingsPageBar.style.visibility = "hidden";
             this.ycfa.registerPlayerControlListeners();
             this.hideMainMenu();
 
@@ -96,6 +96,16 @@ class GameUiController {
             //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
         }
 
+        this.settingsExitButton.onclick = () => {
+            let v = this.settingsPageBar.style.visibility;
+
+            if (v === "visible"){
+                this.settingsPageBar.style.visibility = "hidden";
+            }else {
+                this.settingsPageBar.style.visibility = "visible";
+            }
+        }
+
 
     }
 
@@ -131,6 +141,7 @@ class GameUiController {
 
         this.posMessage = document.querySelector("#positive-info");
         this.settingsPageBar = document.querySelector("#settings-page-bar");
+        this.settingsExitButton = document.querySelector("#exit-button");
 
     }
 
