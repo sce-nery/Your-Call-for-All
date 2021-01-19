@@ -93,7 +93,7 @@ class BrokenBottle extends DecisionPoint {
 
 
 class BiomedicalWaste extends DecisionPoint {
-    static prevalence = 0.001;
+    static prevalence = 0.008;
 
     constructor() {
         super("Biomedical Waste");
@@ -142,7 +142,7 @@ class BiomedicalWaste extends DecisionPoint {
 
 
 class RadioactiveMetalBarrel extends DecisionPoint {
-    static prevalence = 0.0008;
+    static prevalence = 0.008;
 
     constructor() {
         super("Radioactive Metal Barrel");

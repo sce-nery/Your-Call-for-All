@@ -72,7 +72,7 @@ function applyHyperParams() {
         stats = createPerformanceMonitor(document.body, 80 * 18.5);
     }
     if (hyperParameters.showParameters) {
-        initDebugGUIForGameParams();
+        //initDebugGUIForGameParams();
     }
 }
 
