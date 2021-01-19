@@ -56,7 +56,8 @@ class YourCallForAll {
     }
 
     initializeAudio() {
-        this.audio = new GameAudio(this.scene, this.camera, "./assets/sounds/fairy-ring.mp3");
+        let ambientSoundFilePath = "./assets/sounds/Derek & Brandon Fietcher - Fairy Ring.mp3";
+        this.audio = new GameAudio(this.scene, this.camera, ambientSoundFilePath);
     }
 
     initializeUiController() {
