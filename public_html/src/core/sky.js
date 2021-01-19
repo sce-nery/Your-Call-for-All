@@ -26,7 +26,6 @@ class Sky extends GameObject {
     }
 
     update(deltaTime) {
-        this.props.inclination=0.75;
         this.time += deltaTime;
         const uniforms = this.skyDome.material.uniforms;
 
@@ -56,7 +55,7 @@ class Sky extends GameObject {
         const inclination = this.props.inclination;
         let amount = (Math.cos(inclination * 4 * Math.PI) + 1.0) / 2.0;
         this.sunLight.color.set(LinearInterpolator.color(0xffffff, 0xfdb55e, amount));
-        this.sunLight.intensity = ((inclination / 2) + 0.25) % 1.0;
+        this.sunLight.intensity = (this.props.inclination > 0.5 && this.props.inclination < 1.0) ? 0.0 : 1.0;
 
         // Update fog:
         if (this.environment.scene.fog) {
