@@ -419,7 +419,7 @@ class Flashlight extends StaticObject {
 
         this.model.name = "Flashlight";
 
-        this.model.scale.setScalar(0.01);
+        this.model.scale.setScalar(0.02);
 
         this.setupLight();
     }
@@ -463,16 +463,19 @@ class Flashlight extends StaticObject {
             let direction = cameraTarget.clone().sub(cameraPos).normalize();
 
             this.light.target.position.copy(
-                cameraTarget.clone().add(direction)
+                cameraTarget.clone().add(direction.clone().multiplyScalar(10))
             );
-
 
             this.light.target.updateMatrixWorld();
 
+            this.character.rightArm.rotation.z = THREE.Math.degToRad(-60);
             this.character.rightForeArm.lookAt(this.light.target.position);
             this.character.rightHand.lookAt(this.light.target.position);
 
-            this.character.rightHand.getWorldPosition(this.model.position);
+            let rightHandWorldPosition = new THREE.Vector3();
+            this.character.rightHand.getWorldPosition(rightHandWorldPosition);
+
+            this.model.position.copy(rightHandWorldPosition);
 
             this.model.lookAt(this.light.target.position);
 
