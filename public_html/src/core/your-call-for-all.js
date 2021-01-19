@@ -17,21 +17,28 @@ class YourCallForAll {
 
         this.clock = new THREE.Clock(false);
 
+        this.initializeSettings();
+
         this.initializeEnvironment();
         this.initializeCharacter();
         this.initializeUiController();
         this.initializeAudio();
 
         this.initializeInspectionControls();
-        this.flatShadingOption(this.hyperParameters.flatShading);
-
     }
 
-    flatShadingOption(enableFlatShading) {
-        for(let i = 0;  i <this.scene.children.length; i++){
-            this.scene.children[i].traverse( function (child) {
-                if(child instanceof THREE.Mesh){
-                    child.material.flatShading = enableFlatShading;
+    initializeSettings() {
+        this.settings = {
+            shading: "smooth",
+            drawDistance: 100
+        }
+    }
+
+    switchShadingOption(shading) {
+        for (let i = 0; i < this.scene.children.length; i++) {
+            this.scene.children[i].traverse(function (child) {
+                if (child.isMesh) {
+                    child.material.flatShading = shading === "flat";
                     child.material.needsUpdate = true;
                 }
             });

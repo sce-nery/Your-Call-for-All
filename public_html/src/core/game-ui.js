@@ -114,18 +114,6 @@ class GameUiController {
             //this.ycfa.hyperParameters.flatShading = !this.ycfa.hyperParameters.flatShading;
         }
 
-        this.settingsExitButton.onclick = () => {
-            let v = this.settingsPageBar.style.visibility;
-
-            if (v === "visible") {
-                this.settingsPageBar.style.visibility = "hidden";
-            } else {
-                this.settingsPageBar.style.visibility = "visible";
-            }
-            this.graphicsSettingsTabMenu.style.visibility = "hidden";
-            this.advanceSettingsTabMenu.style.visibility = "hidden";
-        }
-
         this.graphicsSettingsTab.onclick = () => {
             this.graphicsSettingsTabMenu.style.visibility = "visible";
             this.advanceSettingsTabMenu.style.visibility = "hidden";
@@ -134,6 +122,17 @@ class GameUiController {
         this.advanceSettingsTab.onclick = () => {
             this.advanceSettingsTabMenu.style.visibility = "visible";
             this.graphicsSettingsTabMenu.style.visibility = "hidden";
+        }
+
+        this.smoothShadingOption.onclick = () => {
+            this.ycfa.settings.shading = "smooth";
+            this.ycfa.switchShadingOption(false);
+        }
+
+
+        this.flatShadingOption.onclick = () => {
+            this.ycfa.settings.shading = "flat";
+            this.ycfa.switchShadingOption(true);
         }
 
 
@@ -171,12 +170,14 @@ class GameUiController {
 
         this.posMessage = document.querySelector("#positive-info");
         this.settingsPageBar = document.querySelector("#settings-page-bar");
-        this.settingsExitButton = document.querySelector("#exit-button");
         this.graphicsSettingsTab = document.querySelector("#graphics-settings");
         this.advanceSettingsTab = document.querySelector("#advance-settings");
 
         this.graphicsSettingsTabMenu = document.querySelector("#graphics-settings-menu");
         this.advanceSettingsTabMenu = document.querySelector("#advance-settings-menu");
+
+        this.smoothShadingOption = document.querySelector("#smooth-shading-option");
+        this.flatShadingOption = document.querySelector("#flat-shading-option");
 
 
     }
@@ -255,6 +256,7 @@ class GameUiController {
             $("#inspection-mode-info-container").transition("scale in");
             this.visibilities.inspectionModeInfoContainer = true;
         }
+
     }
 
     exitInspectionModeUI() {
@@ -265,14 +267,6 @@ class GameUiController {
             $("#inspection-mode-info-container").transition("scale out");
             this.visibilities.inspectionModeInfoContainer = false;
         }
-    }
-
-    showGameSettings() {
-        this.settingsMenu.style.visibility = "visible";
-    }
-
-    hideGameSettings() {
-        this.settingsMenu.style.visibility = "hidden";
     }
 
 
