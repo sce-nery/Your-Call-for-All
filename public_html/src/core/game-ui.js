@@ -161,6 +161,7 @@ class GameUiController {
 
             this.graphicsSettingsTabMenu.style.visibility = "visible";
             let buttonTextNode = this.settingsButton.childNodes.item(0);
+
             if (this.settingsPageBar.style.visibility === "visible") {
                 buttonTextNode.textContent = "Hide Settings";
             } else {
