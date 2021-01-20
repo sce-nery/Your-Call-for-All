@@ -1,5 +1,5 @@
 # Your Call for All
-<em>Your Call for All</em> is a walking simulation made as a term project of <em>BBM412 - Introduction to Computer Graphics Course of Hacettepe University</em> with the theme of environmental problems. The game begins in a nasty looking open world where a lot of waste accumulated. Our character has to do something about the waste, as she sees by traveling around the endless open world. The environment becomes more and more beautiful as good decisions being made.
+<em>Your Call for All</em> is a walking simulation made as a term project of <em>BBM412 - Introduction to Computer Graphics Course of Hacettepe University</em> with the theme of environmental problems. The game begins in a nasty looking environment in which a lot of waste has accumulated. Our character has to do something about the them, as she sees by traveling around the endless open world. The environment becomes more and more beautiful as good decisions being made.
 <br>
 
 You can play the game on your browser [Play](https://sce-nery.github.io/Your-Call-for-All/public_html/index.html) 
