@@ -138,16 +138,6 @@ export const Assets = {
                 });
         };
 
-
-        // Comment this if error is unrelated to asset loading,
-        // and check preserve logs checkbox in browser console
-        // loadingManager.onError = function (e) {
-        //     console.error(e);
-        //     console.warn("Attempting to load assets by refreshing site in 2 secs.");
-        //     setTimeout(function () {
-        //         location.reload();
-        //     }, 2000);
-        // };
     },
 
     cloneGLTF: function (gltf) {
