@@ -3,6 +3,18 @@ BBM412 Computer Graphics Course Term Project
 
 ![alt text](https://user-images.githubusercontent.com/16795283/104253132-d6238380-5484-11eb-8e3e-c1ec3e205050.png "Your Call for All")
 
+
+### Some Features & Techniques Used
+
+![alt text](public_html/assets/images/presentation/terrain-generation.png "Your Call for All" )
+![alt text](public_html/assets/images/presentation/chunk-loading.png "Your Call for All")
+![alt text](public_html/assets/images/presentation/blending-textures.png "Your Call for All")
+![alt text](public_html/assets/images/presentation/character-animations.png "Your Call for All")
+![alt text](public_html/assets/images/presentation/object-transformations.png "Your Call for All")
+![alt text](public_html/assets/images/presentation/shading-options.png "Your Call for All")
+
+
+
 ## Contributing
 
 When starting to work on an issue, you need to create a branch from the `main` branch with the convention:
