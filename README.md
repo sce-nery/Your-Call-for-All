@@ -1,10 +1,15 @@
 # Your Call for All
-BBM412 Computer Graphics Course Term Project
+<em>Your Call for All</em> is a walking simulation made as a term project of BBM412 - Introduction to Computer Graphics Course of Hacettepe University with the theme of environmental problems. The game begins in a nasty looking open world where a lot of waste accumulates. The user has to do something about the waste she sees by traveling around the world. The environment becomes more and more beautiful as waste is collected from the world.
+<br>
+
+You can play the game on your browser [Play](https://sce-nery.github.io/Your-Call-for-All/public_html/index.html) 
+<br> 
+Also watch the [Trailer](https://www.youtube.com/watch?v=SJUABrbwMZk) 
 
 ![alt text](https://user-images.githubusercontent.com/16795283/104253132-d6238380-5484-11eb-8e3e-c1ec3e205050.png "Your Call for All")
 
 
-### Some Features & Techniques Used
+## Some Features & Techniques Used
 
 ![alt text](public_html/assets/images/presentation/terrain-generation.png "Your Call for All" )
 ![alt text](public_html/assets/images/presentation/chunk-loading.png "Your Call for All")
